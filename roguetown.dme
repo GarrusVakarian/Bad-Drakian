@@ -1061,6 +1061,7 @@
 #include "code\game\objects\items\debug_items.dm"
 #include "code\game\objects\items\dice.dm"
 #include "code\game\objects\items\dwarven_dice.dm"
+#include "code\game\objects\items\dice_war.dm"
 #include "code\game\objects\items\farkle.dm"
 #include "code\game\objects\items\bakers_dozen.dm"
 #include "code\game\objects\items\threes_away.dm"
