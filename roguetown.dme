@@ -1063,6 +1063,7 @@
 #include "code\game\objects\items\dwarven_dice.dm"
 #include "code\game\objects\items\farkle.dm"
 #include "code\game\objects\items\bakers_dozen.dm"
+#include "code\game\objects\items\threes_away.dm"
 #include "code\game\objects\items\etherealdiscoball.dm"
 #include "code\game\objects\items\granters.dm"
 #include "code\game\objects\items\hot_potato.dm"
