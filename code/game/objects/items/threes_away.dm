@@ -4,7 +4,7 @@
  *
  * Rules:
  * - One at a time, all players roll 5d6.
- * - After every roll, at least one die must be set aside.
+ * - After every roll, one dice must be set aside.
  * - Continue rolling remaining dice until all five are set aside.
  * - Lowest score wins.
  * - 3s are worth 0, 1s are valuable low dice.
@@ -166,47 +166,31 @@
 
 	end_round()
 
-/datum/threes_away_game/proc/choose_kept_dice(mob/living/active, list/current_roll)
+
+/datum/threes_away_game/proc/choose_kept_die(mob/living/active, list/current_roll)
 	var/list/roll_counts = list(0, 0, 0, 0, 0, 0)
 	for(var/v in current_roll)
 		roll_counts[v]++
 
-	var/list/kept = list()
-	var/kept_any = FALSE
+	var/list/menu = list()
+	for(var/face in 1 to 6)
+		if(roll_counts[face] > 0)
+			menu += "Keep one [face] ([roll_counts[face]] left)"
 
-	while(TRUE)
-		var/list/menu = list()
-		for(var/face in 1 to 6)
-			if(roll_counts[face] > 0)
-				menu += "Keep one [face] ([roll_counts[face]] left)"
-		if(kept_any)
-			menu += "Done selecting"
-
-		var/choice = input(active, "Select at least one die to set aside this roll.", "Three's Away") as null|anything in menu
-		if(!choice)
-			if(kept_any)
-				break
-			for(var/f in 1 to 6)
-				if(roll_counts[f] > 0)
-					roll_counts[f]--
-					kept += f
-					kept_any = TRUE
-					to_chat(active, span_notice("No die selected; automatically keeping one [f]."))
-					break
-			break
-
-		if(choice == "Done selecting")
-			break
-
+	var/choice = input(active, "Select exactly one die to set aside this roll.", "Three's Away") as null|anything in menu
+	if(!choice)
 		for(var/f in 1 to 6)
-			if(findtext(choice, "Keep one [f] "))
-				if(roll_counts[f] > 0)
-					roll_counts[f]--
-					kept += f
-					kept_any = TRUE
-				break
+			if(roll_counts[f] > 0)
+				to_chat(active, span_notice("No die selected; automatically keeping one [f]."))
+				return f
+		return current_roll[1]
 
-	return kept
+	for(var/f in 1 to 6)
+		if(findtext(choice, "Keep one [f] "))
+			if(roll_counts[f] > 0)
+				return f
+
+	return current_roll[1]
 
 /datum/threes_away_game/proc/do_full_turn_roll(mob/living/active)
 	busy = TRUE
@@ -248,13 +232,9 @@
 			score_zeroed = TRUE
 			game_bag.visible_message(span_notice("[active] has rolled three 3s during the turn! Their score will be wiped to 0."))
 
-		var/list/kept_now = choose_kept_dice(active, current_roll)
-		if(!kept_now.len)
-			kept_now += current_roll[1]
-
-		for(var/v in kept_now)
-			kept_values += v
-		remaining_dice -= kept_now.len
+		var/kept_now = choose_kept_die(active, current_roll)
+		kept_values += kept_now
+		remaining_dice--
 		if(remaining_dice < 0)
 			remaining_dice = 0
 
@@ -372,13 +352,18 @@
 	desc = "A bag used to play Three's Away. Activate in hand (Z) to start or join a game."
 	var/datum/threes_away_game/active_game
 	var/static/threes_away_rules_text = {"<div style='padding:8px;font-family:Verdana,sans-serif;'>
-+- A player rolls all five d6. They must set aside at least one die from every roll.<br>
-+- They continue rolling the remaining dice until all five are set aside. Then their turn ends, and the next player rolls their five.<br>
-+- The goal is to get the lowest score.<br>
-+- Players are hunting for 3s (worth 0) and 1s.<br>
-+- If a player manages to roll three 3s at any point during their turn, their entire score is wiped to zero.<br>
-+- If they roll four or more 3s, they Bust. They are immediately disqualified from the round, and their ante is doubled for the next pot.
-+</div>"}
+	<h2 style='text-align:center;margin:0 0 6px 0;'>Three's Away</h2>
+<br>
+<b>Objective:</b> Achieve the lowest score.<br>
+<br>
+<b>Rules:</b><br>
+- One at a time, all players roll 5d6.<br>
+- After every roll, players choose one dice that must be set aside.<br>
+- Continue rolling remaining dice until all five are set aside.<br>
+- 3s are worth 0, 1s are valuable low dice.<br>
+- If you roll three 3s during your turn, your score is wiped to 0.<br>
+- If you roll four or more 3s on a roll, you bust and are disqualified.<br>
+</div>"}
 
 /obj/item/storage/pill_bottle/dice/threes_away/proc/show_rules(mob/living/user)
 	if(!user)

@@ -338,16 +338,17 @@
 	desc = "A set of dice for Baker's Dozen. Activate in hand (Z) to start or join a game."
 	var/datum/bakers_dozen_game/active_game
 	var/static/bakers_dozen_rules_text = {"<div style='padding:8px;font-family:Verdana,sans-serif;'>
- <b>BAKER'S DOZEN</b>
- A blackjack-style d6 game for 1-4 players where the target is 13.
-
-<b>Rules:
-- Each player must roll 2d6 (one die at a time).
-- After the two mandatory rolls, players may either roll one d6 (hit) or stay.
-- Going over 13 is an immediate bust.
-- The round ends when every player has stayed, hits exactly 13, or busted.
-- Highest non-bust total wins.
--If top totals tie, tied players repeatedly roll one extra d6 each until whoever gets the highest.
+<h2 style='text-align:center;margin:0 0 6px 0;'>Baker's Dozen</h2>
+<br>
+<b>Objective:</b> A blackjack-style d6 game for 1-4 players where the target is to get as close to 13 as possible.<br>
+<br>
+<b>Rules:</b><br>
+- Each player must roll 2d6 (one die at a time).<br>
+- After the two mandatory rolls, players may either roll one d6 (hit) or stay.<br>
+- Going over 13 is an immediate bust.<br>
+- The round ends when every player has stayed, hits exactly 13, or busted.<br>
+- Highest non-bust total wins.<br>
+- If top totals tie, tied players repeatedly roll one extra d6 each until whoever gets the highest.<br>
 </div>"}
 
 /obj/item/storage/pill_bottle/dice/bakers_dozen/proc/show_rules(mob/living/user)

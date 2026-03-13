@@ -157,11 +157,12 @@
 	playsound(game_bag, 'sound/items/cup_dice_roll.ogg', 75, TRUE)
 
 	var/roll = rand(1, 20)
+	var/got_natural_twenty = (roll == 20)
 	game_bag.visible_message(span_notice("[active] rolls a d20: [roll]!"))
 
 	if(roll == 1)
 		var/old_hp = hp[active]
-		hp[active] = min(50, old_hp + 10)
+		hp[active] = old_hp + 10
 		game_bag.visible_message(span_notice("Second Wind! [active] heals 10 HP ([old_hp] -> [hp[active]])."))
 
 	if(roll == 20)
@@ -174,6 +175,13 @@
 				busy = FALSE
 				end_game_with_winner(active, "critical strike")
 				return
+
+	if(got_natural_twenty)
+		busy = FALSE
+		can_initiate_turn_roll = TRUE
+		game_bag.visible_message(span_notice("Natural 20 bonus turn! [active] may roll again before the opponent acts."))
+		to_chat(active, span_notice("Bonus action: choose Roll Dice again."))
+		return
 
 	if(!pending_roller)
 		pending_roller = active
@@ -224,7 +232,7 @@
 		game_bag.visible_message(span_notice("In sync clash ([high_roll] vs [low_roll])! [high_mob] deals [damage] damage to [low_mob]."))
 	else if(!high_even && low_even)
 		// High odd vs low even: halved damage
-		damage = round(base_damage / 2)
+		damage = (base_damage - (base_damage % 2)) / 2
 		game_bag.visible_message(span_notice("Weak overcomes Strong ([high_roll] odd vs [low_roll] even)! Damage halved to [damage]."))
 	else
 		// High even vs low odd: full damage
@@ -264,21 +272,24 @@
 	return jointext(parts, " | ")
 
 /obj/item/storage/pill_bottle/dice/dice_war
-	name = "bag of dice war dice"
+	name = "bag of war dice"
 	desc = "A bag used to play Dice War. Activate in hand (Z) to start or join a game."
 	var/datum/dice_war_game/active_game
 	var/static/dice_war_rules_text = {"<div style='padding:8px;font-family:Verdana,sans-serif;'>
-+Objective: Reduce your opponent to 0 HP.<br>
-+- Two player game.<br>
-+- Both players start with 50 HP.<br>
-+- Both players roll 1d20, taking turns.<br>
-+- Base Damage = difference between the high and low roll.<br>
-+- Even/Even or Odd/Odd: full damage to lower roll.<br>
-+- High Odd vs Low Even: damage is halved.<br>
-+- High Even vs Low Odd: Power Stroke, full damage.<br>
-+- Natural 1: heal 10 HP.<br>
-+- Natural 20: roll another d20 for direct damage (ignores halving rules).
-+</div>"}
+	<h2 style='text-align:center;margin:0 0 6px 0;'>Dice War</h2>
+<br>
+<b>Objective:</b> Reduce your opponent to 0 HP.<br>
+<br>
+<b>Rules:</b><br>
+- Both players start with 50 HP.<br>
+- Both players roll 1d20, taking turns.<br>
+- Base Damage = difference between the high and low roll. Example: if Player 1 rolls 15 and Player 2 rolls 10, the base damage is 5.<br>
+- Even/Even or Odd/Odd: full damage to lower roll. Example: if a player rolls 12 and the opponent rolls 8, the full damage of 4 is dealt.<br>
+- High Odd vs Low Even: damage is halved. Example: if a player rolls 15 (odd) and the opponent rolls 8 (even), the damage is halved to 3 rounding down.<br>
+- High Even vs Low Odd: Power Stroke, full damage. Example: if a player rolls 16 (even) and the opponent rolls 7 (odd), the full damage of 9 is dealt.<br>
+- Natural 1: heal 10 HP.<br>
+- Natural 20: roll another d20 for direct damage (ignores halving rules).
+</div>"}
 
 /obj/item/storage/pill_bottle/dice/dice_war/proc/show_rules(mob/living/user)
 	if(!user)

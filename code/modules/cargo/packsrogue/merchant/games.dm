@@ -25,7 +25,7 @@
 	contains = list(/obj/item/storage/pill_bottle/dice/dwarven)
 
 /datum/supply_pack/rogue/games/dice_war
-	name = "Dice War Dice Bag"
+	name = "War Dice Bag"
 	cost = 20
 	contains = list(/obj/item/storage/pill_bottle/dice/dice_war)
 

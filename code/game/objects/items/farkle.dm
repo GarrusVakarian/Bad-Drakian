@@ -434,6 +434,8 @@
 	desc = "Six dice for the game of Farkle. Activate in hand (Z) to start or join a game!"
 	var/datum/farkle_game/active_game
 	var/static/farkle_rules_text = {"<div style='padding:8px;font-family:Verdana,sans-serif;'>
+	<h2 style='text-align:center;margin:0 0 6px 0;'>Farkle</h2>
+<br>
 <b>Objective:</b> Be the player with the highest score over 10,000.<br>
 <br>
 - Single 1s and 5s are worth points.<br>
