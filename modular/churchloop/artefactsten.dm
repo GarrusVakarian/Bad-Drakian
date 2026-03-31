@@ -100,19 +100,18 @@ Malum's tool
 	. = ..()
 	if(!proximity_flag || !user || !user.used_intent)
 		return
-
 //only one bar items you retard
-		if(istype(target, /obj/machinery/anvil))
-			var/obj/machinery/anvil/A = target
-			var/obj/item/ingot/ing_on_anvil = A.vars["hingot"]
-			if(istype(ing_on_anvil, /obj/item/ingot))
-				A.vars["hingot"] = null
-				A.update_icon()
-				ing_on_anvil.forceMove(src)
-				forge_open_category_menu(user, ing_on_anvil)
-				return
-			to_chat(user, span_warning("Place an ingot on the anvil or click an ingot directly."))
+	if(istype(target, /obj/machinery/anvil))
+		var/obj/machinery/anvil/A = target
+		var/obj/item/ingot/ing_on_anvil = A.vars["hingot"]
+		if(istype(ing_on_anvil, /obj/item/ingot))
+			A.vars["hingot"] = null
+			A.update_icon()
+			ing_on_anvil.forceMove(src)
+			forge_open_category_menu(user, ing_on_anvil)
 			return
+		to_chat(user, span_warning("Place an ingot on the anvil or click an ingot directly."))
+		return
 
 		if(!isitem(target))
 			to_chat(user, span_warning("I need to click an ingot to forge."))
