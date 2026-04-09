@@ -66,5 +66,8 @@
 	belt = /obj/item/storage/belt/rogue/leather
 	beltr = /obj/item/storage/belt/rogue/pouch/coins/poor
 	beltl = /obj/item/storage/keyring/steward //serously doubt this is gonna be an issue, but if it is, i'll change it
-	backr = /obj/item/storage/backpack/rogue/satchel
+	backr = /obj/item/storage/backpack/rogue/satchel\
+	backpack_contents = list(
+		/obj/item/mini_flagpole/steward = 1,
+	)
 	id = /obj/item/scomstone/bad

@@ -70,6 +70,7 @@
 		armor = /obj/item/clothing/suit/roguetown/shirt/dress/gen/random
 	backpack_contents = list(
 		/obj/item/recipe_book/survival,
+		/obj/item/mini_flagpole/innkeeper,
 	)
 
 /datum/outfit/job/roguetown/cook/choose_loadout(mob/living/carbon/human/H)

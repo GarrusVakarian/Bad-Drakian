@@ -84,3 +84,6 @@
 	if(H.mind)
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/appraise/secular)
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/takeapprentice)
+	backpack_contents = list(
+		/obj/item/mini_flagpole/merchant = 1,
+	)
