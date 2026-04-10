@@ -80,6 +80,22 @@
 	. = ..()
 	icon_state = "t[rand(1,16)]"
 
+/obj/structure/flora/roguetree/proc/bless_tree(mob/user)
+	if(obj_integrity < max_integrity)
+		obj_integrity = min(max_integrity, obj_integrity + round(max_integrity / 2))
+		return TRUE
+	return FALSE
+
+/obj/structure/flora/roguetree/proc/reinvigorate_tree(mob/user)
+	if(type == /obj/structure/flora/roguetree)
+		return spawn_reinvigorated_tree()
+	return FALSE
+
+/obj/structure/flora/roguetree/proc/spawn_reinvigorated_tree()
+	new /obj/structure/flora/newtree(get_turf(src))
+	qdel(src)
+	return TRUE
+
 /obj/structure/flora/roguetree/evil/Initialize(mapload)
 	. = ..()
 	icon_state = "wv[rand(1,2)]"
@@ -97,6 +113,16 @@
 /obj/structure/flora/roguetree/evil
 	var/datum/looping_sound/boneloop/soundloop
 	var/datum/vine_controller/controller
+
+/obj/structure/flora/roguetree/evil/reinvigorate_tree(mob/user)
+	var/turf/T = get_turf(src)
+	for(var/D in GLOB.cardinals)
+		var/turf/adj = get_step(T, D)
+		if(!isclosedturf(adj) && !locate(/obj/structure/glowshroom) in adj)
+			new /obj/structure/glowshroom(adj)
+	new /obj/structure/flora/newtree(T)
+	qdel(src)
+	return TRUE
 
 /obj/structure/flora/roguetree/wise
 	name = "sacred tree"
@@ -152,6 +178,9 @@
 /obj/structure/flora/roguetree/burnt/Initialize(mapload)
 	. = ..()
 	icon_state = "t[rand(1,4)]"
+
+/obj/structure/flora/roguetree/burnt/reinvigorate_tree(mob/user)
+	return spawn_reinvigorated_tree()
 
 /obj/structure/flora/roguetree/stump/burnt
 	name = "tree stump"
@@ -831,3 +860,9 @@
 /obj/structure/flora/roguetree/pine/dead/Initialize(mapload)
 	. = ..()
 	icon_state = "dead[rand(1, 3)]"
+
+/obj/structure/flora/roguetree/pine/dead/reinvigorate_tree(mob/user)
+	var/turf/tree_turf = get_turf(src)
+	new /obj/structure/flora/roguetree/pine(tree_turf)
+	qdel(src)
+	return TRUE

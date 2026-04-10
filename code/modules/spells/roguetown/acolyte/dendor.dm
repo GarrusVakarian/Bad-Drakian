@@ -20,6 +20,9 @@
 	. = ..()
 	var/growed = FALSE
 	var/amount_blessed = 0
+	var/obj/item/alch/blessedseedpowder/blessed_seed_powder = user.get_active_held_item()
+	if(!istype(blessed_seed_powder))
+		blessed_seed_powder = null
 	for(var/obj/structure/soil/soil in view(4))
 		soil.bless_soil()
 		growed = TRUE
@@ -27,6 +30,28 @@
 		// Blessed only up to 5 crops
 		if(amount_blessed >= 5)
 			break
+	if(amount_blessed < 5)
+		for(var/obj/structure/flora/roguetree/tree in view(4, user))
+			if(blessed_seed_powder && tree.reinvigorate_tree(user))
+				growed = TRUE
+				amount_blessed++
+				if(blessed_seed_powder == user.get_active_held_item())
+					qdel(blessed_seed_powder)
+					blessed_seed_powder = null
+				if(amount_blessed >= 5)
+					break
+			if(tree.bless_tree(user))
+				growed = TRUE
+				amount_blessed++
+				if(amount_blessed >= 5)
+					break
+	if(amount_blessed < 5)
+		for(var/obj/structure/flora/newtree/tree in view(4, user))
+			if(tree.bless_tree(user))
+				growed = TRUE
+				amount_blessed++
+				if(amount_blessed >= 5)
+					break
 	if(growed)
 		visible_message(span_green("[usr] blesses the nearby crops with Dendor's Favour!"))
 	return growed
@@ -94,11 +119,12 @@
 		revert_cast()
 		return FALSE
 
-	var/turf/T = user.loc
-	for(var/X in GLOB.cardinals)
-		var/turf/TT = get_step(T, X)
-		if(!isclosedturf(TT) && !locate(/obj/structure/glowshroom) in TT)
-			new /obj/structure/glowshroom(TT)
+	var/turf/target_turf = get_step(user, user.dir)
+	var/turf/target_turf_two = get_step(target_turf, turn(user.dir, 90))
+	var/turf/target_turf_three = get_step(target_turf, turn(user.dir, -90))
+	for(var/turf/spawn_turf in list(target_turf, target_turf_two, target_turf_three))
+		if(!isclosedturf(spawn_turf) && !locate(/obj/structure/glowshroom) in spawn_turf)
+			new /obj/structure/glowshroom(spawn_turf)
 	return TRUE
 
 /obj/effect/proc_holder/spell/targeted/conjure_vines

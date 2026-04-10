@@ -77,6 +77,17 @@
 		if(!to_grind)
 			to_chat(user, "<span class='warning'>There's nothing to grind.</span>")
 			return
+		if(istype(to_grind, /obj/item/seeds) && reagents.get_reagent_amount(/datum/reagent/water/holywater) >= 2)
+			user.visible_message(span_info("[user] grinds [to_grind] into the holy water, drawing out Dendor's blessing."))
+			playsound(loc, 'sound/foley/mortarpestle.ogg', 100, FALSE)
+			if(do_after(user, 10, target = src))
+				reagents.remove_reagent(/datum/reagent/water/holywater, 2)
+				new /obj/item/alch/blessedseedpowder(get_turf(src))
+				QDEL_NULL(to_grind)
+				to_chat(user, span_notice("The seeds absorb Dendor's blessing, forming luminous powder."))
+				if(user.mind)
+					user.adjust_experience(/datum/skill/craft/alchemy, user.STAINT, FALSE)
+			return
 		var/datum/alch_grind_recipe/foundrecipe = find_recipe()
 		if(foundrecipe == null)
 			to_chat(user, "<span class='warning'>You don't think that will work!</span>")

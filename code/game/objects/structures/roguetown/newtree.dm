@@ -117,6 +117,12 @@
 			record_featured_stat(FEATURED_STATS_TREE_FELLERS, user)
 			record_round_statistic(STATS_TREES_CUT)
 
+/obj/structure/flora/newtree/proc/bless_tree(mob/user)
+	if(obj_integrity < max_integrity)
+		obj_integrity = min(max_integrity, obj_integrity + round(max_integrity / 2))
+		return TRUE
+	return FALSE
+
 /obj/structure/flora/newtree/update_icon()
 	icon_state = ""
 	if(burnt)

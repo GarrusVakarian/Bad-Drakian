@@ -91,6 +91,14 @@
 	med_pot = /datum/alch_cauldron_recipe/stamina_potion
 	minor_pot = /datum/alch_cauldron_recipe/strong_antidote
 
+/obj/item/alch/blessedseedpowder
+	name = "blessed seed powder"
+	desc = "Luminous seed dust prepared with sanctified water. Dendor's touch lingers within it."
+	icon_state = "seeddust"
+	major_pot = null
+	med_pot = null
+	minor_pot = null
+
 /obj/item/alch/runedust
 	name = "raw essentia"
 	icon_state = "runedust"
