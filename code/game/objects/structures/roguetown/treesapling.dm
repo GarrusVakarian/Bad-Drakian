@@ -34,6 +34,7 @@
 	var/obj/structure/soil/linked_soil
 	var/soil_water_drain = 1.5 / (1 MINUTES)
 	var/soil_nutrition_drain = 1.0 / (1 MINUTES)
+	var/has_grown = FALSE   // prevents death before first watering
 
 	// What tree to spawn when fully grown
 	var/tree_final_type = /obj/structure/flora/newtree
@@ -70,7 +71,8 @@
 			linked_soil.adjust_water(-dt * soil_water_drain)
 			linked_soil.adjust_nutrition(-dt * soil_nutrition_drain)
 			growth_progress += dt
-		else
+			has_grown = TRUE
+		else if(has_grown)
 			growth_progress -= dt * 2
 			if(growth_progress <= -TREESAP_DEATH_TICKS)
 				wither_and_die()
@@ -109,13 +111,13 @@
 			opacity = TRUE
 			pixel_x = stage3_pixel_x
 			pixel_y = stage3_pixel_y
+			max_integrity = 150
+			obj_integrity = 150
+			blade_dulling = DULLING_CUT
 		if(4)
 			spawn_final_tree()
 
 /obj/structure/tree_sapling/proc/spawn_final_tree()
-	for(var/obj/structure/soil/S in get_turf(src))
-		qdel(S)
-	linked_soil = null
 	var/atom/movable/final_tree = new tree_final_type(get_turf(src))
 	if(final_tree)
 		final_tree.pixel_x = pixel_x
@@ -128,6 +130,13 @@
 		return
 	new /obj/item/grown/log/tree/stick(get_turf(src))
 	new /obj/item/grown/log/tree/stick(get_turf(src))
+
+/obj/structure/tree_sapling/obj_destruction(damage_flag)
+	if(stage == TREESAP_STAGE_YOUNG)
+		new /obj/item/grown/log/tree/small(get_turf(src))
+		if(prob(50))
+			new /obj/item/grown/log/tree/stick(get_turf(src))
+	return ..()
 
 /obj/structure/tree_sapling/examine(mob/user)
 	. = ..()
@@ -194,6 +203,7 @@
 	icon_state = "palebush_1"
 	stage2_state = "pinkbush"
 	stage3_state = "t10"
+	stage3_pixel_x = 0
 	stage3_pixel_y = -4
 	dead_state = "apple3"
 	tree_final_type = /obj/structure/flora/sakura

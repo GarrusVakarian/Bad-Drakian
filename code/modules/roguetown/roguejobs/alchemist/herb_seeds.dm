@@ -45,7 +45,7 @@
 		return
 	to_chat(user, span_notice("I plant \the [src] in \the [soil]. I should check back later when it has grown."))
 	var/obj/structure/soil_seedling/herb/seedling = new(get_turf(soil))
-	seedling.configure_seedling(soil, icon, icon_state, makes_herb, 7.5 MINUTES)
+	seedling.configure_seedling(soil, icon, icon_state, makes_herb, 5 MINUTES)
 	seedling.desc = "A small seedling bedded in a soil plot. It will need healthy soil to sprout."
 	qdel(src)
 	return
@@ -129,6 +129,22 @@
 			qdel(src)
 		return
 	return ..()
+
+/obj/structure/soil_seedling/examine(mob/user)
+	. = ..()
+	if(linked_soil && !QDELETED(linked_soil))
+		if(linked_soil.water <= 45)
+			. += span_warning("The soil beneath it is thirsty.")
+		else if(linked_soil.water <= 150)
+			. += span_info("The soil beneath it is moist.")
+		else
+			. += span_info("The soil beneath it is wet.")
+		if(linked_soil.nutrition <= 45)
+			. += span_warning("The soil beneath it is hungry.")
+		else if(linked_soil.nutrition <= 150)
+			. += span_info("The soil beneath it is sated.")
+		else
+			. += span_info("The soil beneath it looks fertile.")
 
 /obj/structure/soil_seedling/proc/bloom()
 	if(QDELETED(src) || !ispath(final_type))

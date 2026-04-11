@@ -174,6 +174,16 @@
 		return TRUE
 	return FALSE
 
+/// Converts an unsanctified wise tree into a sanctified wise tree.
+/// Called from blesscrop when blessed seed powder is held.
+/obj/structure/flora/roguetree/wise/reinvigorate_tree(mob/user)
+	if(istype(src, /obj/structure/flora/roguetree/wise/sanctified))
+		return FALSE  // already sanctified in some form
+	var/turf/T = get_turf(src)
+	new /obj/structure/flora/roguetree/wise/sanctified/wise(T)
+	qdel(src)
+	return TRUE
+
 /obj/structure/flora/roguetree/wise/proc/notify_nearby_dendorites()
 	for(var/mob/living/carbon/human/H in GLOB.alive_mob_list)
 		if(H.patron?.type != /datum/patron/divine/dendor)
@@ -395,7 +405,7 @@
 	max_integrity = 35
 	climbable = FALSE
 	dir = SOUTH
-	debris = list(/obj/item/natural/fibers = 1, /obj/item/grown/log/tree/stick = 1)
+	debris = list(/obj/item/natural/fibers = 1, /obj/item/grown/log/tree/stick = 1, /obj/item/natural/thorn = 2)
 	var/list/looty = list()
 	var/bushtype
 
@@ -506,7 +516,7 @@
 	climbable = FALSE
 	icon_state = "bushwall1"
 	max_integrity = 150
-	debris = list(/obj/item/natural/fibers = 1, /obj/item/grown/log/tree/stick = 1, /obj/item/natural/thorn = 1)
+	debris = list(/obj/item/grown/log/tree/small = 1, /obj/item/natural/fibers = 1, /obj/item/grown/log/tree/stick = 1, /obj/item/natural/thorn = 1)
 	attacked_sound = 'sound/misc/woodhit.ogg'
 
 /obj/structure/flora/roguegrass/bush/wall/Initialize(mapload)

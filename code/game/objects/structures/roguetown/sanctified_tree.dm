@@ -41,15 +41,15 @@
 	color = "#73c47a"
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/is_valid_vigil_follower(mob/living/carbon/human/H)
-	if(!H?.patron)
+	if(!H)
 		return FALSE
+	// Psydon followers have no patron datum — identified by trait.
+	if(HAS_TRAIT(H, TRAIT_PSYDONITE))
+		return FALSE
+	// Old-god worshippers and all inhumen (Zizo, Baotha, Graggar, Matthios) patrons are excluded.
 	if(istype(H.patron, /datum/patron/old_god))
 		return FALSE
-	if(istype(H.patron, /datum/patron/inhumen/graggar))
-		return FALSE
-	if(istype(H.patron, /datum/patron/inhumen/zizo))
-		return FALSE
-	if(istype(H.patron, /datum/patron/inhumen/baotha))
+	if(istype(H.patron, /datum/patron/inhumen))
 		return FALSE
 	return TRUE
 
@@ -116,6 +116,8 @@
 
 	/// Datum holding ritual completion flags and the soulbind registry.
 	var/datum/sanctified_tree_data/tree_data
+	/// If FALSE (for sanctified_wise trees), hides ritual and wedding hints in examine.
+	var/show_ritual_hints = TRUE
 	/// Current max_integrity bonus from nearby living trees.
 	var/integrity_bonus = 0
 	/// SSprocessing dt accumulator — recalculates bonus every 60 seconds.
@@ -241,7 +243,7 @@
 	// No active ritual — show the category picker.
 	var/list/cat_opts = list()
 	var/list/cat_map = list()
-	for(var/cat in list("cat1", "cat2", "cat3", "cat4", "cat5", "cat6", "cat7"))
+	for(var/cat in list("cat1", "cat2", "cat3", "cat4", "cat5", "cat6", "cat7", "cat8"))
 		var/cat_name = get_ritual_display_name(cat)
 		if(is_once_per_tree(cat) && (cat in tree_data.rituals_completed))
 			cat_opts["[cat_name] (completed)"] = null
@@ -285,6 +287,7 @@
 		if("cat5") return "Living Light"
 		if("cat6") return "Nature's Temper"
 		if("cat7") return "Soulbind"
+		if("cat8") return "Nature's Union"
 	return "Unknown Ritual"
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/is_once_per_tree(category)
@@ -299,7 +302,8 @@
 		if("cat4") return list("enchanted_stone_or_boulder" = 5)
 		if("cat5") return list("vital_item" = 10, "ash" = 10, "compost" = 10)
 		if("cat6") return list("zizobane" = 5, "runed_artifact" = 2, "druid_armor" = 1, "volf_head" = 1, "spider_head" = 1, "tree_seed" = 1, "blessed_seed_powder" = 1, "holy_water_container" = 1)
-		if("cat7") return list("lux" = 1, "leechtick" = 1, "bones" = 4)
+		if("cat7") return list("leechtick" = 1, "bones" = 4)
+		if("cat8") return list("wedding_flower" = 1)
 	return list()
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/get_offering_desc(key)
@@ -320,8 +324,9 @@
 		if("blessed_seed_powder") return "Blessed seed powder"
 		if("holy_water_container") return "Stone mortar or bucket with 30+ drams of blessed water"
 		if("lux") return "Lux"
-		if("leechtick") return "Leech tick"
+		if("leechtick") return "Bloated leech tick"
 		if("bones") return "Bones"
+		if("wedding_flower") return "Eoran peace flower"
 	return key
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/show_ritual_requirements(mob/living/user, category)
@@ -449,9 +454,11 @@
 		if("lux")
 			return istype(held, /obj/item/reagent_containers/lux)
 		if("leechtick")
-			return istype(held, /obj/item/natural/worms/leech) || istype(held, /obj/item/leechtick) || istype(held, /obj/item/leechtick_bloated)
+			return istype(held, /obj/item/leechtick_bloated)
 		if("bones")
 			return istype(held, /obj/item/natural/bone) || istype(held, /obj/item/alch/bone)
+		if("wedding_flower")
+			return istype(held, /obj/item/clothing/head/peaceflower)
 	return FALSE
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/consume_offering(key, obj/item/held, mob/living/user)
@@ -469,7 +476,9 @@
 		if("holy_water_container")
 			// Drain blessed water but leave the container.
 			held.reagents.remove_reagent(/datum/reagent/water/blessed, 30)
-		if("lux", "leechtick", "bones")
+		if("leechtick", "bones")
+			qdel(held)
+		if("wedding_flower")
 			qdel(held)
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/check_ritual_complete()
@@ -497,6 +506,7 @@
 		if("cat5") reward_cat5(user)
 		if("cat6") reward_cat6(user)
 		if("cat7") on_soulbind(user)
+		if("cat8") reward_cat8(user)
 
 /obj/structure/flora/roguetree/wise/sanctified/proc/cancel_ritual(mob/living/user)
 	if(!tree_data?.active_ritual)
@@ -638,6 +648,18 @@
 		var/obj/item/bonus = new bonus_type(T)
 		to_chat(user, span_green("The roots also yield [bonus.name] — an additional gift."))
 
+/// Cat 8 — Nature's Union: begins a wedding ceremony (repeatable).
+/// Offering: 1 eoran peace flower. The betrothed must each bite the same apple,
+/// then offer it to the tree to complete the pact.
+/obj/structure/flora/roguetree/wise/sanctified/proc/reward_cat8(mob/living/user)
+	if(tree_data.wedding_active)
+		to_chat(user, span_warning("A wedding ceremony is already being held at this tree."))
+		return
+	tree_data.wedding_active = TRUE
+	tree_data.wedding_officiant_ckey = user.ckey
+	visible_message(span_green("A peace flower drifts to the roots of [src.name] — the blessings of Dendor and Eora are invoked. Two souls may now offer their bitten apple to be wed beneath this tree."))
+	to_chat(user, span_notice("The ceremony has begun. Both partners should bite the same apple once each, then hand it to the tree to be wed. The one handing the apple over will decide the last name."))
+
 //==============================================================================
 // Aura Procs
 //==============================================================================
@@ -700,7 +722,7 @@
 /// Middle-click handler for cat5 healing aura.
 /// Dendor followers middle-click the tree to receive campfire-style healing
 /// (2x faster than campfire) with a progress bar. Cooldown: 2 minutes.
-/obj/structure/flora/roguetree/wise/sanctified/MiddleMouseDrop_T(atom/dropping, mob/user)
+/obj/structure/flora/roguetree/wise/sanctified/MiddleClick(mob/user, params)
 	if(!tree_data?.has_heal_aura)
 		return
 	if(!istype(user, /mob/living/carbon/human))
@@ -713,8 +735,8 @@
 	if(tree_data.manual_heal_cooldown)
 		to_chat(H, span_warning("The tree's healing has not yet recovered — wait a moment."))
 		return
-	if(get_turf(H) != get_turf(src))
-		to_chat(H, span_warning("I must stand at the base of the tree to draw from its power."))
+	if(get_dist(H, src) > 1)
+		to_chat(H, span_warning("I must be adjacent to the tree to draw from its power."))
 		return
 	to_chat(H, span_notice("I press my palms to the sacred bark and channel the Treefather's warmth."))
 	if(!do_after(H, 3 SECONDS, target = src))
@@ -735,7 +757,7 @@
 /datum/status_effect/debuff/sanctified_tree_slow
 	id = "sanctified_tree_slow"
 	duration = 8 SECONDS
-	effectedstats = list("speed" = -4)
+	effectedstats = list("speed" = -4, "strength" = -2)
 
 /datum/status_effect/debuff/sanctified_tree_slow/on_apply()
 	. = ..()
@@ -945,14 +967,17 @@
 		tree_count++
 	. += span_info("[src] draws strength from [tree_count] nearby living tree\s, granting [integrity_bonus] bonus integrity.")
 	. += span_info("Integrity: [round(obj_integrity)]/[max_integrity]")
+	if(show_ritual_hints)
+		. += span_info("Open the ritual menu with the Dendor amulet to begin a 'Nature's Union' wedding ceremony; the betrothed must each bite the same apple once and offer it to the tree to seal the pact.")
 	if(!istype(user, /mob/living/carbon/human))
 		return
 	var/mob/living/carbon/human/H = user
 	if(H.patron?.type != /datum/patron/divine/dendor)
 		return
-	. += span_notice("Hold the Dendor amulet against this tree to start or cancel a Treefather bounty.")
-	. += span_notice("To offer while a bounty is active, click the tree with the required item in-hand.")
-	if(tree_data?.active_ritual)
+	if(show_ritual_hints)
+		. += span_notice("Hold the Dendor amulet against this tree to start or cancel a Treefather bounty.")
+		. += span_notice("To offer while a bounty is active, click the tree with the required item in-hand.")
+	if(show_ritual_hints && tree_data?.active_ritual)
 		. += span_notice("Active bounty: [get_ritual_display_name(tree_data.active_ritual)]")
 		var/list/req = get_required_offerings(tree_data.active_ritual)
 		for(var/key in req)
@@ -965,7 +990,7 @@
 	if(tree_data?.has_slow_aura)
 		. += span_info("A guardian ward repels those who would defile this grove.")
 	if(tree_data?.has_heal_aura)
-		. += span_info("A healing aura emanates from this tree. Middle-click (drag) onto the tree to channel its healing energies.")
+		. += span_info("A healing aura emanates from this tree. Middle-click the tree while adjacent to channel its healing energies.")
 
 /obj/structure/flora/roguetree/wise/sanctified/attack_hand(mob/user)
 	if(istype(user, /mob/living/carbon/human) && tree_data?.awaiting_soulbind_ckey)
@@ -976,18 +1001,6 @@
 	return ..()
 
 /obj/structure/flora/roguetree/wise/sanctified/attackby(obj/item/I, mob/living/user, params)
-	// Eoran bud: initiates a Nature's Union wedding ceremony.
-	if(istype(I, /obj/item/clothing/head/peaceflower))
-		if(tree_data.wedding_active)
-			to_chat(user, span_warning("A wedding ceremony is already being held at this tree."))
-			return
-		qdel(I)
-		tree_data.wedding_active = TRUE
-		tree_data.wedding_officiant_ckey = user.ckey
-		visible_message(span_green("A peace flower drifts to the roots of [src.name] — the blessings of Dendor and Eora are invoked. Two souls may now offer their bitten apple to be wed beneath this tree."))
-		to_chat(user, span_notice("The ceremony has begun. Both partners should bite the same apple once each, then hand it to the tree to be wed."))
-		return
-
 	// Bitten apple: completes the Nature's Union wedding ceremony.
 	if(tree_data?.wedding_active && istype(I, /obj/item/reagent_containers/food/snacks/grown/apple))
 		var/obj/item/reagent_containers/food/snacks/grown/apple/A = I
@@ -1019,4 +1032,35 @@
 /obj/structure/flora/roguetree/wise/sanctified/obj_destruction(damage_flag)
 	set_light(0)
 	visible_message(span_warning("The sanctified tree's golden light dies as it falls — the Treefather's blessing is broken!"))
+	return ..()
+
+//==============================================================================
+// Sanctified Wise Tree
+// A sacred (wise) tree blessed by a Dendorite acolyte into a sanctified wise tree.
+// Has the slow aura (cat4) and heal aura (cat5) active from creation, but cannot
+// receive rituals, soulbind, or officiate weddings.
+//==============================================================================
+/obj/structure/flora/roguetree/wise/sanctified/wise
+	name = "sanctified wise tree"
+	desc = "An ancient sacred tree directly blessed by a Dendorite acolyte. The Treefather's power flows through its roots — it radiates healing and repels those who would defile the grove — but its deeper mysteries are locked away."
+	show_ritual_hints = FALSE
+
+/obj/structure/flora/roguetree/wise/sanctified/wise/Initialize(mapload)
+	. = ..()
+	// Both auras are active from creation — no rituals needed.
+	tree_data.has_slow_aura = TRUE
+	tree_data.has_heal_aura = TRUE
+	// Replace the standard golden glow with the living-light green (normally granted by cat5).
+	set_light(5, 5, 5, l_color = "#44AA44")
+	add_filter("sanctified_outline", 2, list("type" = "outline", "color" = "#58C86A", "alpha" = 60, "size" = 1))
+
+/obj/structure/flora/roguetree/wise/sanctified/wise/attackby(obj/item/I, mob/living/user, params)
+	// Block ritual menu — this tree holds no further rites.
+	if(istype(I, /obj/item/clothing/neck/roguetown/psicross/dendor))
+		to_chat(user, span_warning("This blessed tree holds no further rites — its power is already given."))
+		return
+	// Block wedding initiation — sanctified wise trees cannot officiate ceremonies.
+	if(istype(I, /obj/item/clothing/head/peaceflower))
+		to_chat(user, span_warning("Only a fully sanctified tree may officiate a wedding ceremony."))
+		return
 	return ..()

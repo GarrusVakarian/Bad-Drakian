@@ -61,6 +61,5 @@
 	playsound(get_turf(src), 'sound/items/dig_shovel.ogg', 70, TRUE)
 	if(summoner_spell)
 		summoner_spell.on_dryad_deleted(src)
-	update_icon()
 	spill_embedded_objects()
 	qdel(src)

@@ -41,6 +41,7 @@
 	var/bushtype = null
 	var/list/looty = list()
 	var/res_replenish = 0  // world.time threshold for loot refresh
+	var/has_grown = FALSE   // prevents death before first watering
 
 /obj/structure/bush_sapling/Initialize(mapload)
 	. = ..()
@@ -63,7 +64,8 @@
 			linked_soil.adjust_water(-dt * soil_water_drain)
 			linked_soil.adjust_nutrition(-dt * soil_nutrition_drain)
 			growth_progress += dt
-		else
+			has_grown = TRUE
+		else if(has_grown)
 			growth_progress -= dt * 2
 			if(growth_progress <= -BUSHSAP_DEATH_TICKS)
 				wither_and_die()
@@ -120,11 +122,13 @@
 	looty += /obj/item/natural/fibers
 
 /obj/structure/bush_sapling/proc/spawn_hedge()
-	for(var/obj/structure/soil/S in get_turf(src))
-		qdel(S)
-	linked_soil = null
 	new /obj/structure/flora/roguegrass/bush/wall/tall/grown(get_turf(src))
 	qdel(src)
+
+/obj/structure/bush_sapling/Crossed(atom/movable/AM)
+	. = ..()
+	if(!dead && isliving(AM))
+		playsound(src.loc, "plantcross", 50, FALSE, -1)
 
 /obj/structure/bush_sapling/examine(mob/user)
 	. = ..()

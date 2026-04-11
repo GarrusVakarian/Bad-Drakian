@@ -53,7 +53,9 @@
 	if(output_path != /obj/item/alch/bonemeal || !user)
 		return base_chance
 	var/alch_level = user.get_skill_level(/datum/skill/craft/alchemy)
-	return min(base_chance + (alch_level * 4), 30)
+	if(alch_level <= SKILL_LEVEL_APPRENTICE)
+		return 20
+	return 50
 
 /datum/alch_grind_recipe/horn
 

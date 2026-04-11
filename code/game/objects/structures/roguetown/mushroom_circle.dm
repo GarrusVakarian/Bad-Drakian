@@ -1,19 +1,19 @@
 // Fae Mushroom Circle
 //
-// GROWTH CHAIN:
+// GROWTH CHAIN (fey circles only — base mushroom_circle is a plain map decoration):
 //   /obj/item/seeds/mushroom_fae  →  planted in blessed soil, watered once
 //   /obj/structure/mushroom_sprout (5 min)
-//   /obj/structure/mushroom_circle (active portal, tinymushrooms sprite)
+//   /obj/structure/mushroom_circle/fey (active portal, tinymushrooms sprite)
 //      ↓ 20 min without scissors maintenance
 //   mushroomcluster sprite (unusable)
 //      ↓ 10 more min
 //   /obj/structure/flora/rogueshroom  (random mush1-5, final dead state)
 //
-// Teleportation:
+// Teleportation (fey only):
 //   Hold Dendor amulet → click circle → choose destination → 3 sec cast
 //   You must stand inside the circle, and every living being standing in it travels together.
 //
-// Renaming:
+// Renaming (fey only):
 //   Click with /obj/item/natural/feather (name only, no description editing).
 
 GLOBAL_LIST_EMPTY(mushroom_circles)
@@ -23,8 +23,8 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 //==============================================================================
 
 /obj/structure/mushroom_sprout
-	name = "fae mushroom sprout"
-	desc = "A colony of tiny pale shoots, faintly alive with fae energy. Water it and it should bloom."
+	name = "fey mushroom sprout"
+	desc = "A colony of tiny pale shoots, faintly alive with fey energy. Water it and it should bloom."
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE
@@ -36,6 +36,7 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 
 	var/obj/structure/soil/linked_soil
 	var/growth_progress = 0
+	var/has_grown = FALSE   // prevents death before first watering
 	var/soil_water_drain = 1.0 / (1 MINUTES)
 	var/soil_nutrition_drain = 0.75 / (1 MINUTES)
 
@@ -56,7 +57,8 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 		linked_soil.adjust_water(-dt * soil_water_drain)
 		linked_soil.adjust_nutrition(-dt * soil_nutrition_drain)
 		growth_progress += dt
-	else
+		has_grown = TRUE
+	else if(has_grown)
 		growth_progress -= dt * 2
 		if(growth_progress <= -60)
 			visible_message(span_warning("[src] withers back into the blessed soil."))
@@ -72,8 +74,16 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 			. += span_warning("The soil's blessing is fading; the sprout will not endure without it.")
 		if(linked_soil.water <= 45)
 			. += span_warning("The soil beneath it is thirsty.")
+		else if(linked_soil.water <= 150)
+			. += span_info("The soil beneath it is moist.")
+		else
+			. += span_info("The soil beneath it is wet.")
 		if(linked_soil.nutrition <= 45)
 			. += span_warning("The soil beneath it is hungry.")
+		else if(linked_soil.nutrition <= 150)
+			. += span_info("The soil beneath it is sated.")
+		else
+			. += span_info("The soil beneath it looks fertile.")
 
 /obj/structure/mushroom_sprout/attackby(obj/item/I, mob/living/user, params)
 	if(linked_soil)
@@ -93,16 +103,12 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 		return
 	if(linked_soil && !QDELETED(linked_soil))
 		qdel(linked_soil)
-	new /obj/structure/mushroom_circle(get_turf(src))
+	new /obj/structure/mushroom_circle/fey(get_turf(src))
 	qdel(src)
 
-//==============================================================================
-// Fae Mushroom Circle
-//==============================================================================
-
 /obj/structure/mushroom_circle
-	name = "fae mushroom circle"
-	desc = "A magical ring of pale and purple mushrooms that pulse with faint light. Druids of Dendor use these as waypoints to travel across long distances instantly."
+	name = "mushroom circle"
+	desc = "A ring of pale and purple mushrooms growing in a perfect circle."
 	anchored = TRUE
 	density = FALSE
 	opacity = FALSE
@@ -113,6 +119,13 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 	icon_state = "tinymushrooms"
 	layer = OBJ_LAYER
 
+//==============================================================================
+// Fey Mushroom Circle — player-grown, teleport-capable subtype
+//==============================================================================
+/obj/structure/mushroom_circle/fey
+	name = "fey mushroom circle"
+	desc = "A magical ring of pale and purple mushrooms that pulse with faint light. Druids of Dendor use these as waypoints to travel across long distances instantly."
+
 	/// Seconds since last scissors maintenance
 	var/maintenance_elapsed = 0
 	/// TRUE while usable as a portal; set to FALSE when decaying
@@ -122,13 +135,13 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 	/// world.time moment when final decay will occur after overgrowth starts.
 	var/decay_finish_time = 0
 
-/obj/structure/mushroom_circle/Initialize(mapload)
+/obj/structure/mushroom_circle/fey/Initialize(mapload)
 	. = ..()
 	GLOB.mushroom_circles |= src
 	set_light(3, 3, 3, l_color = "#5D3FD3")
 	START_PROCESSING(SSprocessing, src)
 
-/obj/structure/mushroom_circle/Destroy()
+/obj/structure/mushroom_circle/fey/Destroy()
 	GLOB.mushroom_circles -= src
 	STOP_PROCESSING(SSprocessing, src)
 	if(decay_timerid)
@@ -136,55 +149,55 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 		decay_timerid = null
 	return ..()
 
-/obj/structure/mushroom_circle/process(dt)
+/obj/structure/mushroom_circle/fey/process(dt)
 	if(!active)
 		return
 	maintenance_elapsed += dt
 	if(maintenance_elapsed >= 20 MINUTES)
 		begin_decay()
 
-/obj/structure/mushroom_circle/proc/begin_decay()
+/obj/structure/mushroom_circle/fey/proc/begin_decay()
 	active = FALSE
 	GLOB.mushroom_circles -= src
 	set_light(0)
 	icon = 'icons/roguetown/misc/foliage.dmi'
 	icon_state = "mushroomcluster"
-	desc = "A withered ring of mushrooms that has lost its fae connection."
+	desc = "A withered ring of mushrooms that has lost its fey connection."
 	visible_message(span_warning("[src] begins to wither — the mystical light flickers and dies."))
 	decay_finish_time = world.time + 10 MINUTES
 	decay_timerid = addtimer(CALLBACK(src, PROC_REF(final_decay)), 10 MINUTES, flags = TIMER_STOPPABLE)
 
-/obj/structure/mushroom_circle/proc/final_decay()
+/obj/structure/mushroom_circle/fey/proc/final_decay()
 	if(QDELETED(src))
 		return
 	new /obj/structure/flora/rogueshroom(get_turf(src))
 	qdel(src)
 
-/obj/structure/mushroom_circle/examine(mob/user)
+/obj/structure/mushroom_circle/fey/examine(mob/user)
 	. = ..()
 	if(!active)
 		var/time_to_final_decay = max(decay_finish_time - world.time, 0)
-		. += span_warning("The circle has lost its power. Its fae connection is severed — it will collapse in [DisplayTimeText(time_to_final_decay)].")
+		. += span_warning("The circle has lost its power. Its fey connection is severed — it will collapse in [DisplayTimeText(time_to_final_decay)].")
 		return
 	var/time_to_overgrowth = max((20 MINUTES) - maintenance_elapsed, 0)
 	if(maintenance_elapsed > (15 MINUTES))
 		. += span_warning("The mushrooms look unhealthy. Prune them with scissors soon or the circle will become overgrown in [DisplayTimeText(time_to_overgrowth)].")
 	else
-		. += span_info("The mushrooms glow steadily with fae power. They will become overgrown in [DisplayTimeText(time_to_overgrowth)] if left untended.")
+		. += span_info("The mushrooms glow steadily with fey power. They will become overgrown in [DisplayTimeText(time_to_overgrowth)] if left untended.")
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		if(H.patron && H.patron.type == /datum/patron/divine/dendor)
-			. += span_notice("Hold my amulet of Dendor and press it on this circle to travel to another fae circle.")
+			. += span_notice("Hold my amulet of Dendor and press it on this circle to travel to another fey circle.")
 
-/obj/structure/mushroom_circle/attackby(obj/item/I, mob/living/user, params)
-	// Feather rename support is name-only for circles.
+/obj/structure/mushroom_circle/fey/attackby(obj/item/I, mob/living/user, params)
+	// Feather rename support — name only, no description editing.
 	if(istype(I, /obj/item/natural/feather))
-		var/new_name = stripped_input(user, "What do you want to name this fae circle?", "Rename Fae Circle", "", MAX_NAME_LEN)
+		var/new_name = stripped_input(user, "What do you want to name this fey circle?", "Rename Fey Circle", "", MAX_NAME_LEN)
 		if(!new_name || QDELETED(src) || !user.canUseTopic(src, BE_CLOSE))
 			return
 		var/old_name = name
 		if(old_name == new_name)
-			to_chat(user, span_notice("The fae circle keeps its name."))
+			to_chat(user, span_notice("The fey circle keeps its name."))
 		else
 			name = "[new_name] ([initial(name)])"
 			renamedByPlayer = TRUE
@@ -204,7 +217,7 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 			to_chat(user, span_notice("[src] looks well-maintained. The mystical glow brightens."))
 		return
 
-	// Dendor amulet — opens teleport menu
+	// Dendor amulet — opens fey teleport menu
 	if(istype(I, /obj/item/clothing/neck/roguetown/psicross/dendor))
 		if(!user.patron || user.patron.type != /datum/patron/divine/dendor)
 			to_chat(user, span_warning("Only a follower of Dendor may commune with this circle."))
@@ -217,25 +230,25 @@ GLOBAL_LIST_EMPTY(mushroom_circles)
 
 	return ..()
 
-/obj/structure/mushroom_circle/proc/open_teleport_menu(mob/living/user)
+/obj/structure/mushroom_circle/fey/proc/open_teleport_menu(mob/living/user)
 	if(get_turf(user) != get_turf(src))
-		to_chat(user, span_warning("I must stand within the mushroom circle to traverse the fae paths."))
+		to_chat(user, span_warning("I must stand within the mushroom circle to traverse the fey paths."))
 		return
 	var/list/choices = list()
-	for(var/obj/structure/mushroom_circle/C in GLOB.mushroom_circles)
+	for(var/obj/structure/mushroom_circle/fey/C in GLOB.mushroom_circles)
 		if(C == src || !C.active)
 			continue
 		choices[C.name] = C
 
 	if(!choices.len)
-		to_chat(user, span_warning("There are no other active mushroom circles within the network."))
+		to_chat(user, span_warning("There are no other active fey mushroom circles within the network."))
 		return
 
-	var/choice = input(user, "Which circle do you wish to travel to?", "Fae Mushroom Circle Network") as null|anything in choices
+	var/choice = input(user, "Which circle do you wish to travel to?", "Fey Mushroom Circle Network") as null|anything in choices
 	if(isnull(choice) || QDELETED(src) || QDELETED(user))
 		return
 
-	var/obj/structure/mushroom_circle/dest = choices[choice]
+	var/obj/structure/mushroom_circle/fey/dest = choices[choice]
 	if(QDELETED(dest) || !dest.active)
 		to_chat(user, span_warning("That circle has faded since you made your choice."))
 		return

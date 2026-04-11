@@ -446,11 +446,11 @@
 // Obtained as a reward from Sanctified Tree category 3 ritual.
 
 /obj/item/seeds/mushroom_fae
-	name = "fae mushroom spore"
+	name = "fey mushroom spore"
 	desc = "A cluster of tiny pale spores that hum with strange, wild energy. They can only take root in blessed soil."
 	icon_state = "seed"
 	color = "#FFFFFF"
-	seed_identity = "mushroom fae spores"
+	seed_identity = "mushroom fey spores"
 
 /obj/item/seeds/mushroom_fae/attack_turf(turf/T, mob/living/user)
 	var/obj/structure/soil/soil = locate(/obj/structure/soil) in T
@@ -472,7 +472,7 @@
 	if(locate(/obj/structure/mushroom_sprout) in T || locate(/obj/structure/mushroom_circle) in T)
 		return
 	new /obj/structure/mushroom_sprout(T)
-	to_chat(user, span_notice("I plant the fae mushroom spores."))
+	to_chat(user, span_notice("I plant the fey mushroom spores."))
 	qdel(src)
 
 /obj/item/seeds/mushroom_fae/try_plant_seed(mob/living/user, obj/structure/soil/soil)

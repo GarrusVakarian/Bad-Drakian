@@ -461,52 +461,91 @@
 				target = NT
 				break
 
+	// If no living newtree found, search for an unsanctified wise tree to bless instead.
+	var/obj/structure/flora/roguetree/wise/wise_target = null
 	if(!target)
-		to_chat(H, span_warning("I must target a living tree directly adjacent to me. Old trees, burnt trees, wise trees, and already-sanctified trees cannot be consecrated."))
+		for(var/obj/structure/flora/roguetree/wise/WT in list(target_atom))
+			if(!istype(WT, /obj/structure/flora/roguetree/wise/sanctified))
+				wise_target = WT
+				break
+		if(!wise_target && target_atom.loc && (get_dist(user, target_atom.loc) <= 1))
+			for(var/obj/structure/flora/roguetree/wise/WT in target_atom.loc)
+				if(!istype(WT, /obj/structure/flora/roguetree/wise/sanctified))
+					wise_target = WT
+					break
+
+	if(!target && !wise_target)
+		to_chat(H, span_warning("I must target a living tree directly adjacent to me. Old trees, burnt trees, and already-sanctified trees cannot be consecrated."))
 		return FALSE
 
-	// Block if another sanctified tree is within 10 tiles.
-	for(var/obj/structure/flora/roguetree/wise/sanctified/ST in range(10, target))
-		to_chat(H, span_warning("A sanctified tree already stands nearby. The Treefather will not allow another grove anchor so close."))
-		return FALSE
+	// For newtree consecration, block if a full sanctified tree (not sanctified_wise) is within 10 tiles.
+	if(target)
+		for(var/obj/structure/flora/roguetree/wise/sanctified/ST in range(10, target))
+			if(istype(ST, /obj/structure/flora/roguetree/wise/sanctified/wise))
+				continue  // sanctified wise trees do not block grove anchor placement
+			to_chat(H, span_warning("A sanctified tree already stands nearby. The Treefather will not allow another grove anchor so close."))
+			return FALSE
 
+	var/atom/cast_target = target || wise_target
 	H.visible_message(
-		span_notice("[H] presses both hands to the bark of [target] and begins a long, reverent invocation."),
+		span_notice("[H] presses both hands to the bark of [cast_target] and begins a long, reverent invocation."),
 		span_notice("I press my hands to the bark and channel the Treefather's blessing into the tree...")
 	)
 
-	if(!do_after(H, 10 SECONDS, target = target))
+	if(!do_after(H, 10 SECONDS, target = cast_target))
 		to_chat(H, span_warning("The consecration ritual was interrupted — the blessing fades & must be restarted."))
 		return FALSE
 
-	if(QDELETED(target) || target.burnt)
-		to_chat(H, span_warning("The tree is no longer a valid target for sanctification."))
-		return FALSE
+	// ---- Newtree → full sanctified tree ----
+	if(target)
+		if(QDELETED(target) || target.burnt)
+			to_chat(H, span_warning("The tree is no longer a valid target for sanctification."))
+			return FALSE
 
-	var/turf/T = get_turf(target)
+		var/turf/T = get_turf(target)
 
-	// Clean up branches and leaves from the old newtree.
-	// Mirrors the wise tree conversion in create_wise_tree.dm.
-	for(var/turf/adjacent in range(1, T))
-		for(var/obj/structure/flora/newbranch/B in adjacent)
-			qdel(B)
-		for(var/obj/structure/flora/newleaf/L in adjacent)
-			qdel(L)
-	var/turf/above = get_step_multiz(T, UP)
-	if(istype(above, /turf/open/transparent/openspace))
-		for(var/obj/structure/flora/newtree/upper_tree in above)
-			qdel(upper_tree)
+		// Clean up branches and leaves from the old newtree.
+		// Mirrors the wise tree conversion in create_wise_tree.dm.
+		for(var/turf/adjacent in range(1, T))
+			for(var/obj/structure/flora/newbranch/B in adjacent)
+				qdel(B)
+			for(var/obj/structure/flora/newleaf/L in adjacent)
+				qdel(L)
+		var/turf/above = get_step_multiz(T, UP)
+		if(istype(above, /turf/open/transparent/openspace))
+			for(var/obj/structure/flora/newtree/upper_tree in above)
+				qdel(upper_tree)
 
-	qdel(target)
+		qdel(target)
 
-	var/obj/structure/flora/roguetree/wise/sanctified/new_tree = new(T)
-	playsound(T, 'sound/ambience/noises/mystical (4).ogg', 70, TRUE)
-	H.visible_message(
-		span_green("[H]'s hands blaze with golden light as [new_tree] is consecrated and transfigured into a sanctified tree of Dendor!"),
-		span_notice("I feel the Treefather's power flow through me as [new_tree] is sanctified.")
-	)
-	SEND_SIGNAL(H, COMSIG_TREE_TRANSFORMED)
-	return TRUE
+		var/obj/structure/flora/roguetree/wise/sanctified/new_tree = new(T)
+		playsound(T, 'sound/ambience/noises/mystical (4).ogg', 70, TRUE)
+		H.visible_message(
+			span_green("[H]'s hands blaze with golden light as [new_tree] is consecrated and transfigured into a sanctified tree of Dendor!"),
+			span_notice("I feel the Treefather's power flow through me as [new_tree] is sanctified.")
+		)
+		SEND_SIGNAL(H, COMSIG_TREE_TRANSFORMED)
+		return TRUE
+
+	// ---- Wise tree → sanctified wise tree ----
+	if(wise_target)
+		if(QDELETED(wise_target) || istype(wise_target, /obj/structure/flora/roguetree/wise/sanctified))
+			to_chat(H, span_warning("The sacred tree is no longer a valid target for blessing."))
+			return FALSE
+
+		var/turf/T = get_turf(wise_target)
+		qdel(wise_target)
+
+		var/obj/structure/flora/roguetree/wise/sanctified/wise/new_tree = new(T)
+		playsound(T, 'sound/ambience/noises/mystical (4).ogg', 70, TRUE)
+		H.visible_message(
+			span_green("[H]'s hands blaze with golden light as [new_tree] is consecrated — the ancient tree is touched by the Treefather forever!"),
+			span_notice("I feel the Treefather's power flow through me as the ancient tree is sanctified.")
+		)
+		SEND_SIGNAL(H, COMSIG_TREE_TRANSFORMED)
+		return TRUE
+
+	return FALSE
 
 //==============================================================================
 // Soulbind & dryad control spells (granted by Cat 7 soulbind ritual)
@@ -589,58 +628,89 @@
 	conjured_dryad = null
 	UnregisterSignal(source, COMSIG_QDELETING)
 
-/// Triggers the lesser dryad's surge by middle-targeting a location or creature.
+/// Triggers the lesser dryad's surge by activating a targeting cursor and clicking a location.
 /obj/effect/proc_holder/spell/targeted/lesser_dryad_special
 	name = "Dryad Surge"
-	desc = "Prepare an order, then middle-target a turf or creature to command your lesser dryad there."
+	desc = "Activate, then middle-click a turf or creature to command your lesser dryad to surge there with thorns and vines."
 	overlay_state = "blesscrop"
 	action_icon_state = "blessing"
 	action_icon = 'icons/mob/actions/genericmiracles.dmi'
 	releasedrain = 50
 	recharge_time = 25 SECONDS
 	chargetime = 0 SECONDS
-	max_targets = 0
-	cast_without_targets = TRUE
+	max_targets = 1
+	cast_without_targets = FALSE
 	associated_skill = /datum/skill/magic/holy
 	invocations = list("Tangle my enemies and sting their feet. Grove, arise!")
 	invocation_type = "shout"
 	range = 10
-	/// world.time until this prepared cast expires if no middle-target is provided.
-	var/awaiting_middle_target_until = 0
+
+/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/update_icon()
+	if(!action)
+		return
+	action.button_icon_state = "[base_icon_state][active]"
+	if(overlay_state)
+		action.overlay_state = overlay_state
+	action.name = name
+	action.UpdateButtonIcon()
+
+/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/Click()
+	var/mob/living/user = usr
+	if(!istype(user))
+		return
+	if(!can_cast(user))
+		deactivate(user)
+		return
+	if(active)
+		deactivate(user)
+	else
+		active = TRUE
+		add_ranged_ability(user, null, TRUE)
+	update_icon()
+
+/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/deactivate(mob/living/user)
+	active = FALSE
+	remove_ranged_ability(null)
+	update_icon()
+
+/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/InterceptClickOn(mob/living/caller, params, atom/target)
+	. = ..()
+	if(.)
+		return TRUE
+	if(!can_cast(caller) || !cast_check(FALSE, ranged_ability_user))
+		deactivate(caller)
+		return TRUE
+	if(perform(list(target), TRUE, user = ranged_ability_user))
+		deactivate(caller)
+	return TRUE
 
 /obj/effect/proc_holder/spell/targeted/lesser_dryad_special/cast(list/targets, mob/user = usr)
 	. = ..()
 	if(!istype(user, /mob/living/carbon/human))
 		return FALSE
-	awaiting_middle_target_until = world.time + 8 SECONDS
-	to_chat(user, span_notice("I focus the grove's command. Middle-target a turf or creature to direct my dryad's vine surge."))
-	return TRUE
-
-/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/proc/try_cast_on_middle_target(atom/target, mob/living/carbon/human/user)
-	if(!target || !user)
+	var/atom/target = targets?.len ? targets[1] : null
+	if(!target)
 		return FALSE
-	if(world.time > awaiting_middle_target_until)
-		return FALSE
-	awaiting_middle_target_until = 0
+	var/mob/living/carbon/human/H = user
 
 	var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/D = null
-	for(var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/dryad in view(14, user))
-		if(dryad.conjurer_ckey == user.ckey)
+	for(var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/dryad in view(14, H))
+		if(dryad.conjurer_ckey == H.ckey)
 			D = dryad
 			break
 	if(!D)
-		to_chat(user, span_warning("My dryad is not nearby."))
-		return TRUE
+		to_chat(H, span_warning("My dryad is not nearby."))
+		return FALSE
 
 	var/turf/target_turf = get_turf(target)
 	if(!target_turf || isclosedturf(target_turf))
-		to_chat(user, span_warning("The dryad cannot reach that location."))
-		return TRUE
+		to_chat(H, span_warning("The dryad cannot reach that location."))
+		return FALSE
 
 	if(D.ai_controller)
 		D.ai_controller.clear_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET)
 	D.Goto(target_turf, D.move_to_delay, 1)
-	addtimer(CALLBACK(src, PROC_REF(try_execute_surge), D, target_turf, user, 12), 0.5 SECONDS)
+	addtimer(CALLBACK(src, PROC_REF(try_execute_surge), D, target_turf, H, 12), 0.5 SECONDS)
 	return TRUE
 
 /obj/effect/proc_holder/spell/targeted/lesser_dryad_special/proc/try_execute_surge(mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/D, turf/target_turf, mob/living/carbon/human/user, attempts_left)
@@ -660,38 +730,72 @@
 	return FALSE
 
 /mob/living/carbon/human/try_handle_middle_targeted_spell(atom/target)
-	if(!mind)
-		return FALSE
-	for(var/obj/effect/proc_holder/spell/targeted/lesser_dryad_special/S in mind.spell_list)
-		if(S.try_cast_on_middle_target(target, src))
-			return TRUE
 	return FALSE
 
 /// Minion order subtype for controlling the lesser dryad faction.
-/// Inherits all minion_order behavior, but only affects mobs tagged with the caster's faction.
+/// Middle-click yourself to command the dryad to follow; middle-click a mob or object to attack.
 /obj/effect/proc_holder/spell/invoked/minion_order/lesser_dryad
 	name = "Order Dryad"
-	desc = "Command your lesser dryad to move, follow, or attack. Cast on the dryad to toggle stance, on a turf to send it there, on yourself to have it follow, or on an enemy to have it attack."
+	desc = "Command your lesser dryad. Middle-click yourself to make it follow you. Middle-click a mob or creature to make it chase and attack them."
 	faction_ordering = FALSE
 
 /obj/effect/proc_holder/spell/invoked/minion_order/lesser_dryad/cast(list/targets, mob/user)
-	. = ..()
-	if(!istype(user, /mob/living/carbon/human))
-		return
-	if(!targets || !targets.len)
-		return
-	if(targets[1] != user)
-		return
-	var/mob/living/carbon/human/H = user
-	var/faction_tag = "[H.mind.current.real_name]_faction"
-	for(var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/D in oview(src.order_range, H))
-		if(!(faction_tag in D.faction))
-			continue
+	to_chat(user, span_notice("Middle-click yourself to make my dryad follow, or middle-click a target to set it to attack."))
+
+/// Called from mob/living/carbon/human/MiddleClickOn to process Order Dryad commands.
+/mob/living/carbon/human/proc/try_handle_order_dryad(atom/A)
+	if(!mind)
+		return FALSE
+	var/obj/effect/proc_holder/spell/invoked/minion_order/lesser_dryad/S = null
+	for(var/obj/effect/proc_holder/spell/invoked/minion_order/lesser_dryad/spell in mind.spell_list)
+		S = spell
+		break
+	if(!S)
+		return FALSE
+
+	var/faction_tag = "[mind.current.real_name]_faction"
+	var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/D = null
+	for(var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/dryad in oview(14, src))
+		if(faction_tag in dryad.faction)
+			D = dryad
+			break
+	if(!D)
+		return FALSE
+
+	if(A == src)
+		// Follow command — make dryad neutral and follow owner
+		if(D.ai_controller)
+			D.ai_controller.CancelActions()
+			D.ai_controller.clear_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET)
+			D.ai_controller.clear_blackboard_key(BB_TRAVEL_DESTINATION)
+			D.ai_controller.clear_blackboard_key(BB_BASIC_MOB_RETALIATE_LIST)
+			D.ai_controller.set_blackboard_key(BB_FOLLOW_TARGET, src)
 		D.aggressive = FALSE
 		if(!("neutral" in D.faction))
 			D.faction += "neutral"
 		D.enemies = list()
 		D.LoseTarget()
+		to_chat(src, span_notice("[D.name] will follow me."))
+		return TRUE
+
+	if(isliving(A) && A != src)
+		// Attack command — direct the dryad at the target
 		if(D.ai_controller)
+			D.ai_controller.CancelActions()
+			D.ai_controller.clear_blackboard_key(BB_FOLLOW_TARGET)
+			D.ai_controller.clear_blackboard_key(BB_TRAVEL_DESTINATION)
 			D.ai_controller.clear_blackboard_key(BB_BASIC_MOB_RETALIATE_LIST)
+			D.ai_controller.set_blackboard_key(BB_BASIC_MOB_CURRENT_TARGET, A)
+		D.aggressive = TRUE
+		if("neutral" in D.faction)
+			D.faction -= "neutral"
+		to_chat(src, span_notice("[D.name] charges at [A.name]!"))
+		return TRUE
+
+	return FALSE
+
+/mob/living/carbon/human/MiddleClickOn(atom/A, params)
+	if(try_handle_order_dryad(A))
+		return
+	return ..()
 

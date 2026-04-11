@@ -75,7 +75,7 @@
 	playsound(H, pick('sound/vo/mobs/spider/attack (1).ogg','sound/vo/mobs/spider/attack (2).ogg','sound/vo/mobs/spider/attack (3).ogg','sound/vo/mobs/spider/attack (4).ogg'), 80, TRUE, -1)
 
 /datum/species/mirecrawler/regenerate_icons(mob/living/carbon/human/H)
-	H.icon = 'icons/mob/mirespider_small.dmi'
+	H.icon = 'icons/roguetown/mob/monster/mirespider_small.dmi'
 	H.base_intents = list(INTENT_HELP, INTENT_DISARM, INTENT_GRAB)
 	H.icon_state = "crawler"
 	H.update_damage_overlays()

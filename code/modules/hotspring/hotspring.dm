@@ -252,6 +252,11 @@
 
 	bound_height = 128
 	bound_width = 128
+	max_integrity = 200
+	blade_dulling = DULLING_CUT
+	attacked_sound = 'sound/misc/woodhit.ogg'
+	destroy_sound = 'sound/misc/woodhit.ogg'
+	static_debris = list(/obj/item/grown/log/tree/small = 2)
 	var/obj/effect/abstract/particle_holder/cached/petal_effect
 
 /obj/structure/flora/sakura/Initialize(mapload)

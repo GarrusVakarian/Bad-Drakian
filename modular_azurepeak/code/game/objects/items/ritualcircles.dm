@@ -248,7 +248,7 @@
 		target.apply_status_effect(/datum/status_effect/buff/lesserwolf)
 
 /obj/structure/ritualcircle/dendor/proc/borrowedmadness(src)
-	var/ritualtargets = view(0, loc)
+	var/ritualtargets = view(1, loc)
 	for(var/mob/living/carbon/human/target in ritualtargets)
 		if(!istype(target.patron, /datum/patron/divine/dendor))
 			to_chat(target, span_warning("The ritual's power does not recognize me..."))
@@ -261,7 +261,7 @@
 		target.mind?.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/dendormole)
 
 /obj/structure/ritualcircle/dendor/proc/spiderkinship(src)
-	var/ritualtargets = view(0, loc)
+	var/ritualtargets = view(1, loc)
 	for(var/mob/living/carbon/human/target in ritualtargets)
 		if(!istype(target.patron, /datum/patron/divine/dendor))
 			to_chat(target, span_warning("The ritual's power does not recognize me..."))
@@ -273,17 +273,6 @@
 		target.Knockdown(200)
 		target.mind?.AddSpell(new /obj/effect/proc_holder/spell/targeted/shapeshift/mireboi)
 
-/obj/effect/proc_holder/spell/targeted/shapeshift/dendormole
-	name = "Borrowed Madness"
-	desc = "Assume the maddened form granted by Dendor's rite."
-	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/rogue/mole
-	pick_again = TRUE
-
-/obj/effect/proc_holder/spell/targeted/shapeshift/mireboi
-	name = "Spider Kinship"
-	desc = "Assume a mire-spider form through Dendor's wild kinship."
-	shapeshift_type = /mob/living/simple_animal/hostile/retaliate/rogue/mirespider
-	pick_again = TRUE
 
 
 /obj/structure/ritualcircle/malum
