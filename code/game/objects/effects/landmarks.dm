@@ -152,7 +152,7 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/sheriff
-	name = "Town Sheriff"
+	name = "Watch Captain"
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/guard_captain
@@ -196,7 +196,7 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/bogmaster
-	name = "Bog Master"
+	name = "Master Warden"
 	icon_state = "arrow"
 
 /obj/effect/landmark/start/bogguardsman
@@ -529,6 +529,17 @@ INITIALIZE_IMMEDIATE(/obj/effect/landmark)
 	icon_state = "arrow"
 	delete_after_roundstart = FALSE
 	jobspawn_override = list("Wretch")
+
+/obj/effect/landmark/start/gnoll
+	name = "gnoll"
+	icon_state = "arrow"
+	jobspawn_override = list("Gnoll")
+
+/obj/effect/landmark/start/gnolllate
+	name = "gnoll"
+	icon_state = "arrow"
+	delete_after_roundstart = FALSE
+	jobspawn_override = list("Gnoll")
 
 /obj/effect/landmark/start/nukeop_leader
 	name = "nukeop leader"
