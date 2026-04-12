@@ -59,6 +59,30 @@
 	. = ..()
 	if(.)
 		return TRUE
+	// Special case: targeting a lesser dryad triggers Dendor's Blessed Frenzy.
+	if(istype(target, /mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser))
+		if(!can_cast(caller))
+			deactivate(caller)
+			return TRUE
+		var/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/dryad = target
+		if(dryad.frenzy_timer)
+			to_chat(caller, span_warning("The dryad's frenzy blessing has not yet subsided!"))
+			return TRUE
+		if(!charge_check(caller))
+			return TRUE
+		// Check whether the player is holding a bloomstone for a stronger frenzy.
+		var/obj/item/act_item = caller.get_active_held_item()
+		var/obj/item/inact_item = caller.get_inactive_held_item()
+		var/bloomstone_boost = istype(act_item, /obj/item/alch/bloomstone) || istype(inact_item, /obj/item/alch/bloomstone)
+		if(bloomstone_boost)
+			var/obj/item/alch/bloomstone/bs = istype(act_item, /obj/item/alch/bloomstone) ? act_item : inact_item
+			qdel(bs) // Consumes one charge (Destroy() decrements; stone survives until charges reach 0).
+		dryad.apply_blessed_frenzy(bloomstone_boost)
+		playsound(caller, sound, 100, TRUE)
+		charge_counter--
+		after_cast(list(target), caller)
+		deactivate(caller)
+		return TRUE
 	if(ismob(target))
 		to_chat(caller, span_warning("Bless Crops must be aimed at a tree, long log, or soil plot."))
 		return TRUE

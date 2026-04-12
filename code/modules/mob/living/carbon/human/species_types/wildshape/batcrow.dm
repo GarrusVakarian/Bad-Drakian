@@ -111,7 +111,7 @@
 	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
-		H.pass_flags |= PASSTABLE
+		H.pass_flags |= PASSTABLE | PASSMOB
 		H.movement_type |= FLYING
 		H.flying = TRUE
 		for(var/obj/item/held in H.held_items)
@@ -124,7 +124,7 @@
 
 /datum/species/shapebat/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
 	UnregisterSignal(C, COMSIG_MOB_SAY)
-	C.pass_flags &= ~PASSTABLE
+	C.pass_flags &= ~(PASSTABLE | PASSMOB)
 	C.movement_type &= ~FLYING
 	C.flying = FALSE
 	C.verbs -= list(
@@ -266,7 +266,7 @@
 	RegisterSignal(C, COMSIG_MOB_SAY, PROC_REF(handle_speech))
 	if(ishuman(C))
 		var/mob/living/carbon/human/H = C
-		H.pass_flags |= PASSTABLE
+		H.pass_flags |= PASSTABLE | PASSMOB
 		H.movement_type |= FLYING
 		H.flying = TRUE
 		for(var/obj/item/held in H.held_items)
@@ -281,7 +281,7 @@
 
 /datum/species/shapecrow/on_species_loss(mob/living/carbon/human/C, datum/species/new_species, pref_load)
 	UnregisterSignal(C, COMSIG_MOB_SAY)
-	C.pass_flags &= ~PASSTABLE
+	C.pass_flags &= ~(PASSTABLE | PASSMOB)
 	C.movement_type &= ~FLYING
 	C.flying = FALSE
 	C.verbs -= list(

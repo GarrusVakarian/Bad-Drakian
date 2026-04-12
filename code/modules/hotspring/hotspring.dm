@@ -268,3 +268,9 @@
 /obj/structure/flora/sakura/Destroy()
 	QDEL_NULL(petal_effect)
 	return ..()
+
+/obj/structure/flora/sakura/examine(mob/user)
+	. = ..()
+	if(iscarbon(user))
+		user.add_stress(/datum/stressevent/sakura_view)
+		to_chat(user, span_green("The gentle flutter of petals calms my spirit."))

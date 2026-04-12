@@ -7,6 +7,7 @@
 ///   - Lighter, lower health than the full dryad
 /mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser
 	name = "lesser dryad"
+	gender = FEMALE
 	health = 450
 	maxHealth = 450
 	melee_damage_lower = 12
@@ -41,6 +42,10 @@
 	var/bark_broken = FALSE
 	/// Timer ID for the bark regeneration loop.
 	var/bark_regen_timer = null
+	/// Timer ID for vine-based health regeneration loop (always running).
+	var/vine_regen_timer = null
+	/// Timer ID for the blessed frenzy duration.
+	var/frenzy_timer = null
 	/// Temp: damage type of the current incoming hit, used by adjustBruteLoss.
 	var/last_attack_dtype = "blunt"
 
@@ -53,6 +58,8 @@
 		// Tag with owner faction so minion_order/lesser_dryad can command it.
 		var/faction_tag = "[owner.real_name]_faction"
 		faction |= faction_tag
+	// Start the vine-based self-heal loop — fires every 30 seconds regardless of combat.
+	vine_regen_timer = addtimer(CALLBACK(src, PROC_REF(vine_heal_tick)), 300, TIMER_STOPPABLE)
 
 /// Override vine() to do nothing — lesser dryad does not spread vines passively.
 /mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/vine()
@@ -105,12 +112,6 @@
 	if(isliving(attacker) && attacker != owner_mob && !faction_check_mob(attacker) && attacker.stat != DEAD)
 		enemies |= attacker
 
-/// Use rapid_melee = 2 when standing on vines for 50% more attacks per pool cycle.
-/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/MeleeAction(patience = TRUE)
-	var/turf/T = get_turf(src)
-	rapid_melee = (T && contains_vines(T)) ? 2 : 1
-	return ..()
-
 /// Zone targeting priority: head → legs (if skull broken) → random (if both skull and legs broken).
 /mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/AttackingTarget()
 	if(isliving(target))
@@ -160,13 +161,14 @@
 			new /obj/structure/vine(V)
 	return TRUE
 
-/// Boost melee damage by 50% when standing on a vine tile.
-/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/MeleeAction()
+/// On vine tiles: rapid_melee = 2 (50% more attacks) and melee damage boosted by 50%.
+/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/MeleeAction(patience = TRUE)
 	var/on_vine = isturf(loc) && contains_vines(loc)
+	rapid_melee = on_vine ? 2 : 1
 	if(on_vine)
 		melee_damage_lower = initial(melee_damage_lower) * 1.5
 		melee_damage_upper = initial(melee_damage_upper) * 1.5
-	. = ..() 
+	. = ..()
 	if(on_vine)
 		melee_damage_lower = initial(melee_damage_lower)
 		melee_damage_upper = initial(melee_damage_upper)
@@ -176,11 +178,24 @@
 	playsound(get_turf(src), 'sound/items/dig_shovel.ogg', 70, TRUE)
 	if(summoner_spell)
 		summoner_spell.on_dryad_deleted(src)
+	if(bark_regen_timer)
+		deltimer(bark_regen_timer)
+		bark_regen_timer = null
+	if(vine_regen_timer)
+		deltimer(vine_regen_timer)
+		vine_regen_timer = null
+	if(frenzy_timer)
+		deltimer(frenzy_timer)
+		frenzy_timer = null
 	spill_embedded_objects()
 	qdel(src)
 
 // BARK ARMOR — protective wood that absorbs damage and regenerates slowly.
 // weaker vs slash (bark splinters), decent vs blunt, stronger vs stab.
+
+/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/examine(mob/user)
+	. = ..()
+	. += span_info("A spirit of a sanctified tree, bound to serve by the rites of Dendor. Its bark-skin is etched with glowing sigils, and vines curl idly about its limbs. Though lesser than the great dryads of old, the fury of the forest still rides within.")
 
 /// Record the attacker's intent damage type so adjustBruteLoss can apply correct bark reduction.
 /mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/attacked_by(obj/item/I, mob/living/user)
@@ -227,3 +242,39 @@
 		bark_broken = FALSE
 		return
 	bark_regen_timer = addtimer(CALLBACK(src, PROC_REF(bark_regen_tick)), 100, TIMER_STOPPABLE)  // Continue every 10s
+
+/// Periodic vine-aura self-heal: fires every 30 seconds regardless of combat.
+/// Applies a half-strength healing aura when the dryad is standing on vines.
+/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/proc/vine_heal_tick()
+	vine_regen_timer = null
+	if(QDELETED(src) || stat == DEAD)
+		return
+	if(isturf(loc) && contains_vines(loc) && health < maxHealth)
+		if(!has_status_effect(/datum/status_effect/buff/healing))
+			apply_status_effect(/datum/status_effect/buff/healing, 1.25)
+		visible_message(span_notice("[src] mends itself in the vines."))
+	vine_regen_timer = addtimer(CALLBACK(src, PROC_REF(vine_heal_tick)), 100, TIMER_STOPPABLE)  // Repeat every 10 s
+
+/// Apply a Dendor-blessed frenzy: reduces melee_cooldown for 5 seconds.
+/// bloomstone_boost — if TRUE, gives 50% speed boost (bloomstone held); otherwise 25%.
+/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/proc/apply_blessed_frenzy(bloomstone_boost = FALSE)
+	if(frenzy_timer)
+		deltimer(frenzy_timer)
+		frenzy_timer = null
+	if(bloomstone_boost)
+		melee_cooldown = round(initial(melee_cooldown) * 0.5)
+		visible_message(span_boldwarning("[src] blazes with the Treefather's fury — its movements become a blur!"))
+	else
+		melee_cooldown = round(initial(melee_cooldown) * 0.75)
+		visible_message(span_warning("[src] surges with Dendor's blessing, striking faster!"))
+	// Visual: druid-armor-style light radius + Living Light outline.
+	set_light(1, 1, 2, l_color = "#58C86A")
+	add_filter("dryad_frenzy_outline", 2, list("type" = "outline", "color" = "#58C86A", "alpha" = 60, "size" = 1))
+	frenzy_timer = addtimer(CALLBACK(src, PROC_REF(end_frenzy)), 50, TIMER_STOPPABLE)  // 5 seconds
+
+/// Revert melee_cooldown, light, and outline after the frenzy expires.
+/mob/living/simple_animal/hostile/retaliate/rogue/fae/dryad/lesser/proc/end_frenzy()
+	frenzy_timer = null
+	melee_cooldown = initial(melee_cooldown)
+	set_light(0)
+	remove_filter("dryad_frenzy_outline")

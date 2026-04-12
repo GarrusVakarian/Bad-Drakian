@@ -122,7 +122,6 @@
 
 /obj/item/rogueweapon/spider_fang/mire/Initialize(mapload)
 	. = ..()
-	ADD_TRAIT(src, TRAIT_NODROP, TRAIT_GENERIC)
 	ADD_TRAIT(src, TRAIT_NOEMBED, TRAIT_GENERIC)
 
 /obj/effect/proc_holder/spell/self/spiderfangs/mire
@@ -137,24 +136,22 @@
 /obj/effect/proc_holder/spell/self/spiderfangs/mire/cast(mob/user = usr)
 	var/obj/item/rogueweapon/spider_fang/mire/left/l
 	var/obj/item/rogueweapon/spider_fang/mire/right/r
+	var/active = user.get_active_held_item()
+	var/inactive = user.get_inactive_held_item()
 
-	l = user.get_active_held_item()
-	r = user.get_inactive_held_item()
-	if(extendid)
-		if(istype(l, /obj/item/rogueweapon/spider_fang/mire))
-			user.dropItemToGround(l, TRUE)
-			qdel(l)
-		if(istype(r, /obj/item/rogueweapon/spider_fang/mire))
-			user.dropItemToGround(r, TRUE)
-			qdel(r)
-		//user.visible_message("Your fangs retract.", "You feel your fangs retracting.", "You hear a sound of fangs retracting.")
+	if(istype(active, /obj/item/rogueweapon/spider_fang/mire) || istype(inactive, /obj/item/rogueweapon/spider_fang/mire))
+		if(istype(active, /obj/item/rogueweapon/spider_fang/mire))
+			user.dropItemToGround(active, TRUE)
+		if(istype(inactive, /obj/item/rogueweapon/spider_fang/mire) && inactive != active)
+			user.dropItemToGround(inactive, TRUE)
+		to_chat(user, span_notice("My fangs retract."))
 		extendid = FALSE
 	else
-		l = new(user,1)
-		r = new(user,2)
+		l = new(user, 1)
+		r = new(user, 2)
 		user.put_in_hands(l, TRUE, FALSE, TRUE)
 		user.put_in_hands(r, TRUE, FALSE, TRUE)
-		//user.visible_message("Your fangs extend.", "You feel your fangs extending.", "You hear a sound of fangs extending.")
+		to_chat(user, span_notice("My fangs extend."))
 		extendid = TRUE
 
 /datum/intent/simple/spider/mire

@@ -174,7 +174,7 @@
 /obj/structure/flora/roguetree/wise/examine(mob/user)
 	. = ..()
 	if(examine_plays_music)
-		SEND_SOUND(usr, sound(null))
+		SEND_SOUND(user, sound(null))
 		playsound(user, 'sound/music/tree.ogg', 80)
 
 /obj/structure/flora/roguetree/wise/bless_tree(mob/user)
@@ -205,7 +205,7 @@
 			continue
 		H.add_stress(/datum/stressevent/treefather_loss)
 		var/tree_dir = dir2text(get_dir(H, src))
-		to_chat(H, span_boldwarning("A sacred tree has fallen to my [tree_dir]! The Treefather recoils in pain."))
+		to_chat(H, span_boldwarning("A sacred tree has fallen to my [tree_dir]! The land's natural energies feel disrupted."))
 		playsound(H, 'sound/misc/jack_killing_2.ogg', 60, FALSE)
 
 /obj/structure/flora/roguetree/wise/proc/fling_nearby_mobs()
