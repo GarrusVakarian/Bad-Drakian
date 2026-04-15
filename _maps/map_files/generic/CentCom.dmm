@@ -845,10 +845,6 @@
 /obj/structure/bars,
 /turf/open/floor/rogue/grasspurple,
 /area/rogue/dietroyt)
-"dt" = (
-/obj/machinery/light/rogue/candle/l,
-/turf/closed/wall/mineral/rogue/stonebrick,
-/area/rogue/indoors/vampire_manor)
 "dx" = (
 /obj/structure/table/wood{
 	icon_state = "tablewood1"
@@ -1757,15 +1753,6 @@
 /obj/structure/fluff/ravox/challenged,
 /turf/open/floor/rogue/blocks,
 /area/rogue/indoors/ravoxarena)
-"np" = (
-/obj/machinery/light/rogue/candle/floorcandle,
-/obj/structure/bookcase/random{
-	density = 0;
-	opacity = 0;
-	pixel_y = 22
-	},
-/turf/open/floor/carpet/royalblack,
-/area/rogue/indoors/vampire_manor)
 "nr" = (
 /obj/structure/fluff/railing/border/west,
 /turf/open/floor/rogue/grass,
@@ -2217,13 +2204,6 @@
 /turf/open/floor/carpet/inn,
 /area/rogue/indoors/vampire_manor)
 "sy" = (
-/obj/machinery/light/rogue/campfire/fireplace{
-	pixel_x = 32;
-	pixel_y = 7
-	},
-/obj/machinery/light/rogue/hearth{
-	pixel_y = 5
-	},
 /obj/machinery/light/rogue/firebowl/standing{
 	density = 0;
 	pixel_x = 2;
@@ -2467,10 +2447,6 @@
 "vh" = (
 /turf/open/water/bath,
 /area/rogue/indoors/vampire_manor)
-"vk" = (
-/obj/structure/fluff/railing/border,
-/turf/closed/wall/mineral/rogue/craftstone,
-/area/rogue/indoors/vampire_manor)
 "vl" = (
 /obj/structure/table/wood{
 	dir = 10;
@@ -2540,10 +2516,6 @@
 /turf/open/floor/rogue/herringbone,
 /area/rogue/indoors/vampire_manor)
 "wb" = (
-/obj/structure/closet/crate/drawer/random{
-	pixel_x = 1;
-	pixel_y = 3
-	},
 /obj/structure/fluff/wallclock/vampire,
 /turf/open/floor/carpet/purple,
 /area/rogue/indoors/vampire_manor)
@@ -2713,9 +2685,6 @@
 /obj/structure/table/church{
 	icon_state = "churchtable_mid"
 	},
-/obj/machinery/light/rogue/candle{
-	pixel_x = 6
-	},
 /obj/structure/table/wood/fancy/royalblack,
 /obj/item/candle/candlestick/gold/lit{
 	pixel_y = 16
@@ -2868,9 +2837,6 @@
 /turf/open/floor/carpet/red,
 /area/rogue/indoors/vampire_manor)
 "zE" = (
-/obj/structure/chair/wood/rogue/fancy{
-	dir = 8
-	},
 /obj/machinery/light/rogue/candle{
 	pixel_x = -32;
 	pixel_y = -32
@@ -4008,8 +3974,11 @@
 /turf/open/floor/rogue/ruinedwood/spiral,
 /area/rogue/indoors/ravoxarena)
 "Nd" = (
+/obj/structure/fluff/railing/border{
+	dir = 1
+	},
 /obj/machinery/light/rogue/candle/blue/r,
-/turf/closed/wall/mineral/rogue/craftstone,
+/turf/open/floor/carpet/royalblack,
 /area/rogue/indoors/vampire_manor)
 "Nh" = (
 /obj/effect/decal/remains/human,
@@ -4076,7 +4045,6 @@
 /area/rogue/indoors/vampire_manor)
 "Oc" = (
 /obj/machinery/light/rogue/candle,
-/obj/machinery/light/rogue/smelter/great,
 /turf/closed/wall/mineral/rogue/craftstone,
 /area/rogue/indoors/vampire_manor)
 "Of" = (
@@ -4099,6 +4067,10 @@
 /area/rogue/indoors/vampire_manor)
 "Os" = (
 /obj/machinery/light/rogue/candle,
+/obj/structure/closet/crate/drawer/random{
+	pixel_x = 1;
+	pixel_y = 3
+	},
 /turf/open/floor/carpet/purple,
 /area/rogue/indoors/vampire_manor)
 "Ov" = (
@@ -4825,12 +4797,6 @@
 /obj/structure/fluff/railing/border,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/outdoors)
-"Wh" = (
-/obj/structure/closet/crate/roguecloset{
-	pixel_y = 5
-	},
-/turf/open/floor/rogue/ruinedwood/spiral,
-/area/rogue/indoors/vampire_manor)
 "Wi" = (
 /obj/structure/mineral_door/wood/donjon{
 	locked = 1;
@@ -6497,10 +6463,10 @@ AK
 Ev
 kA
 Eg
-dt
+Sa
 bj
 xp
-Wh
+ed
 Iu
 Gz
 yr
@@ -7008,7 +6974,7 @@ sL
 rf
 kA
 mf
-mf
+bM
 kA
 Sa
 an
@@ -7138,7 +7104,7 @@ lA
 rf
 kA
 ih
-bM
+mf
 kA
 kA
 kA
@@ -7410,7 +7376,7 @@ nZ
 zM
 zE
 zM
-np
+nZ
 VD
 Xn
 Wz
@@ -7541,7 +7507,7 @@ nZ
 Ov
 nZ
 Ov
-vk
+kA
 sy
 tZ
 vT
@@ -9346,7 +9312,7 @@ Sg
 zM
 WZ
 zM
-Pb
+Nd
 Xq
 kA
 kA
@@ -9477,7 +9443,7 @@ zM
 lU
 Va
 kA
-Nd
+kA
 kA
 kA
 kA

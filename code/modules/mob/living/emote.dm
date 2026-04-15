@@ -1104,6 +1104,41 @@
 
 	emote("shiver", intentional = TRUE)
 
+/datum/emote/living/shiver/run_emote(mob/living/user, params, type_override, intentional)
+	. = ..()
+	if(!intentional)
+		return
+	animate(user, pixel_w = 1, time = 0.1 SECONDS, flags = ANIMATION_RELATIVE|ANIMATION_PARALLEL)
+	for(var/i in 1 to 1 SECONDS / (0.2 SECONDS)) //desired total duration divided by the iteration duration to give the necessary iteration count
+		animate(pixel_w = -1, time = 0.1 SECONDS, flags = ANIMATION_RELATIVE|ANIMATION_CONTINUE)
+		animate(pixel_w = 1, time = 0.1 SECONDS, flags = ANIMATION_RELATIVE|ANIMATION_CONTINUE)
+	animate(pixel_w = -1, time = 0.1 SECONDS, flags = ANIMATION_RELATIVE)
+
+/datum/emote/spin
+	key = "spin"
+	key_third_person = "spins"
+	restraint_check = TRUE
+	mob_type_allowed_typecache = list(/mob/living, /mob/dead/observer)
+	mob_type_ignore_stat_typecache = list(/mob/dead/observer)
+	mute_time = 5 SECONDS
+
+/mob/living/carbon/human/verb/emote_spin()
+	set name = "Spin"
+	set category = "Emotes"
+	emote("spin", intentional = TRUE)
+
+/datum/emote/spin/can_run_emote(mob/living/carbon/user, status_check = TRUE, intentional)
+	. = ..()
+	if(!iscarbon(user))
+		return FALSE
+	if(user.IsImmobilized())
+		return FALSE
+	return .
+
+/datum/emote/spin/run_emote(mob/living/carbon/user, params, type_override, intentional)
+	. = ..()
+	if(.)
+		user.spin(4, 1)
 
 /datum/emote/living/sigh
 	key = "sigh"
@@ -1620,7 +1655,7 @@
 	message_muffled = "makes a muffled sound!"
 	vary = TRUE
 	show_runechat = FALSE
-	is_animal = TRUE	
+	is_animal = TRUE
 
 /mob/living/carbon/human/verb/emote_dove()
 	if(istype(usr.getorganslot(ORGAN_SLOT_TONGUE), /obj/item/organ/tongue/wild_tongue) || istype(usr.getorganslot(ORGAN_SLOT_TONGUE), /obj/item/organ/tongue/harpy))
@@ -2446,3 +2481,33 @@
 	set category = "Emotes"
 
 	emote("fortune", intentional = TRUE)
+
+/datum/emote/living/praysuicide
+	key = "praysuicide"
+	key_third_person = "utters their last words"
+	message = ""
+	emote_type = EMOTE_AUDIBLE
+	stat_allowed = UNCONSCIOUS
+	show_runechat = FALSE
+
+/mob/living/carbon/human/verb/emote_praysuicide()
+	set name = "Suicidal pray"
+	set category = "Emotes"
+	emote("praysuicide", intentional = TRUE)
+
+/datum/emote/living/praysuicide/run_emote(mob/user, params, type_override, intentional)
+	if(!user)
+		return FALSE
+
+	var/mob/living/L = user
+	to_chat(L, span_danger("I pray to my patron for my death... and I am heard."))
+	var/lastmsg = params
+	if(!lastmsg)
+		lastmsg = input("Whisper your final words:", "Last Words") as text|null
+	if(!lastmsg)
+		return FALSE
+	L.whisper(lastmsg)
+	sleep(50)
+	L.death()
+
+	return TRUE

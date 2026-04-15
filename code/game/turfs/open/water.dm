@@ -235,7 +235,6 @@
 
 			if(temperature <= 250 && L.bodytemperature > BODYTEMP_COLD_LEVEL_ONE_MAX + 10)	//swimming in cold water will cool you down and chill you.
 				L.adjust_bodytemperature(-5)
-				L.update_health_hud()
 		if(!istype(L, /mob/living/carbon/human/species/skeleton))
 			return
 		if(!istype(src, /turf/open/water/sewer))
@@ -291,14 +290,11 @@
 				L.adjust_fire_stacks(-100)
 				if(temperature < 250 && L.bodytemperature > BODYTEMP_COLD_LEVEL_ONE_MAX + 75)	//washing yourself helps to cool you off.
 					L.adjust_bodytemperature(-75)
-					L.update_health_hud()
 				if(temperature >= 300)	//bathhouses, predominantly
 					if(L.bodytemperature < BODYTEMP_NORMAL_MIN)	//washing yourself helps to warm you up.
 						L.adjust_bodytemperature(75)
-						L.update_health_hud()
 					if(L.bodytemperature > BODYTEMP_NORMAL_MAX)	//washing yourself helps to cool you off.
 						L.adjust_bodytemperature(-75)
-						L.update_health_hud()
 				if(istype(src,/turf/open/water/sewer) || istype(src,/turf/open/water/swamp) || istype(src, /turf/open/water/sewer))
 					if (istype(src, /turf/open/water/sewer))
 						user.add_stress(/datum/stressevent/sewertouched)

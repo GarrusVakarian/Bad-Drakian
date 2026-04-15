@@ -3,13 +3,9 @@
 /turf/open/water/bloody,
 /area/rogue/under/cave/inhumen/wretch/gnollcavern)
 "ad" = (
-/obj/machinery/light/roguestreet/walllamp,
-/obj/structure/rack/rogue/shelf/biggest,
-/obj/effect/spawner/lootdrop/roguetown/dungeon/materials,
-/turf/open/floor/rogue/blocks{
-	icon_state = "bluestone"
-	},
-/area/rogue/under/cave/inhumen/wretch/camp)
+/obj/effect/landmark/start/wretchlate,
+/turf/open/floor/rogue/blocks/flipped,
+/area/rogue/outdoors/cave/wretch)
 "ak" = (
 /obj/item/natural/bone,
 /turf/open/water/bloody,
@@ -915,6 +911,18 @@
 	},
 /turf/open/floor/carpet/royalblack,
 /area/rogue/under/cave/inhumen/wretch/camp)
+"jE" = (
+/obj/structure/rack/rogue/shelf/biggest,
+/obj/effect/spawner/lootdrop/roguetown/dungeon/materials,
+/obj/machinery/light/roguestreet/walllamp{
+	dir = 4;
+	pixel_x = 0;
+	pixel_y = 10
+	},
+/turf/open/floor/rogue/blocks{
+	icon_state = "bluestone"
+	},
+/area/rogue/under/cave/inhumen/wretch/camp)
 "jI" = (
 /obj/machinery/light/rogue/candle/red,
 /turf/open/water/bloody,
@@ -1464,7 +1472,7 @@
 "qg" = (
 /obj/structure/mineral_door/wood/deadbolt{
 	dir = 1;
-	name = "Castellan's Quarters"
+	name = "Guest Room"
 	},
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/cave/inhumen/wretch/camp)
@@ -1691,6 +1699,11 @@
 	},
 /turf/open/floor/rogue/naturalstone,
 /area/rogue/under/cave/inhumen/wretch/camp)
+"sL" = (
+/obj/structure/fluff/railing/border,
+/obj/structure/bondage/torture_table/lever,
+/turf/open/floor/rogue/naturalstone,
+/area/rogue/under/cave/inhumen/wretch/camp)
 "sM" = (
 /obj/structure/flora/roguegrass/swampweed,
 /turf/open/water/swamp,
@@ -1781,6 +1794,12 @@
 	name = "Private Bathroom"
 	},
 /turf/open/floor/rogue/metal/barograte,
+/area/rogue/under/cave/inhumen/wretch/camp)
+"ue" = (
+/obj/machinery/light/roguestreet/walllamp,
+/turf/open/floor/rogue/blocks{
+	icon_state = "bluestone"
+	},
 /area/rogue/under/cave/inhumen/wretch/camp)
 "ug" = (
 /obj/structure/fluff/walldeco/vinez/red,
@@ -2068,6 +2087,14 @@
 /obj/structure/bars,
 /turf/open/floor/rogue/dirt/road,
 /area/rogue/under/cave/inhumen/wretch/gnollcavern)
+"xZ" = (
+/obj/structure/fluff/railing/wood,
+/obj/structure/fluff/psycross/graggar/decorated{
+	pixel_x = 0;
+	pixel_y = 12
+	},
+/turf/open/floor/rogue/cobble/mossy,
+/area/rogue/outdoors/cave/wretch)
 "yf" = (
 /obj/effect/decal/cleanable/debris/stony,
 /turf/open/floor/rogue/grass,
@@ -2075,6 +2102,11 @@
 "yl" = (
 /obj/effect/decal/carpet,
 /turf/open/floor/rogue/ruinedwood/spiral,
+/area/rogue/under/cave/inhumen/wretch/camp)
+"ym" = (
+/obj/structure/flora/roguetree/burnt,
+/obj/structure/flora/roguetree/burnt,
+/turf/closed/wall/mineral/rogue/craftstone,
 /area/rogue/under/cave/inhumen/wretch/camp)
 "yr" = (
 /obj/effect/decal/cleanable/debris/stony,
@@ -2742,6 +2774,7 @@
 /turf/open/floor/rogue/cobble/mossy,
 /area/rogue/under/cave/inhumen/wretch/gnollcavern)
 "EK" = (
+/obj/structure/fluff/psycross/graggar/decorated,
 /turf/open/floor/rogue/dirt,
 /area/rogue/under/cavewet/bogcaves{
 	ambush_mobs = null;
@@ -3371,6 +3404,7 @@
 /area/rogue/under/cave/inhumen/wretch/gnollcavern)
 "Lv" = (
 /obj/machinery/light/rogue/candle/red,
+/obj/structure/bondage/x_pillory,
 /turf/open/floor/rogue/cobble,
 /area/rogue/under/cave/inhumen/wretch/camp)
 "Ly" = (
@@ -3519,12 +3553,8 @@
 /area/rogue/under/cave/inhumen/wretch/camp)
 "Na" = (
 /obj/structure/flora/roguetree/burnt,
-/turf/closed/mineral/random/rogue/coppertin/med,
-/area/rogue/under/cavewet/bogcaves{
-	ambush_mobs = null;
-	first_time_text = null;
-	name = "Wretched Caves"
-	})
+/turf/closed/wall/mineral/rogue/craftstone,
+/area/rogue/under/cave/inhumen/wretch/camp)
 "Nb" = (
 /obj/structure/mineral_door/wood/deadbolt{
 	dir = 8
@@ -3677,6 +3707,10 @@
 	first_time_text = null;
 	name = "Wretched Caves"
 	})
+"Oz" = (
+/obj/effect/landmark/start/wretchlate,
+/turf/open/floor/rogue/dirt/road,
+/area/rogue/outdoors/cave/wretch)
 "OA" = (
 /turf/closed/mineral/random/rogue/ironcoal,
 /area/rogue/under/cavewet/bogcaves{
@@ -3971,6 +4005,13 @@
 	water_reagent = /datum/reagent/water/gross
 	},
 /area/rogue/outdoors/cave/wretch)
+"Rw" = (
+/obj/structure/fluff/traveltile/wretch{
+	aportalgoesto = "wretchtradeout";
+	aportalid = "wretchtradein"
+	},
+/turf/open/floor/rogue/blocks,
+/area/rogue/under/cave/inhumen/wretch/camp)
 "RF" = (
 /obj/structure/fluff/statue/femalestatue/zizo{
 	desc = "An ancient statue depicting an elven woman.";
@@ -6918,10 +6959,10 @@ iy
 iy
 CT
 CT
-iy
-iy
-iy
-iy
+CT
+CT
+CT
+CT
 iy
 iy
 iy
@@ -7010,10 +7051,10 @@ iy
 iy
 CT
 CT
-iy
-iy
-iy
-iy
+CT
+CT
+CT
+CT
 iy
 iy
 iy
@@ -7322,7 +7363,7 @@ CT
 CT
 CT
 Ov
-Az
+Oz
 pX
 CT
 Az
@@ -7859,7 +7900,7 @@ DS
 DS
 DS
 Az
-DS
+zU
 Kq
 DS
 Kj
@@ -7950,11 +7991,11 @@ CM
 yH
 Kq
 Kq
-Ly
+Az
 Az
 KF
 jC
-jC
+bA
 DS
 Is
 Ov
@@ -8042,9 +8083,9 @@ zS
 yH
 yH
 Kq
-Az
-Az
 DS
+Az
+Az
 Az
 Az
 DS
@@ -8134,7 +8175,7 @@ bV
 bV
 yH
 Kq
-Ly
+zU
 py
 KF
 jC
@@ -8508,7 +8549,7 @@ Az
 Az
 Az
 om
-sn
+xZ
 DS
 bA
 Az
@@ -9244,7 +9285,7 @@ AA
 Az
 Az
 Az
-sn
+xZ
 DS
 Su
 sg
@@ -9709,7 +9750,7 @@ Ov
 Is
 Ov
 Ov
-KE
+jC
 Ov
 Ov
 Ov
@@ -9862,7 +9903,7 @@ xk
 Ky
 xk
 xk
-HG
+sL
 YF
 LJ
 LJ
@@ -10273,9 +10314,9 @@ DS
 DS
 Wu
 Wu
-Wu
 FL
 Wu
+FL
 Wu
 Wu
 FL
@@ -10899,7 +10940,7 @@ bA
 DS
 WY
 XA
-YZ
+jE
 zY
 YZ
 QE
@@ -10991,7 +11032,7 @@ DS
 Kj
 Az
 QE
-ad
+YZ
 zY
 zY
 aw
@@ -11084,7 +11125,7 @@ tW
 Kj
 QE
 QE
-QE
+ue
 QE
 XA
 QE
@@ -11175,9 +11216,9 @@ tW
 tW
 UD
 Kj
-Kj
-Kj
-Kj
+QE
+nA
+QE
 DS
 Kj
 bA
@@ -11267,9 +11308,9 @@ Tw
 tW
 tW
 tW
-tW
-tW
-vY
+QE
+QB
+ym
 vY
 Ly
 DS
@@ -11359,8 +11400,8 @@ Ma
 tW
 tW
 IA
-tW
-tW
+QE
+Rw
 Na
 Kj
 Kj
@@ -11451,9 +11492,9 @@ Tw
 tW
 tW
 IA
-IA
-tW
-tW
+QE
+QE
+QE
 tW
 Kj
 Kj
@@ -11543,8 +11584,8 @@ Ma
 tW
 tW
 tW
-IA
-IA
+tW
+tW
 tW
 tW
 tW
@@ -11922,7 +11963,7 @@ CT
 CT
 CT
 Ov
-ke
+ad
 Ov
 CT
 CT
@@ -19456,9 +19497,9 @@ MM
 pX
 Wu
 Bi
-Bi
-Bi
-Bi
+Ee
+Ee
+Ee
 Bi
 Bi
 Bi
@@ -19550,7 +19591,7 @@ Wu
 Wu
 Wu
 Wu
-Bi
+Ee
 Bi
 Bi
 Bi

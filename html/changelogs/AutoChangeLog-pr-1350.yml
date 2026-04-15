@@ -1,0 +1,4 @@
+author: "zeroisthebiggay"
+delete-after: True
+changes:
+  - balance: "reduces spellcost of message and mindlink by one"

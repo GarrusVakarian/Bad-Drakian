@@ -228,7 +228,8 @@
 /obj/item/roguegem/random
 	name = "random gem"
 	desc = "You shouldn't be seeing this."
-	icon_state = null
+	icon = 'icons/roguetown/helpers/spawnerhelpers.dmi'
+	icon_state = "roguegem"
 
 /obj/item/roguegem/random/Initialize(mapload)
 	..()

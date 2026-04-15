@@ -347,7 +347,9 @@
 	/datum/job/roguetown/servant,\
 	/datum/job/roguetown/butler,\
 	/datum/job/roguetown/apothecary,\
-	/datum/job/roguetown/magician
+	/datum/job/roguetown/magician,\
+	/datum/job/roguetown/headslave,\
+	/datum/job/roguetown/slave,\
 
 #define NOBLE_ROLES \
 	/datum/job/roguetown/prince,\
@@ -359,7 +361,9 @@
 	/datum/job/roguetown/knight,\
 	/datum/job/roguetown/lady,\
 	/datum/job/roguetown/lord,\
-	/datum/job/roguetown/steward
+	/datum/job/roguetown/steward,\
+	/datum/job/roguetown/dtprince,\
+	/datum/job/roguetown/cataphract,\
 
 #define KING_QUEEN_ROLES \
 	/datum/job/roguetown/lady,\
@@ -418,6 +422,11 @@
 	/datum/job/roguetown/gatemaster,\
 	/datum/job/roguetown/manorguard,\
 	/datum/job/roguetown/squire,\
+	/datum/job/roguetown/guardsman,\
+	/datum/job/roguetown/janissary,\
+	/datum/job/roguetown/janissarysergeant,\
+	/datum/job/roguetown/azeb,\
+	/datum/job/roguetown/slavemaster,\
 	/datum/job/roguetown/rookie,\
 	/datum/job/roguetown/guardsman
 

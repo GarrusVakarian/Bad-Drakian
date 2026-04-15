@@ -20,6 +20,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	var/warden_area = FALSE
 	var/holy_area = FALSE
 	var/cell_area = FALSE
+	var/viewing_area = FALSE
 	var/ceiling_protected = FALSE //Prevents tunneling into these from above
 	var/hoardmaster_protected = FALSE//If a player enters, it ashes them. Your greed will consume you.
 	var/necra_area = FALSE
@@ -46,6 +47,8 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 			guy.apply_status_effect(/datum/status_effect/debuff/necrandeathdoorwilloss)
 		else
 			guy.apply_status_effect(/datum/status_effect/debuff/deathdoorwilloss)
+	if((src.viewing_area == TRUE) && !guy.has_status_effect(/datum/status_effect/buff/viewingbuff)) // unique buff when in an arena so you have a better view
+		guy.apply_status_effect(/datum/status_effect/buff/viewingbuff)
 	if((src.hoardmaster_protected == TRUE))//Your greed consumes you.
 		message_admins("[guy.real_name]([key_name(guy)]) was dusted by the Hoardmaster, at [ADMIN_JMP(src)]")
 		log_admin("[guy.real_name]([key_name(guy)]) was dusted by the Hoardmaster")
@@ -566,6 +569,9 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	droning_sound = 'sound/music/area/catacombs.ogg'
 	droning_sound_dusk = null
 	droning_sound_night = null
+	// first_time_text = "THE CRYPT OF THE TEN"
+
+/area/rogue/indoors/town/church/basement/crypt
 	first_time_text = "THE CRYPT OF THE TEN"
 
 /area/rogue/indoors/town/fire_chamber
@@ -744,6 +750,7 @@ GLOBAL_LIST_INIT(roguetown_areas_typecache, typecacheof(/area/rogue/indoors/town
 	droning_sound_dawn = 'sound/music/area/forest.ogg'
 	converted_type = /area/rogue/indoors/town/grove
 	deathsight_message = "A sacred place of dendor, near the tree of Aeons.."
+	first_time_text = null
 	droning_sound_dusk = null
 	droning_sound_night = null
 	warden_area = TRUE

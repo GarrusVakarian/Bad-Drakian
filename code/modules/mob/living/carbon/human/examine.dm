@@ -132,7 +132,7 @@
 			var/datum/job/J = SSjob.GetJob(job)
 			if(!J || J.wanderer_examine)
 				display_as_wanderer = TRUE
-			if(J.lowlife_examine)
+			else if(J.lowlife_examine)
 				display_as_lowlife = TRUE
 		var/rank_color = "#725D4C"
 		if(HAS_TRAIT(src, TRAIT_NOBLE) && social_rank < 4)

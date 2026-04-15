@@ -2240,7 +2240,7 @@ GLOBAL_VAR_INIT(cold_breath_overlay, mutable_appearance(
 				H.update_health_hud()
 			return
 		if(H.bodytemperature < BODYTEMP_COLD_LEVEL_ONE_MAX && !HAS_TRAIT(H, TRAIT_EXTREME_TEMPERATURE_IMMUNE))	//Level 2 cold - con punishment, frostbite, speed reduction
-			if(prob(15) && !(H.m_intent == MOVE_INTENT_SNEAK))
+			if(prob(15) && !(H.m_intent == MOVE_INTENT_SNEAK || H.alpha <= 120)) //if we're sneaking or invisible, no shivering
 				addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, emote), "shiver"), (rand(2,6)SECONDS),TIMER_UNIQUE | TIMER_STOPPABLE)
 			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, cold_warn)),20 SECONDS,TIMER_UNIQUE)
 			if(!H.hypothermia_timer_id)
@@ -2250,7 +2250,7 @@ GLOBAL_VAR_INIT(cold_breath_overlay, mutable_appearance(
 			H.relieve_heatstroke_from_cold()	//if you somehow bypass level 1, straight to level 2, still fix heatstroke
 		else	//level 1 cold
 			H.remove_movespeed_modifier(MOVESPEED_ID_COLD)
-			if(prob(5) && !(H.m_intent == MOVE_INTENT_SNEAK))
+			if(prob(5) && !(H.m_intent == MOVE_INTENT_SNEAK || H.alpha <= 120)) //if we're sneaking or invisible, no shivering
 				addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, emote), "shiver"), (rand(2,6)SECONDS),TIMER_UNIQUE | TIMER_STOPPABLE)
 			H.relieve_heatstroke_from_cold()	//if has heatstroke, body chill fixes it
 			addtimer(CALLBACK(H, TYPE_PROC_REF(/mob/living/carbon/human, cold_warn)),20 SECONDS,TIMER_UNIQUE)
@@ -2263,7 +2263,6 @@ GLOBAL_VAR_INIT(cold_breath_overlay, mutable_appearance(
 			H.heatstroke_timer_id = null
 		H.clear_alert("temp")
 		H.remove_movespeed_modifier(MOVESPEED_ID_COLD)
-	H.update_health_hud()
 // A general-purpose proc used to centralise checks to skip turf, movement, step, etc.
 // For if a mob is floating, flying, intangible, etc.
 /datum/species/proc/is_floor_hazard_immune(mob/living/carbon/human/owner)

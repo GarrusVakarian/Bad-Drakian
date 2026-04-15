@@ -2328,9 +2328,10 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 						return
 					if(link == "")
 						link = null
-						ShowChoices(user)
-						return
-					if(link == " ")
+						var/choice = tgui_alert(user, "Do you really want to clear your OOC Extra Image/Video/Gif?", "Clear OOC Extra Image/Video/Gif", list("Yae", "Nae"))
+						if(choice == "Nae")
+							ShowChoices(user)
+							return
 						ooc_extra_img = null
 						ooc_extra_img_link = null
 						to_chat(user, "<span class='notice'>Successfully deleted OOC Extra Image.</span>")
@@ -2364,9 +2365,10 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 						return
 					if(link == "")
 						link = null
-						ShowChoices(user)
-						return
-					if(link == " ")
+						var/choice = tgui_alert(user, "Do you really want to clear your NSFW OOC Extra Image/Video/Gif?", "Clear NSFW OOC Extra Image/Video/Gif", list("Yae", "Nae"))
+						if(choice == "Nae")
+							ShowChoices(user)
+							return
 						nsfw_ooc_extra_img = null
 						nsfw_ooc_extra_img_link = null
 						to_chat(user, "<span class='notice'>Successfully deleted NSFW OOC Extra Image.</span>")
