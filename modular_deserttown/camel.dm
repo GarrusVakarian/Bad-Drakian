@@ -108,7 +108,7 @@
 /mob/living/simple_animal/hostile/retaliate/rogue/camel/tame
 	tame = TRUE
 
-/mob/living/simple_animal/hostile/retaliate/rogue/camel/tame/saddled/Initialize()
+/mob/living/simple_animal/hostile/retaliate/rogue/camel/tame/saddled/Initialize(mapload)
 	. = ..()
 	var/obj/item/natural/saddle/S = new(src)
 	ssaddle = S

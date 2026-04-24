@@ -34,7 +34,7 @@
 /turf/open/floor/rogue/dunes/cardinal_smooth(adjacencies)
 	roguesmooth(adjacencies)
 
-/turf/open/floor/rogue/dunes/Initialize()
+/turf/open/floor/rogue/dunes/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 	icon_state = "dune[rand(1,16)]"
@@ -73,7 +73,7 @@
 	verbage = "constructs"
 	craftdiff = 1
 
-/turf/open/floor/rogue/sandbrick/Initialize()
+/turf/open/floor/rogue/sandbrick/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 	icon_state = "sand-brick[rand(1,4)]"
@@ -94,7 +94,7 @@
 	attacked_sound = list('sound/combat/hits/onstone/wallhit.ogg', 'sound/combat/hits/onstone/wallhit2.ogg', 'sound/combat/hits/onstone/wallhit3.ogg')
 	abstract_type = /turf/open/floor/rogue/citybrick
 
-/turf/open/floor/rogue/citybrick/Initialize()
+/turf/open/floor/rogue/citybrick/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 
@@ -104,7 +104,7 @@
 /turf/open/floor/rogue/citybrick/citybrick1
 	icon_state = "city-brick1-1"
 
-/turf/open/floor/rogue/citybrick/citybrick1/Initialize()
+/turf/open/floor/rogue/citybrick/citybrick1/Initialize(mapload)
 	. = ..()
 	icon_state = "city-brick1-[rand(1,4)]"
 
@@ -112,7 +112,7 @@
 /turf/open/floor/rogue/citybrick/citybrick2
 	icon_state = "city-brick2-1"
 
-/turf/open/floor/rogue/citybrick/citybrick2/Initialize()
+/turf/open/floor/rogue/citybrick/citybrick2/Initialize(mapload)
 	. = ..()
 	icon_state = "city-brick2-[rand(1,5)]"
 
@@ -124,14 +124,14 @@
 /turf/open/floor/rogue/citybrick/citybrick4
 	icon_state = "city-brick4-1"
 
-/turf/open/floor/rogue/citybrick/citybrick4/Initialize()
+/turf/open/floor/rogue/citybrick/citybrick4/Initialize(mapload)
 	. = ..()
 	icon_state = "city-brick4-[rand(1,2)]"
 
 /turf/open/floor/rogue/citybrick/citybrick5
 	icon_state = "city-brick5-1"
 
-/turf/open/floor/rogue/citybrick/citybrick5/Initialize()
+/turf/open/floor/rogue/citybrick/citybrick5/Initialize(mapload)
 	. = ..()
 	icon_state = "city-brick5-[rand(1,2)]"
 
@@ -139,7 +139,7 @@
 /turf/open/floor/rogue/citybrick/citybrick6
 	icon_state = "city-brick6-1"
 
-/turf/open/floor/rogue/citybrick/citybrick6/Initialize()
+/turf/open/floor/rogue/citybrick/citybrick6/Initialize(mapload)
 	. = ..()
 	icon_state = "city-brick6-[rand(1,2)]"
 
@@ -157,7 +157,7 @@
 /turf/open/floor/rogue/lightpath/cardinal_smooth(adjacencies)
 	roguesmooth(adjacencies)
 
-/turf/open/floor/rogue/lightpath/Initialize()
+/turf/open/floor/rogue/lightpath/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 	icon_state = "light-path[rand(1,8)]"
@@ -177,7 +177,7 @@
 /turf/open/floor/rogue/darkpath/cardinal_smooth(adjacencies)
 	roguesmooth(adjacencies)
 
-/turf/open/floor/rogue/darkpath/Initialize()
+/turf/open/floor/rogue/darkpath/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 	icon_state = "dark-path[rand(1,8)]"
@@ -231,7 +231,7 @@
 	spread_chance = 15
 	burn_power = 6
 
-/turf/open/floor/rogue/desert_grass/Initialize()
+/turf/open/floor/rogue/desert_grass/Initialize(mapload)
 	. = ..()
 	dir = pick(GLOB.cardinals)
 	icon_state = "desertgrass[rand(1,16)]"

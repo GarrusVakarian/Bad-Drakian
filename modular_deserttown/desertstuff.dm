@@ -22,7 +22,7 @@
 	icon_state = "zybantinedrape1"
 	color = "#a3a3a3"
 
-/obj/structure/drape/zybantine/Initialize()
+/obj/structure/drape/zybantine/Initialize(mapload)
 	. = ..()
 	icon_state = "zybantinedrape[rand(1, 2)]"
 
@@ -117,74 +117,74 @@
 	skillcraft = /datum/skill/craft/ceramics
 	craftdiff = 2
 
-/obj/structure/fermentation_keg/sandpot/Initialize()
+/obj/structure/fermentation_keg/sandpot/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot[rand(1, 2)]"
 
-/obj/structure/fermentation_keg/fancypot/Initialize()
+/obj/structure/fermentation_keg/fancypot/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot[rand(1, 2)]"
 
 
 // Subtypes for sandpots
-/obj/structure/fermentation_keg/sandpot/random/water/Initialize()
+/obj/structure/fermentation_keg/sandpot/random/water/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot1"
 	reagents.add_reagent(/datum/reagent/water, rand(0,900))
 
-/obj/structure/fermentation_keg/sandpot/random/beer/Initialize()
+/obj/structure/fermentation_keg/sandpot/random/beer/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/beer, rand(0,900))
 
-/obj/structure/fermentation_keg/sandpot/random/wine/Initialize()
+/obj/structure/fermentation_keg/sandpot/random/wine/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/wine, rand(0,900))
 
-/obj/structure/fermentation_keg/sandpot/water/Initialize()
+/obj/structure/fermentation_keg/sandpot/water/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot1"
 	reagents.add_reagent(/datum/reagent/water,900)
 
-/obj/structure/fermentation_keg/sandpot/beer/Initialize()
+/obj/structure/fermentation_keg/sandpot/beer/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/beer,900)
 
-/obj/structure/fermentation_keg/sandpot/wine/Initialize()
+/obj/structure/fermentation_keg/sandpot/wine/Initialize(mapload)
 	. = ..()
 	icon_state = "sandpot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/wine,900)
 
 
 // Subtypes for fancypots
-/obj/structure/fermentation_keg/fancypot/random/water/Initialize()
+/obj/structure/fermentation_keg/fancypot/random/water/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/water, rand(0,900))
 
-/obj/structure/fermentation_keg/fancypot/random/beer/Initialize()
+/obj/structure/fermentation_keg/fancypot/random/beer/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/beer, rand(0,900))
 
-/obj/structure/fermentation_keg/fancypot/random/wine/Initialize()
+/obj/structure/fermentation_keg/fancypot/random/wine/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/wine, rand(0,900))
 
-/obj/structure/fermentation_keg/fancypot/water/Initialize()
+/obj/structure/fermentation_keg/fancypot/water/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/water,900)
 
-/obj/structure/fermentation_keg/fancypot/beer/Initialize()
+/obj/structure/fermentation_keg/fancypot/beer/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/beer,900)
 
-/obj/structure/fermentation_keg/fancypot/wine/Initialize()
+/obj/structure/fermentation_keg/fancypot/wine/Initialize(mapload)
 	. = ..()
 	icon_state = "fancypot2"
 	reagents.add_reagent(/datum/reagent/consumable/ethanol/wine,900)
@@ -336,7 +336,7 @@
 	icon = 'modular_deserttown/icons/small_sandrock.dmi'
 	icon_state = "sandrock1"
 
-/obj/item/natural/rock/desert/Initialize()
+/obj/item/natural/rock/desert/Initialize(mapload)
 	. = ..()
 	icon_state = "sandrock[rand(1,2)]"
 
@@ -349,7 +349,7 @@
 	icon = 'modular_deserttown/icons/flora.dmi'
 	icon_state = "saigahorn1"
 
-/obj/structure/flora/roguegrass/bush/desert/Initialize()
+/obj/structure/flora/roguegrass/bush/desert/Initialize(mapload)
 	. = ..()
 	icon_state = "saigahorn[rand(1, 3)]"
 
@@ -362,7 +362,7 @@
 	max_integrity = 100
 	debris = list(/obj/item/natural/fibers = 1, /obj/item/grown/log/tree/stick = 1, /obj/item/grown/log/tree/small = 1)
 
-/obj/structure/flora/roguegrass/bush/desertshrub/Initialize()
+/obj/structure/flora/roguegrass/bush/desertshrub/Initialize(mapload)
 	. = ..()
 	icon_state = "bushshrub[pick(1,2)]"
 
@@ -375,7 +375,7 @@
 	pixel_x = -32
 	opacity = 0 //palm trees are skinny
 
-/obj/structure/flora/roguetree/palm/Initialize()
+/obj/structure/flora/roguetree/palm/Initialize(mapload)
 	. = ..()
 	icon_state = "palm[rand(1,2)]"
 
@@ -387,7 +387,7 @@
 	stump_type = null
 	pixel_x = -32
 
-/obj/structure/flora/roguetree/stump/palm/Initialize()
+/obj/structure/flora/roguetree/stump/palm/Initialize(mapload)
 	. = ..()
 	icon_state = "palmstump[rand(1,2)]"
 
