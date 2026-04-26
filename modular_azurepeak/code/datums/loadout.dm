@@ -1353,6 +1353,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Psydonian Tabard"
 	path = /obj/item/clothing/cloak/psydontabard
 
+/datum/loadout_item/tri_reform_tabard
+	name = "Reformist Tabard"
+	path = /obj/item/clothing/cloak/reformtabard
+
 /datum/loadout_item/tri_abyssor_tabard
 	name = "Abyssorite Tabard"
 	path = /obj/item/clothing/cloak/abyssortabard
