@@ -213,7 +213,7 @@
 		return ..()
 	return
 
-/obj/machinery/light/rogue/cauldron/folding/Initialize()
+/obj/machinery/light/rogue/cauldron/folding/Initialize(mapload)
 	. = ..()
 	burn_out()
 	create_reagents(60, DRAINABLE | AMOUNT_VISIBLE | REFILLABLE) //small
