@@ -79,6 +79,18 @@
 	)
 	adv_stat_ceiling = list(STAT_STRENGTH = 6)
 
+
+/datum/job/roguetown/keeper/proc/_delayed_path_choice(mob/living/carbon/human/H)
+	if(!H || !H.client || !H.mind)
+		return
+
+	var/choice = alert(H, "Choose your path.", "Keeper Doctrine", "Loyalist", "Radical")
+
+	if(choice == "Radical")
+		src.grant_radical_path(H)
+	else
+		src.grant_old_path(H)
+
 /datum/outfit/job/roguetown/keeper/basic/pre_equip(mob/living/carbon/human/H)
 	..()
 	neck = /obj/item/clothing/neck/roguetown/psicross/pestra
@@ -134,16 +146,4 @@
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/self/learnmiracle, H)
 
 	to_chat(H, span_notice("I embrace Pestra's radical doctrine."))
-
-
-/datum/job/roguetown/keeper/proc/_delayed_path_choice(mob/living/carbon/human/H)
-	if(!H || !H.client || !H.mind)
-		return
-
-	var/choice = alert(H, "Choose your path.", "Keeper Doctrine", "Loyalist", "Radical")
-
-	if(choice == "Radical")
-		src.grant_radical_path(H)
-	else
-		src.grant_old_path(H)
 
