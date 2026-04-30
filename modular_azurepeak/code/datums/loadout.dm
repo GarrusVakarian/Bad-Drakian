@@ -2035,6 +2035,14 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Catbell Collar"
 	path = /obj/item/clothing/neck/roguetown/collar/catbell
 
+/datum/loadout_item/catbell
+	name = "Catbell"
+	path = /obj/item/catbell
+
+/datum/loadout_item/cowbell
+	name = "Cowbell"
+	path = /obj/item/catbell/cow
+
 /datum/loadout_item/rope_leash
 	name = "Rope Leash"
 	path = /obj/item/leash
