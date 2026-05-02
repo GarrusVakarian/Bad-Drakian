@@ -145,7 +145,7 @@
 
 	ADD_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 
-	H.miracle_points += 4
+	H.miracle_points += 3
 	H.church_favor += 1500
 
 	var/datum/devotion/C = new /datum/devotion(H, H.patron)
@@ -153,6 +153,8 @@
 
 	if(!H.mind.has_spell(/obj/effect/proc_holder/spell/self/learnmiracle))
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/self/learnmiracle, H)
+	if(!H.mind.has_spell(/obj/effect/proc_holder/spell/invoked/resurrect/pestra))
+		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/resurrect/pestra, H)
 
 	to_chat(H, span_notice("I embrace Pestra's radical doctrine."))
 

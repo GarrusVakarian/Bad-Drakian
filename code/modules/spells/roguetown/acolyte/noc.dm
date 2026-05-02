@@ -114,11 +114,19 @@
 		/obj/effect/proc_holder/spell/invoked/stoneskin::name 			= /obj/effect/proc_holder/spell/invoked/stoneskin,
 		/obj/effect/proc_holder/spell/invoked/fortitude::name 			= /obj/effect/proc_holder/spell/invoked/fortitude, // Picking the most expensive options adds up to 12 points
 	)
+
 /obj/effect/proc_holder/spell/self/noc_spell_bundle/cast(list/targets, mob/user)
-	. = ..()
+	if(!..())
+		return FALSE
+	if(!user || !user.mind)
+		revert_cast()
+		return FALSE
 	var/choice = chosen_bundle
 	if(!chosen_bundle)
 		choice = alert(user, "What type of spells has Noc blessed you with?", "CHOOSE PATH", "Utility", "Offense", "Buffs")
+		if(!choice)
+			revert_cast()
+			return FALSE
 		chosen_bundle = choice
 	switch(choice)
 		if("Utility")
@@ -134,26 +142,46 @@
 			ADD_TRAIT(user, TRAIT_MAGEARMOR, TRAIT_MIRACLE)
 		else
 			revert_cast()
-
+			return FALSE
+	return TRUE
 
 /obj/effect/proc_holder/spell/self/noc_spell_bundle/proc/add_spells(mob/user, list/spells, choice_count = 1, grant_all = FALSE)
-	for(var/spell_type in spells)
-		if(user?.mind.has_spell(spells[spell_type]))
-			spells.Remove(spell_type)
+	if(!user || !user.mind || !islist(spells))
+		return
+	var/list/available = spells.Copy()
+	for(var/spell_type in available)
+		var/spell_path = available[spell_type]
+		if(!spell_path)
+			spell_path = spell_type
+		if(!ispath(spell_path, /obj/effect/proc_holder/spell))
+			available.Remove(spell_type)
+			continue
+		if(user.mind.has_spell(spell_path))
+			available.Remove(spell_type)
+	if(!available.len)
+		return
 	if(!grant_all)
 		var/choice_count_visual = choice_count
 		for(var/i in 1 to choice_count)
-			var/choice = input(user, "Choose a spell! Choices remaining: [choice_count_visual]") as null|anything in spells
-			if(!isnull(choice))
-				var/picked_spell = spells[choice]
+			if(!available.len)
+				break
+			var/choice = input(user, "Choose a spell! Choices remaining: [choice_count_visual]") as null|anything in available
+			if(isnull(choice))
+				break
+			var/picked_spell = available[choice]
+			if(ispath(picked_spell, /obj/effect/proc_holder/spell) && !user.mind.has_spell(picked_spell))
 				var/obj/effect/proc_holder/spell/new_spell = new picked_spell
-				user?.mind.AddSpell(new_spell)
-				choice_count_visual--
-				spells.Remove(choice)
+				user.mind.AddSpell(new_spell)
+			choice_count_visual--
+			available.Remove(choice)
 	else
-		for(var/spell_type in spells)
-			var/obj/effect/proc_holder/spell/new_spell = new spell_type
-			user?.mind.AddSpell(new_spell)
+		for(var/spell_type in available)
+			var/spell_path = available[spell_type]
+			if(!spell_path)
+				spell_path = spell_type
+			if(ispath(spell_path, /obj/effect/proc_holder/spell) && !user.mind.has_spell(spell_path))
+				var/obj/effect/proc_holder/spell/new_spell = new spell_path
+				user.mind.AddSpell(new_spell)
 
 //15 PER peer-ahead.
 /obj/effect/proc_holder/spell/invoked/noc_sight
