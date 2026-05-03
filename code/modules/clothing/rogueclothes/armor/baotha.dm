@@ -150,7 +150,7 @@
 	qdel(src)
 
 /obj/item/clothing/gloves/roguetown/chain/baotha
-	name = "baothan wristlets"
+	name = "baothan bracelets"
 	desc = "Powerful baothan magicks protect the exposed flesh beneath."
 	icon = 'icons/roguetown/clothing/feet.dmi'
 	icon_state = "anklets"
