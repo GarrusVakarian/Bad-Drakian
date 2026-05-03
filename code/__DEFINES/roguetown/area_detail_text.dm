@@ -72,10 +72,10 @@ Abyssor rests offshore. Even his quietest exhale is enough to send waves from th
 #define DETAIL_TEXT_SPILLWAY "Old Nemenor sewage. Fleeting sights of a once-future (a future!, but not the one that developed) renched from grasp and left to anaerobic scummery. The Rot has set a terminal infection here."
 #define DETAIL_TEXT_GETHSMANE "Leachate and hell-light; wading through bubbles of stinking broth roiled over a flameless brew with peristaltic standing-waves of shit and filth.\n\
 Rusted metals distantly grind in anoxic pus-condensate in-tune with the Signal. There is no peace, here; it has left the ground a long time ago. What killed them first? The Rot, or their own waterfunk-fuck waste?"
+#define DETAIL_TEXT_SUNKEN_CHURCH ""
 
 #define DETAIL_TEXT_HIS_VAULT ""
 #define DETAIL_TEXT_FISHMAN_DUNGEON ""
-#define DETAIL_TEXT_SUNKEN_CHURCH ""
 #define DETAIL_TEXT_BLOODY_ARENA "This place smells like iron curdleing on rust. A giant coliseum. Blood, Dirt and Sand.. "
 
 // Forsaken Cathedral // Wretched Ghrotto
