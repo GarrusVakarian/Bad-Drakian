@@ -213,7 +213,7 @@
 				dynwound = newwound
 				if(newwound && !isnull(newwound))	//don't even ask - Free
 					owner.visible_message(span_red("A new [newwound.name] appears on [owner]'s [LOWER_TEXT(bodyzone2readablezone(bodypart_to_zone(newwound.bodypart_owner)))]!"))
-					dynwound.upgrade(dam, armor, exposed)
+					newwound.upgrade(dam, armor, exposed)
 	return dynwound
 
 /// Behemoth of a proc used to apply a wound after a bodypart is damaged in an attack
