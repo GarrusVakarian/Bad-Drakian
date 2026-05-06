@@ -181,12 +181,3 @@
 	else if(HAS_TRAIT(mind?.current, TRAIT_LEGENDARY_ALCHEMIST))
 		REMOVE_TRAIT(mind?.current, TRAIT_LEGENDARY_ALCHEMIST, type)
 		//SEND_GLOBAL_SIGNAL(COMSIG_ATOM_ADD_TRAIT, (mind?.current, TRAIT_LEGENDARY_ALCHEMIST)
-
-/datum/skill/craft/traps
-	name = "Trapmaking"
-	desc = "Determines whether you can craft mantraps and if you can spot and disable traps."
-	dreams = list(
-		"...you spin a quiet silver wire across a hallway, lying in wait for your prey. The monstrous pale volf approaches. This time, you are prepared...",
-		"...the gleam of the trap's sharp teeth catches the dim light as you conceal it beneath layers of brush and foliage. To the untrained eye, it's nothing more than a harmless patch of grass - but you know better..."
-	)
-	expert_name = "Trapper"

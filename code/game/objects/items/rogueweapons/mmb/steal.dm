@@ -17,6 +17,7 @@
 			range_add = 0
 		var/steal_radius = 1 + range_add
 		if(get_dist(user_human, target_human) > steal_radius)
+			to_chat(user, span_warning("[target_human] is too far away."))
 			return
 		var/thiefskill = user.get_skill_level(/datum/skill/misc/stealing) + (has_world_trait(/datum/world_trait/matthios_fingers) ? 1 : 0)
 		var/stealroll = roll("[thiefskill]d6")

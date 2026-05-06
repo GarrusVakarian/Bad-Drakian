@@ -95,19 +95,22 @@
 
 /datum/job/roguetown/druid/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
 	..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		H.advsetup = 1
-		H.invisibility = INVISIBILITY_MAXIMUM
-		H.become_blind("advsetup")
+	if(!ishuman(L))
+		return
 
-		spawn(50)
-			if(H && H.client)
-				_delayed_path_choice(H)
+	var/mob/living/carbon/human/H = L
+	H.advsetup = 1
+	H.invisibility = INVISIBILITY_MAXIMUM
+	H.become_blind("advsetup")
+
+	spawn(50)
+		if(H && H.client)
+			_delayed_path_choice(H)
 
 /datum/job/roguetown/druid/proc/grant_old_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	REMOVE_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.reset_clergy_devotion(CLERIC_T4, CLERIC_REGEN_MAJOR, TRUE, CLERIC_REQ_4)
 	to_chat(H, span_notice("I remain on the old path of devotion."))
@@ -115,6 +118,7 @@
 /datum/job/roguetown/druid/proc/grant_radical_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	ADD_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.miracle_points += 3
 	H.church_favor += 1600

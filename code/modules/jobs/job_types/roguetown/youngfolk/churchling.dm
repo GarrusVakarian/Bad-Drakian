@@ -68,15 +68,17 @@
 
 /datum/job/roguetown/churchling/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
 	..()
-	if(ishuman(L))
-		var/mob/living/carbon/human/H = L
-		H.advsetup = 1
-		H.invisibility = INVISIBILITY_MAXIMUM
-		H.become_blind("advsetup")
+	if(!ishuman(L))
+		return
 
-		spawn(50)
-			if(H && H.client)
-				_delayed_path_choice(H)
+	var/mob/living/carbon/human/H = L
+	H.advsetup = 1
+	H.invisibility = INVISIBILITY_MAXIMUM
+	H.become_blind("advsetup")
+
+	spawn(50)
+		if(H && H.client)
+			_delayed_path_choice(H)
 
 /datum/job/roguetown/churchling/proc/_delayed_path_choice(mob/living/carbon/human/H)
 	if(!H || !H.client || !H.mind)
@@ -85,13 +87,14 @@
 	var/choice = alert(H, "Choose your path.", "Churchling Doctrine", "Loyalist", "Radical")
 
 	if(choice == "Radical")
-		src.grant_radical_path(H)
+		grant_radical_path(H)
 	else
-		src.grant_old_path(H)
+		grant_old_path(H)
 
 /datum/job/roguetown/churchling/proc/grant_old_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	REMOVE_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.reset_clergy_devotion(CLERIC_T1, CLERIC_REGEN_DEVOTEE, FALSE, CLERIC_REQ_1)
 	to_chat(H, span_notice("I remain on the old path of devotion."))
@@ -99,6 +102,7 @@
 /datum/job/roguetown/churchling/proc/grant_radical_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	ADD_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.church_favor += 1200
 	H.reset_clergy_devotion(CLERIC_T1, CLERIC_REGEN_DEVOTEE, FALSE, CLERIC_REQ_1)

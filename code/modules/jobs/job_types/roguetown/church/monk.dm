@@ -29,6 +29,7 @@
 /datum/job/roguetown/monk/proc/grant_old_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	REMOVE_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.reset_clergy_devotion(CLERIC_T4, CLERIC_REGEN_MAJOR, TRUE, CLERIC_REQ_4)
 	if(!H.mind.has_spell(/obj/effect/proc_holder/spell/invoked/projectile/divineblast))
@@ -38,6 +39,7 @@
 /datum/job/roguetown/monk/proc/grant_radical_path(mob/living/carbon/human/H)
 	if(!H || !H.mind || !H.patron)
 		return
+
 	ADD_TRAIT(H, TRAIT_CLERGYRADICAL, "job")
 	H.miracle_points += 3
 	H.church_favor += 1600
@@ -53,9 +55,9 @@
 	var/choice = alert(H, "Choose your path.", "Acolyte Doctrine", "Loyalist", "Radical")
 
 	if(choice == "Radical")
-		src.grant_radical_path(H)
+		grant_radical_path(H)
 	else
-		src.grant_old_path(H)
+		grant_old_path(H)
 
 /datum/job/roguetown/monk/after_spawn(mob/living/L, mob/M, latejoin = TRUE)
 	..()

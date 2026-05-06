@@ -196,9 +196,6 @@
 	name = "Corrupted stomach"
 	desc = "Tte cursed thing is inside me now."
 
-//datum/status_effect/buff/t3stomach/tick() - my fellow g*amer you should care about perfomance. Like, you can do this but WHY
-    //owner.adjustToxLoss(-5)
-
 /obj/item/organ/stomach/t3/Insert(mob/living/carbon/M)
 	..()
 	if(M)

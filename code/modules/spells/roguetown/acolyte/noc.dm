@@ -87,7 +87,7 @@
 	desc = "Allows you to learn a spell or two of a certain type once every cycle."
 	miracle = TRUE
 	devotion_cost = 200
-	recharge_time = 25 MINUTES
+	recharge_time = 50 MINUTES
 	chargetime = 0
 	chargedrain = 0
 	req_items = list(/obj/item/clothing/neck/roguetown/psicross)

@@ -72,28 +72,28 @@
 	var/wildshape_icon_state
 
 /mob/living/carbon/human/species/wildshape/proc/gain_inherent_skills()
-	if(src.mind)
-		src.adjust_skillrank(/datum/skill/magic/holy, 4, TRUE)
-		src.adjust_skillrank(/datum/skill/magic/holy, 4, TRUE) 
-		var/datum/devotion/D = src.devotion
+	if(mind)
+		adjust_skillrank(/datum/skill/magic/holy, 4, TRUE)
+		adjust_skillrank(/datum/skill/magic/holy, 4, TRUE)
+		var/datum/devotion/D = devotion
 		if(!D)
-			D = new /datum/devotion(src, src.patron)
+			D = new /datum/devotion(src, patron)
 
 		D.suppress_grants = TRUE
 
 		if(D.level < CLERIC_T2)
 			D.level = CLERIC_T2
-		D.last_level = D.level 
+		D.last_level = D.level
 
 		if(!D.passive_devotion_gain && !D.passive_progression_gain)
 			D.passive_devotion_gain = CLERIC_REGEN_MAJOR
 			D.passive_progression_gain = CLERIC_REGEN_MAJOR
 			START_PROCESSING(SSobj, D)
 
-		if(!( /mob/living/carbon/human/proc/devotionreport in src.verbs))
-			src.verbs += /mob/living/carbon/human/proc/devotionreport
-		if(!( /mob/living/carbon/human/proc/clericpray in src.verbs))
-			src.verbs += /mob/living/carbon/human/proc/clericpray			
+		if(!(/mob/living/carbon/human/proc/devotionreport in verbs))
+			verbs += /mob/living/carbon/human/proc/devotionreport
+		if(!(/mob/living/carbon/human/proc/clericpray in verbs))
+			verbs += /mob/living/carbon/human/proc/clericpray	
 
 /mob/living/carbon/human/species/wildshape/update_inv_gloves() //Prevents weird blood overlays
 	remove_overlay(GLOVES_LAYER)
