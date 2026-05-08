@@ -1193,6 +1193,16 @@
 	resident_role = /datum/job/roguetown/villager
 	lockid = null //Will be randomized
 
+/obj/structure/mineral_door/wood/kingsfield
+	locked = TRUE
+	keylock = TRUE
+	grant_resident_key = TRUE
+	resident_key_type = /obj/item/roguekey/townie
+	resident_role = /datum/job/roguetown/kingsfield_visitor
+	lockid = null //Will be randomized
+
+/obj/structure/mineral_door/wood/kingsfield/generic
+
 /obj/structure/mineral_door/wood/mercenary
 	locked = TRUE
 	keylock = TRUE

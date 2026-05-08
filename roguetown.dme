@@ -1982,6 +1982,7 @@
 #include "code\modules\jobs\job_types\roguetown\nobility\suitor.dm"
 #include "code\modules\jobs\job_types\roguetown\other\goblin.dm"
 #include "code\modules\jobs\job_types\roguetown\other\greater_skeleton.dm"
+#include "code\modules\jobs\job_types\roguetown\other\kingsfieldjobs.dm"
 #include "code\modules\jobs\job_types\roguetown\other\lich_skeleton.dm"
 #include "code\modules\jobs\job_types\roguetown\other\tester.dm"
 #include "code\modules\jobs\job_types\roguetown\other\vampire_guard.dm"
