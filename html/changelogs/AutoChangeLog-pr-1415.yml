@@ -1,4 +1,0 @@
-author: "hugmeorelse"
-delete-after: True
-changes:
-  - rscadd: "Ports from AP: Kill contracts, such as Kill, Outlaw, Raid, and so forth, now use proximity monitors to spawn the mobs in. This means, upon taking a contract, the mob won't be on the playing field until the contract itself is brought close to it."

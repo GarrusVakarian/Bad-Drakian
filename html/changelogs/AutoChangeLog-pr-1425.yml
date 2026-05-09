@@ -1,5 +1,0 @@
-author: "yupup123"
-delete-after: True
-changes:
-  - rscadd: "\"(JOIN)\" buttons for opposite server in lobby chat."
-  - admin: "Added an ADMIN LOG for when a player dies."

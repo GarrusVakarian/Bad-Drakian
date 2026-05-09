@@ -1,4 +1,0 @@
-author: "MarioTheShiba"
-delete-after: True
-changes:
-  - rscadd: "PQ Rework. PQ cap raised to 500. PQ harder to get at 100 PQ+. Under 100 PQ it's unchanged."

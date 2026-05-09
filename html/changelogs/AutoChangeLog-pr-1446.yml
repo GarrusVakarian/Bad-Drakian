@@ -1,5 +1,0 @@
-author: "zeroisthebiggay"
-delete-after: True
-changes:
-  - rscdel: "prefixing your message with \"+\" can no longer be used to whisper, use \"#\" instead"
-  - bugfix: "attempting to type a bolded message will no longer erroneously make you whisper it"

@@ -1,6 +1,0 @@
-author: "ariaworld"
-delete-after: True
-changes:
-  - rscadd: "Throwing anything into a river will now cause it to process and shift downstream."
-  - bugfix: "Rivers now stop processing when there's nothing in them."
-  - bugfix: "NPCs no longer try to swim upstream."

@@ -290,3 +290,91 @@
 		curcomm = 0
 	return curcomm
 
+/// Recalculates the unrewarded portion of a player's commends using the post-rework formula.
+/// Givers contribute 0.5 for the first commend and 0.05 for each subsequent one, mirroring add_commend()
+/// when PQ is at or above 100. A marker file ensures this only ever runs once per ckey.
+/// Sub-100 players are skipped because their commends were already awarded under the old rules.
+/proc/recalc_pq_from_commends(ckey, admin)
+	if(!ckey)
+		return 0
+	var/prefix = copytext(ckey, 1, 2)
+	var/marker = "data/player_saves/[prefix]/[ckey]/pq_recalc_v1.json"
+	if(fexists(marker))
+		return 0
+	if(get_playerquality(ckey) < 100)
+		return 0
+	var/commend_path = "data/player_saves/[prefix]/[ckey]/commends.json"
+	if(!fexists(commend_path))
+		return 0
+	var/list/commend_json = json_decode(file2text(commend_path))
+	if(!length(commend_json))
+		return 0
+	var/bonus = 0
+	for(var/giver in commend_json)
+		var/count = commend_json[giver]
+		if(count <= 0)
+			continue
+		bonus += 0.5 + (0.05 * (count - 1))
+	bonus = round(bonus, 0.01)
+	if(bonus <= 0)
+		return 0
+	adjust_playerquality(bonus, ckey, admin, "PQ rework backfill from [length(commend_json)] commenders")
+	WRITE_FILE(file(marker), json_encode(list("applied" = bonus, "round" = GLOB.rogue_round_id)))
+	return bonus
+
+/client/proc/recalc_pq_bulk()
+	set category = "-Special Verbs-"
+	set name = "PQ - Recalc From Commends (Bulk)"
+	set waitfor = FALSE
+	if(!holder || !check_rights(R_ADMIN, 0))
+		return
+	if(alert(src, "This will scan every player save and grant missing PQ from existing commends using the rework formula. Only players already at PQ 100+ are affected. Each ckey is processed once. Continue?", "PQ Bulk Recalc", "Yes", "No") != "Yes")
+		return
+	var/total_players = 0
+	var/total_bonus = 0
+	var/scanned = 0
+	for(var/prefix in flist("data/player_saves/"))
+		if(copytext(prefix, length(prefix)) != "/")
+			continue
+		for(var/ckey_dir in flist("data/player_saves/[prefix]"))
+			if(copytext(ckey_dir, length(ckey_dir)) != "/")
+				continue
+			var/the_ckey = ckey(copytext(ckey_dir, 1, length(ckey_dir)))
+			scanned++
+			if(!the_ckey)
+				continue
+			var/granted = recalc_pq_from_commends(the_ckey, src.ckey)
+			if(granted > 0)
+				total_players++
+				total_bonus += granted
+			CHECK_TICK
+	var/bulk_msg = "[src.ckey] ran PQ bulk recalc from commends: [scanned] scanned, [total_players] adjusted, +[round(total_bonus, 0.01)] PQ total."
+	to_chat(world, "<span class=\"admin\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message linkify\">[bulk_msg]</span></span>")
+	message_admins(bulk_msg)
+	log_admin(bulk_msg)
+
+/client/proc/recalc_pq_single()
+	set category = "-Special Verbs-"
+	set name = "PQ - Recalc From Commends (Single)"
+	if(!holder || !check_rights(R_ADMIN, 0))
+		return
+	var/the_ckey = ckey(stripped_input(src, "Which ckey?", "PQ Recalc", ""))
+	if(!the_ckey)
+		return
+	if(!fexists("data/player_saves/[copytext(the_ckey,1,2)]/[the_ckey]/preferences.sav"))
+		to_chat(src, span_boldwarning("User does not exist."))
+		return
+	var/marker = "data/player_saves/[copytext(the_ckey,1,2)]/[the_ckey]/pq_recalc_v1.json"
+	if(fexists(marker) && alert(src, "[the_ckey] has already been recalc'd. Force again? (this will double-pay them)", "PQ Recalc", "No", "Yes") != "Yes")
+		return
+	if(fexists(marker))
+		fdel(marker)
+	var/granted = recalc_pq_from_commends(the_ckey, src.ckey)
+	if(granted <= 0)
+		to_chat(src, span_boldwarning("No PQ granted to [the_ckey] (sub-100, no commends, or already processed)."))
+		return
+	var/single_msg = "[src.ckey] recalc'd [the_ckey]'s PQ from commends: +[round(granted, 0.01)]."
+	to_chat(world, "<span class=\"admin\"><span class=\"prefix\">ADMIN LOG:</span> <span class=\"message linkify\">[single_msg]</span></span>")
+	message_admins("[src.ckey] recalc'd [the_ckey]'s PQ from commends: +[round(granted, 0.01)].")
+	log_admin("[src.ckey] recalc'd [the_ckey]'s PQ from commends: +[round(granted, 0.01)].")
+

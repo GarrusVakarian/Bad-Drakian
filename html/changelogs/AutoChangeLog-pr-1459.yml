@@ -1,6 +1,0 @@
-author: "KeberosNihilus"
-delete-after: True
-changes:
-  - rscadd: "Added an Exotic Light Armor tab to the tailor's silverface."
-  - rscadd: "Filled the Exotic Light Armor tab with a bunch of exotic light armors. Who could've seen that coming?"
-  - balance: "Balanced(?) the exotic armors by making them cost slightly more than local light armors."
