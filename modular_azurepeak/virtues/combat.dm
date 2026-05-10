@@ -170,12 +170,12 @@
 	custom_text = "Colors your body a distinct, sickly green."
 	// below is functionally equivalent to dying and being resurrected via astrata T4 - yep, this is what it gives you.
 	added_traits = list(TRAIT_EASYDISMEMBER, TRAIT_NOPAIN, TRAIT_NOPAINSTUN, TRAIT_NOBREATH, TRAIT_TOXIMMUNE, TRAIT_ZOMBIE_IMMUNE, TRAIT_ROTMAN, TRAIT_SILVER_WEAK)
-	recipient.dna.species.soundpack_m = new /datum/voicepack/male/rotman() // this shit might not work
-	recipient.dna.species.soundpack_f = new /datum/voicepack/female/rotman()
 
 /datum/virtue/combat/rotcured/apply_to_human(mob/living/carbon/human/recipient)
 	recipient.update_body() // applies the rot skin tone stuff
-
+	recipient.dna.species.soundpack_m = new /datum/voicepack/male/rotman() // this shit might not work
+	recipient.dna.species.soundpack_f = new /datum/voicepack/female/rotman()
+	
 /datum/virtue/combat/dualwielder
 	name = "Dual Wielder"
 	desc = "Whether it was by the Naledi scholars, Etruscan privateers or even the Kazengan senseis. I've been graced with the knowledge of how to wield two weapons at once."
