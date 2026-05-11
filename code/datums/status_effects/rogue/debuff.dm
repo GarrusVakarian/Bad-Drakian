@@ -649,36 +649,6 @@
 /atom/movable/screen/alert/status_effect/debuff/knockout
 	name = "Drowsy"
 
-//Heretics in rite armour / with rite buffs being punished, for lingering on hallowed ground.
-//If they're captured, it's a moot point.
-/atom/movable/screen/alert/status_effect/overt_punishment
-	name = "Hallowed Ground"
-	desc = "The Ten have taken notice. I should not linger here!"
-	icon_state = "muscles"
-
-/datum/status_effect/debuff/overt_punishment
-	id = "overtpunish"
-	alert_type = /atom/movable/screen/alert/status_effect/overt_punishment
-//Extreme since it's just the cathedral. If you're seeing this frequently, you may be the issue.
-	effectedstats = list(STATKEY_STR = -6, STATKEY_PER = -4, STATKEY_INT = -4, STATKEY_WIL = -4, STATKEY_CON = -4, STATKEY_SPD = -4, STATKEY_LCK = -8)
-
-/datum/status_effect/debuff/overt_punishment/process()
-	.=..()
-	var/area/rogue/our_area = get_area(owner)
-	if(!(our_area.holy_area))
-		owner.remove_status_effect(/datum/status_effect/debuff/overt_punishment)
-
-/datum/status_effect/debuff/overt_punishment/on_apply()
-		. = ..()
-		var/mob/living/carbon/C = owner
-		C.add_movespeed_modifier(MOVESPEED_ID_DAMAGE_SLOWDOWN, multiplicative_slowdown = 1.5)
-
-/datum/status_effect/debuff/overt_punishment/on_remove()
-	. = ..()
-	if(iscarbon(owner))
-		var/mob/living/carbon/C = owner
-		C.remove_movespeed_modifier(MOVESPEED_ID_DAMAGE_SLOWDOWN)
-
 /datum/status_effect/debuff/lost_naledi_mask
 	id = "naledimask"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/naledimask
@@ -816,6 +786,7 @@
 		break
 	harpy.movement_type |= FLYING
 	harpy.dna.species.speedmod += 0.3
+	harpy.remove_movespeed_modifier(MOVESPEED_ID_LIVING_TURF_SPEEDMOD) // If they are slowed down (like being in water) remove it
 	harpy.add_movespeed_modifier(MOVESPEED_ID_SPECIES, TRUE, 100, override=TRUE, multiplicative_slowdown = harpy.dna.species.speedmod)
 	harpy.apply_status_effect(/datum/status_effect/debuff/flight_sound_loop)
 	ADD_TRAIT(harpy, TRAIT_SPELLCOCKBLOCK, ORGAN_TRAIT)
@@ -895,6 +866,7 @@
 
 /datum/status_effect/debuff/harpy_flight/proc/init_signals()
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(check_movement))
+	RegisterSignal(owner, COMSIG_LIVING_UPDATE_TURF_MOVESPEED, PROC_REF(on_turf_movespeed_update))
 
 /datum/status_effect/debuff/harpy_flight/proc/check_movement(datum/source) // rewritten by @tmyqlfpir
 	SIGNAL_HANDLER
@@ -911,12 +883,16 @@
 		cur_turf = temp_turf
 	shadow.forceMove(cur_turf)
 
+/datum/status_effect/debuff/harpy_flight/proc/on_turf_movespeed_update()
+	SIGNAL_HANDLER
+	return TURF_MOVESPEED_BLOCKED // Flying harpies do not get slowed down from turfs
+
 /datum/status_effect/debuff/harpy_flight/proc/remove_signals()
 	UnregisterSignal(owner, list(
 		COMSIG_MOVABLE_MOVED,
+		COMSIG_LIVING_UPDATE_TURF_MOVESPEED,
 	))
-	if(shadow)
-		QDEL_NULL(shadow)
+	QDEL_NULL(shadow)
 
 /datum/status_effect/debuff/harpy_passenger
 	id = "harpy_passenger"
@@ -1108,7 +1084,7 @@
 	var/mob/living/carbon/C = owner
 	to_chat(C, span_warning("My joints stiffen as the cold hardens my frame."))
 	ADD_TRAIT(C, TRAIT_CRITICAL_WEAKNESS, STATUS_EFFECT_TRAIT)
-	message_admins("debuff applied")
+
 /datum/status_effect/debuff/brittle/on_remove()
 	. = ..()
 	var/mob/living/carbon/C = owner

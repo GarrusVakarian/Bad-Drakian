@@ -1,5 +1,6 @@
 
 /mob/living/proc/run_armor_check(def_zone = null, attack_flag = "blunt", absorb_text = null, soften_text = null, armor_penetration, penetrated_text, damage, blade_dulling, peeldivisor, intdamfactor, used_weapon = null)
+	SEND_SIGNAL(src, COMSIG_LIVING_ARMOR_CHECKED)
 	var/armor = getarmor(def_zone, attack_flag, damage, armor_penetration, blade_dulling, peeldivisor, intdamfactor, used_weapon)
 
 	//the if "armor" check is because this is used for everything on /living, including humans
@@ -368,9 +369,9 @@
 
 
 /mob/living/attack_paw(mob/living/carbon/monkey/M)
-	if(isturf(loc) && istype(loc.loc, /area/start))
-//		to_chat(M, "No attacking people at spawn, you jackass.")
-		return FALSE
+// 	if(isturf(loc) && istype(loc.loc, /area/start))//commented out after deleting the areatype - this is old SS13 code
+// //		to_chat(M, "No attacking people at spawn, you jackass.")
+// 		return FALSE
 
 	if (M.used_intent.type == INTENT_HARM)
 		if(HAS_TRAIT(M, TRAIT_PACIFISM))
@@ -398,9 +399,9 @@
 	..()
 
 /mob/living/attack_paw(mob/living/carbon/monkey/M)
-	if(isturf(loc) && istype(loc.loc, /area/start))
-//		to_chat(M, "No attacking people at spawn, you jackass.")
-		return FALSE
+// 	if(isturf(loc) && istype(loc.loc, /area/start))//commented out after deleting the areatype - this is old SS13 code
+// //		to_chat(M, "No attacking people at spawn, you jackass.")
+// 		return FALSE
 
 	if (M.used_intent.type == INTENT_HARM)
 		if(HAS_TRAIT(M, TRAIT_PACIFISM))
