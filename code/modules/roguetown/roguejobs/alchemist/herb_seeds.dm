@@ -229,4 +229,3 @@
 /obj/item/herbseed/manabloom
 	makes_herb = /obj/structure/flora/roguegrass/herb/manabloom
 	seed_identity = "manabloom seeds"
-
