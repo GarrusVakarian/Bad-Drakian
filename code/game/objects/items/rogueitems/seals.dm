@@ -36,14 +36,14 @@
 	if(istype(I, /obj/item/inqarticles/tallowpot))
 		var/obj/item/inqarticles/tallowpot/pot = I
 		if(!pot.tallow)
-			to_chat(user, span_warning("The [pot] has no redtallow in it."))
+			to_chat(user, span_warning("The [pot] has no tallow in it."))
 			return
 		if(!pot.heatedup)
-			to_chat(user, span_warning("The redtallow in [pot] is hardened. I need to heat it first."))
+			to_chat(user, span_warning("The [pot.tallow] in [pot] is hardened. I need to heat it first."))
 			return
 		tallowed = TRUE
 		update_icon()
-		to_chat(user, span_notice("I coat [src] with melted redtallow."))
+		to_chat(user, span_notice("I coat [src] with melted [pot.tallow]."))
 		return
 
 	return ..()

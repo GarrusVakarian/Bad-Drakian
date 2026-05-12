@@ -678,7 +678,7 @@ Inquisitorial armory down here
 
 /obj/item/inqarticles/tallowpot
 	name = "tallowpot"
-	desc = "A small metal pot meant for holding waxes or melted redtallow. Convenient for coating signet rings and making an imprint. The warmth of a torch, lamptern, or candle should be enough to melt the redtallow for stamping writs."
+	desc = "A small metal pot meant for holding waxes or melted tallow. Convenient for coating signet rings and making an imprint. The warmth of a torch, lamptern, or candle should be enough to melt the tallow for stamping writs."
 	icon = 'icons/roguetown/items/misc.dmi'
 	icon_state = "tallowpot"
 	item_state = "tallowpot"
@@ -716,7 +716,7 @@ Inquisitorial armory down here
 	else
 		if(tallow)
 			if(!messageshown)
-				visible_message(span_info("The redtallow in [src] hardens again."))
+				visible_message(span_info("The [tallow] in [src] hardens again."))
 				messageshown = 1
 			update_icon()
 	if(remaining == 0)
@@ -726,15 +726,15 @@ Inquisitorial armory down here
 
 /obj/item/inqarticles/tallowpot/attacked_by(obj/item/I, mob/living/user)
 	. = ..()
-	if(istype(I, /obj/item/reagent_containers/food/snacks/tallow/red))
+	if(istype(I, /obj/item/reagent_containers/food/snacks/tallow/soft) || istype(I, /obj/item/reagent_containers/food/snacks/tallow/red))
 		if(!tallow)
-			var/obj/item/reagent_containers/food/snacks/tallow/red/Q = I
+			var/obj/item/reagent_containers/food/snacks/tallow/Q = I
 			tallow = Q
 			user.transferItemToLoc(Q, src, TRUE)
 			remaining = 300
 			update_icon()
 		else
-			to_chat(user, span_info("The [src] already has redtallow in it."))
+			to_chat(user, span_info("The [src] already has [tallow] in it."))
 
 	if(istype(I, /obj/item/flashlight/flare/torch/))
 		heatedup = 28
@@ -750,6 +750,7 @@ Inquisitorial armory down here
 		if(tallow && heatedup)
 			var/obj/item/clothing/ring/signet/ring = I
 			ring.tallowed = TRUE
+			ring.tallow_type = tallow.type
 			ring.update_icon()
 
 	if(istype(I, /obj/item/seal))

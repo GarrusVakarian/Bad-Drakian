@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import {
   Box,
   Button,
@@ -125,6 +125,8 @@ export const FaxPanel = (props) => {
   const [sendMode, setSendMode] = useState<'player' | 'hermes'>('player');
   const [sender, setSender] = useState('');
   const [body, setBody] = useState('');
+  const [previewBody, setPreviewBody] = useState('');
+  const [previewDirty, setPreviewDirty] = useState(false);
   const [stamp, setStamp] = useState('none');
   const [rim, setRim] = useState('none');
   const [itemPath, setItemPath] = useState('');
@@ -153,7 +155,27 @@ export const FaxPanel = (props) => {
     [trimmedBody, stamp, trimmedItemPath, trimmedSender, sendMode, hermes_list, master_exists, playerRecipient],
   );
 
-  const previewHtml = useMemo(() => body.replace(/\n/g, '<br>'), [body]);
+  useEffect(() => {
+    setPreviewDirty(true);
+  }, [body]);
+
+  useEffect(() => {
+    if (!previewDirty) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      setPreviewBody(body);
+      setPreviewDirty(false);
+    }, 450);
+    return () => clearTimeout(handle);
+  }, [previewDirty, body]);
+
+  const updatePreview = () => {
+    setPreviewBody(body);
+    setPreviewDirty(false);
+  };
+
+  const previewHtml = useMemo(() => previewBody.replace(/\n/g, '<br>'), [previewBody]);
 
   return (
     <Window width={900} height={760} title="Admin Fax Panel">
@@ -248,6 +270,14 @@ export const FaxPanel = (props) => {
           {/* Body */}
           <Stack.Item>
             <Section title="Letter Body">
+              <Box mb={1}>
+                <Button
+                  icon="sync"
+                  color={previewDirty ? 'average' : undefined}
+                  onClick={updatePreview}>
+                  Update Preview
+                </Button>
+              </Box>
               <TextArea
                 height="200px"
                 width="100%"

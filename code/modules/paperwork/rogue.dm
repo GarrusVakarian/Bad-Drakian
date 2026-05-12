@@ -307,13 +307,16 @@
 		return
 	if(in_range(user, src) || isobserver(user))
 		if(waxed)
-			to_chat(user, span_notice("This writ has been signed by [signee.real_name], sealed with redtallow, and can now be mailed back through the Hermes. The Archbishop will be pleased with this one."))
+			to_chat(user, span_notice("This writ has been signed by [signee.real_name], sealed with Inquisitorial Tallow, and can now be mailed back through the Hermes. The Archbishop will be pleased with this one."))
 		if(signed)
-			to_chat(user, span_notice("This writ has been signed by [signee.real_name], and can now be mailed back through the Hermes. Sealing it with redtallow would garner more favor from the Archbishop."))
+			to_chat(user, span_notice("This writ has been signed by [signee.real_name], and can now be mailed back through the Hermes. Sealing it with Inquisitorial Tallow would garner more favor from the Archbishop."))
 		else if(signee)
 			to_chat(user, span_notice("This writ is intended to be signed by [signee.real_name]."))
 		else
 			to_chat(user, span_notice("This writ has not yet been signed."))
+
+/obj/item/paper/inqslip/proc/requires_inquisitorial_tallow()
+	return istype(src, /obj/item/paper/inqslip/arrival) || istype(src, /obj/item/paper/inqslip/accusation) || istype(src, /obj/item/paper/inqslip/confession)
 
 /obj/item/paper/inqslip/accusation
 	name = "accusation"
@@ -447,10 +450,14 @@
 		if(waxed)
 			to_chat(user,  span_warning("It's already wax-sealed."))
 			return
+		if(S.tallowed && requires_inquisitorial_tallow() && !ispath(S.tallow_type, /obj/item/reagent_containers/food/snacks/tallow/red))
+			to_chat(user, span_warning("I must use Inquisitorial Tallow for this holy missive"))
+			return
 		if(S.tallowed && sealed)
 			waxed = TRUE
 			update_icon()
 			S.tallowed = FALSE
+			S.tallow_type = null
 			S.update_icon()
 			playsound(src, 'sound/items/inqslip_sealed.ogg', 75, TRUE, 4)
 			marquevalue += 2

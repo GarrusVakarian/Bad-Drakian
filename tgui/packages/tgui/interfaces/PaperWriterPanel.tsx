@@ -39,6 +39,7 @@ export const PaperWriterPanel = () => {
   const [draft, setDraft] = useState(initialDraft || '');
   const [font, setFont] = useState(backendFont || 'default');
   const [colorHex, setColorHex] = useState('862f20');
+  const [previewDirty, setPreviewDirty] = useState(false);
   const draftInputRef = useRef<HTMLTextAreaElement | null>(null);
 
   useEffect(() => {
@@ -51,13 +52,32 @@ export const PaperWriterPanel = () => {
 
   const pushDraft = (nextDraft: string, nextFont: string = font) => {
     setDraft(nextDraft);
-    act('update_draft', { draft: nextDraft, font: nextFont });
+    if (nextFont !== font) {
+      setFont(nextFont);
+    }
+    setPreviewDirty(true);
   };
 
   const pushFont = (nextFont: string) => {
     setFont(nextFont);
-    act('update_draft', { draft, font: nextFont });
+    setPreviewDirty(true);
   };
+
+  const updatePreview = () => {
+    act('update_draft', { draft, font });
+    setPreviewDirty(false);
+  };
+
+  useEffect(() => {
+    if (!previewDirty) {
+      return;
+    }
+    const handle = setTimeout(() => {
+      act('update_draft', { draft, font });
+      setPreviewDirty(false);
+    }, 450);
+    return () => clearTimeout(handle);
+  }, [previewDirty, draft, font]);
 
   const insertToken = (startToken: string, endToken = '') => {
     const input = draftInputRef.current;
@@ -185,6 +205,14 @@ export const PaperWriterPanel = () => {
               <Box mt={1} mb={1} color={remaining < 50 ? 'bad' : 'label'}>
                 Draft characters: {draft.length}/{maxlen}
               </Box>
+              <Box mb={1}>
+                <Button
+                  icon="sync"
+                  color={previewDirty ? 'average' : undefined}
+                  onClick={updatePreview}>
+                  Update Preview
+                </Button>
+              </Box>
               <textarea
                 ref={draftInputRef}
                 style={{
@@ -232,7 +260,10 @@ export const PaperWriterPanel = () => {
                 <Button
                   color="good"
                   icon="signature"
-                  onClick={() => act('sign')}>
+                  onClick={() => {
+                    updatePreview();
+                    act('sign');
+                  }}>
                   Sign
                 </Button>
               </Stack.Item>
