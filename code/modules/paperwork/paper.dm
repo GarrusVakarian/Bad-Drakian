@@ -161,9 +161,9 @@
 				to_chat(user, span_warning("I need a feather or thorn in hand to write."))
 				return TRUE
 
-				if(writer_body_imported && !text2num(params["force"]))
-					to_chat(user, span_warning("This document came from existing formatted text. Saving now may simplify old formatting. Press Save Anyway to confirm."))
-					return TRUE
+			if(writer_body_imported && !text2num(params["force"]))
+				to_chat(user, span_warning("This document came from existing formatted text. Saving now may simplify old formatting. Press Save Anyway to confirm."))
+				return TRUE
 
 			var/new_body = params["body"] || ""
 			new_body = copytext(new_body, 1, maxlen + 1)
@@ -177,7 +177,7 @@
 				return TRUE
 
 			writer_body = new_body
-				writer_body_imported = FALSE
+			writer_body_imported = FALSE
 			info = new_info
 			updateinfolinks()
 			update_icon_state()
@@ -187,7 +187,7 @@
 
 		if("clear")
 			writer_body = ""
-				writer_body_imported = FALSE
+			writer_body_imported = FALSE
 			info = ""
 			fields = 0
 			updateinfolinks()
