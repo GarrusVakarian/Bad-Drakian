@@ -80,6 +80,13 @@
 	dropshrink = 0.5
 	var/textper = 100
 	var/maxlen = 2000
+	var/folded = FALSE
+	var/open_empty_icon_state = "paper"
+	var/open_written_icon_state = "paperwrite"
+	var/folded_icon_state = "parchment_folded"
+	var/sealed_icon_state = "parchment_sealed"
+	var/sealed_tint_icon_state = "parchment_sealed_tint"
+	var/sealed_tint_icon_state = "parchment_sealed_tint"
 	///CSS applied to <body> when reading — used by fax letters to show a rim on the window border.
 	var/window_rim_style
 
@@ -214,6 +221,8 @@
 		var/obj/item/paper/scroll/S = src
 		if(!S.open)
 			return FALSE
+	else if(folded)
+		return FALSE
 	return TRUE
 
 /obj/item/paper/proc/open_writer_panel(mob/living/carbon/human/user, obj/item/P)
@@ -328,20 +337,34 @@
 		)
 
 /obj/item/paper/update_icon_state()
+	cut_overlay(sealed_tint_icon_state)
 	if(mailer)
-		icon_state = "paper_prep"
+		icon_state = sealed_icon_state
+		folded = TRUE
 		name = "letter"
 		throw_range = 7
+		if(seal_color)
+			var/mutable_appearance/tint_overlay = mutable_appearance(icon, sealed_tint_icon_state)
+			tint_overlay.color = seal_color
+			add_overlay(tint_overlay)
 		return
 	name = initial(name)
 	throw_range = initial(throw_range)
 	if(seal_label && !seal_broken)
-		icon_state = "slip_sealed"
+		icon_state = sealed_icon_state
+		folded = TRUE
+		if(seal_color)
+			var/mutable_appearance/tint_overlay = mutable_appearance(icon, sealed_tint_icon_state)
+			tint_overlay.color = seal_color
+			add_overlay(tint_overlay)
+		return
+	if(folded)
+		icon_state = folded_icon_state
 		return
 	if(info)
-		icon_state = "paperwrite"
+		icon_state = open_written_icon_state
 		return
-	icon_state = "paper"
+	icon_state = open_empty_icon_state
 
 /obj/item/paper/examine(mob/user)
 	. = ..()
@@ -430,6 +453,7 @@
 		cached_mailedto = mailedto
 		mailer = null
 		mailedto = null
+		folded = FALSE
 		update_icon()
 		return
 	if(trapped)
@@ -445,12 +469,31 @@
 		update_icon_state()
 		to_chat(user, span_notice("I break the wax seal on [src]."))
 		return
+	if(folded)
+		attack_right(user)
+		return
 	read(user)
 	if(rigged && (SSevents.holidays && SSevents.holidays[APRIL_FOOLS]))
 		if(!spam_flag)
 			spam_flag = TRUE
 			playsound(loc, 'sound/blank.ogg', 50, TRUE)
 			addtimer(CALLBACK(src, PROC_REF(reset_spamflag)), 20)
+
+/obj/item/paper/rmb_self(mob/user)
+	attack_right(user)
+	return
+
+/obj/item/paper/attack_right(mob/user)
+	if(mailer)
+		to_chat(user, span_warning("This letter is sealed for delivery and must be opened first."))
+		return
+	if(seal_label && !seal_broken)
+		to_chat(user, span_warning("The wax seal is still intact. I need to unseal it first."))
+		return
+	folded = !folded
+	playsound(src, folded ? 'sound/items/scroll_close.ogg' : 'sound/items/scroll_open.ogg', 100, FALSE)
+	update_icon_state()
+	user.update_inv_hands()
 
 /obj/item/paper/proc/addtofield(id, text, links = 0)
 	var/locid = 0
@@ -506,6 +549,7 @@
 	seal_color = initial(seal_color)
 	seal_is_official = initial(seal_is_official)
 	seal_broken = initial(seal_broken)
+	folded = initial(folded)
 	LAZYCLEARLIST(stamped)
 	cut_overlays()
 	updateinfolinks()

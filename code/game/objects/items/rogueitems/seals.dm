@@ -57,9 +57,6 @@
 		if(!pot.heatedup)
 			to_chat(user, span_warning("The [pot.loaded_tallow] in [pot] is hardened. I need to heat it first."))
 			return
-		if(pot.loaded_inquisitorial_tallow)
-			to_chat(user, span_warning("I must use a Signet Ring for Inquisitorial Missives"))
-			return
 		tallowed = TRUE
 		update_icon()
 		to_chat(user, span_notice("I coat [src] with melted [pot.loaded_tallow]."))

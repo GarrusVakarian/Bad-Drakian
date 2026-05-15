@@ -750,7 +750,7 @@ Inquisitorial armory down here
 		update_icon()
 
 	if(istype(I, /obj/item/clothing/ring/signet))
-		if(loaded_tallow && istype(loaded_tallow, /obj/item/reagent_containers/food/snacks/tallow/soft))
+		if(loaded_tallow && !loaded_inquisitorial_tallow)
 			to_chat(user, span_warning("I must use Inquisitorial Tallow for official missives."))
 			return
 		if(loaded_tallow && heatedup)
@@ -759,9 +759,6 @@ Inquisitorial armory down here
 			ring.update_icon()
 
 	if(istype(I, /obj/item/seal))
-		if(loaded_tallow && loaded_inquisitorial_tallow)
-			to_chat(user, span_warning("I must use a Signet Ring for Inquisitorial Missives"))
-			return
 		if(loaded_tallow && heatedup)
 			var/obj/item/seal/seal = I
 			seal.tallowed = TRUE

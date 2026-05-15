@@ -10,6 +10,14 @@
 	maxlen = 5000
 	throw_range = 3
 
+/obj/item/paper/scroll/Initialize(mapload)
+	. = ..()
+	open_empty_icon_state = "scroll"
+	open_written_icon_state = "scrollwrite"
+	folded_icon_state = "scroll_folded"
+	sealed_icon_state = "scroll_sealed"
+	sealed_tint_icon_state = "scroll_sealed_tint"
+
 
 /obj/item/paper/scroll/attackby(obj/item/P, mob/living/carbon/human/user, params)
 	if(istype(P, /obj/item/natural/thorn) || istype(P, /obj/item/natural/feather))
@@ -58,11 +66,6 @@
 	..()
 	user.update_inv_hands()
 
-/obj/item/paper/scroll/Initialize(mapload)
-	open = FALSE
-	update_icon_state()
-	..()
-
 /obj/item/paper/scroll/rmb_self(mob/user)
 	attack_right(user)
 	return
@@ -83,28 +86,37 @@
 	user.update_inv_hands()
 
 /obj/item/paper/scroll/update_icon_state()
+	cut_overlay(sealed_tint_icon_state)
 	if(mailer)
-		icon_state = "scroll_prep"
+		icon_state = sealed_icon_state
 		open = FALSE
 		name = "missive"
 		slot_flags |= ITEM_SLOT_HIP
 		throw_range = 7
+		if(seal_color)
+			var/mutable_appearance/tint_overlay = mutable_appearance(icon, sealed_tint_icon_state)
+			tint_overlay.color = seal_color
+			add_overlay(tint_overlay)
 		return
 	throw_range = initial(throw_range)
 	if(seal_label && !seal_broken)
-		icon_state = "slip_sealed"
+		icon_state = sealed_icon_state
 		open = FALSE
 		name = "sealed scroll"
 		slot_flags |= ITEM_SLOT_HIP
+		if(seal_color)
+			var/mutable_appearance/tint_overlay = mutable_appearance(icon, sealed_tint_icon_state)
+			tint_overlay.color = seal_color
+			add_overlay(tint_overlay)
 		return
 	if(open)
 		if(info)
-			icon_state = "scrollwrite"
+			icon_state = open_written_icon_state
 		else
-			icon_state = "scroll"
+			icon_state = open_empty_icon_state
 		name = initial(name)
 	else
-		icon_state = "scroll_closed"
+		icon_state = folded_icon_state
 		name = "scroll"
 
 //Fake reskin of a scroll for the dwarf mercs -- just a fluffy toy
