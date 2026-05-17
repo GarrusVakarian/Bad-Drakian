@@ -1,0 +1,5 @@
+author: "Xander3359"
+delete-after: True
+changes:
+  - bugfix: "Fixed the person a harpy carries up a z level immediately falling"
+  - bugfix: "Fixed the person buckled to a harpy being left behind when the harpy moves up or down"
