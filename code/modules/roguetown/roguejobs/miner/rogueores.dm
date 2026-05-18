@@ -130,7 +130,7 @@
 	var/quality = SMELTERY_LEVEL_NORMAL
 	grid_width = 64
 	grid_height = 32
-	dropshrink = 0.7
+	dropshrink = 0.8
 
 /obj/item/ingot/examine()
 	. += ..()

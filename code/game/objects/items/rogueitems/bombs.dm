@@ -13,6 +13,7 @@
 	var/prob2fail = 5
 	grid_width = 32
 	grid_height = 64
+	dropshrink = 0.7
 
 /obj/item/bomb/Initialize(mapload)
 	..()

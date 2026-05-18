@@ -176,6 +176,7 @@
 	attack_verb = list("stabbed", "slashed", "sliced", "cut")
 	max_integrity = 40
 	smeltresult = /obj/item/natural/glass/heated
+	dropshrink = 0.8
 
 /obj/item/natural/glass_shard/Initialize(mapload)
 	. = ..()
