@@ -2,17 +2,18 @@
 /datum/virtue/combat/magical_potential
 	name = "Arcyne Potential"
 	desc = "I am talented in the Arcyne arts, expanding my capacity for magic. I have become more intelligent from its studies. Other effects depends on what training I chose to focus on at a later age."
-	custom_text = "You gain +2 spellpoints and T1 Arcyne Potential, which comes with a limited, mostly flavor and non-combat spell list. If you already have skills with magic, you gain +1 level and +3 spell points."
+	custom_text = "Classes that has a combat trait (Medium / Heavy Armor Training, Dodge Expert or Critical Resistance) get only prestidigitation. Everyone else get +3 spellpoints and T1 Arcyne Potential if they don't have any Arcyne."
 	added_skills = list(list(/datum/skill/magic/arcane, 1, 6))
 
 /datum/virtue/combat/magical_potential/apply_to_human(mob/living/carbon/human/recipient)
 	if (!recipient.get_skill_level(/datum/skill/magic/arcane)) // we can do this because apply_to is always called first
 		if (!recipient.mind?.has_spell(/obj/effect/proc_holder/spell/targeted/touch/prestidigitation))
 			recipient.mind?.AddSpell(new /obj/effect/proc_holder/spell/targeted/touch/prestidigitation)
-		ADD_TRAIT(recipient, TRAIT_ARCYNE_T1, TRAIT_GENERIC)
-		recipient.mind?.adjust_spellpoints(2) // balance. message + darkvision/longstrider is agreee to be too strong, so pick one or the other
+		if (!HAS_TRAIT(recipient, TRAIT_MEDIUMARMOR) && !HAS_TRAIT(recipient, TRAIT_HEAVYARMOR) && !HAS_TRAIT(recipient, TRAIT_DODGEEXPERT) && !HAS_TRAIT(recipient, TRAIT_CRITICAL_RESISTANCE))
+			ADD_TRAIT(recipient, TRAIT_ARCYNE_T1, TRAIT_GENERIC)
+			recipient.mind?.adjust_spellpoints(3)
 	else
-		recipient.mind?.adjust_spellpoints(3) // everyone else that already has arcane gets their full 3, behavior unchanged
+		recipient.mind?.adjust_spellpoints(3) // 3 extra spellpoints since you don't get any spell point from the skill anymore
 	
 /datum/virtue/combat/devotee
 	name = "Devotee"
@@ -121,6 +122,20 @@
 	else
 		added_skills = list(list(/datum/skill/combat/bows, 1, 6))
 
+/datum/virtue/combat/crossbowman
+	name = "Crossbow Levy"
+	desc = "A crossbow is a simple weapon to use, but that's what makes it so effective. I've always kept a crossbow and some bolts around, just in case."
+	custom_text = "+1 to Crossbows, Up to Legendary, Minimum Apprentice"
+	added_stashed_items = list("Crossbow" = /obj/item/gun/ballistic/revolver/grenadelauncher/crossbow,
+								"Quiver (Bolts)" = /obj/item/quiver/bolts
+	)
+
+/datum/virtue/combat/crossbowman/apply_to_human(mob/living/carbon/human/recipient)
+	if(recipient.get_skill_level(/datum/skill/combat/crossbows) < SKILL_LEVEL_APPRENTICE)
+		recipient.adjust_skillrank_up_to(/datum/skill/combat/crossbows, SKILL_LEVEL_APPRENTICE, silent = TRUE)
+	else
+		added_skills = list(list(/datum/skill/combat/crossbows, 1, 6))
+
 /datum/virtue/combat/shepherd
 	name = "Capable Shepherd"
 	desc = "Years of protecting my herd from brigands and thieves have taught me how to use the simplest of weapons in self-defense."
@@ -182,6 +197,7 @@
 	name = "Natural Armor"
 	desc = "Whether by natural means or other means, my skin is strong enough to resist being pierced and cut."
 	custom_text = "This will replace your SHIRT slot with a regenerating, unremoveable armor."
+	added_traits = list(TRAIT_NATURALARMOR)
 
 /datum/virtue/combat/tough_hide/apply_to_human(mob/living/carbon/human/recipient)
 	. = ..()

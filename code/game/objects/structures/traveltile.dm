@@ -188,6 +188,8 @@
 	required_trait = TRAIT_VAMPMANSION
 /obj/structure/fluff/traveltile/wretch
 	required_trait = TRAIT_ZURCH //I'd tie this to trait_outlaw but unfortunately the heresiarch virtue exists so we're making a new trait instead.
+/obj/structure/fluff/traveltile/inq
+	required_trait = TRAIT_INQUISITION
 /obj/structure/fluff/traveltile/dungeon
 	name = "gate"
 	desc = "This gate's enveloping darkness is so oppressive you dread to step through it."
@@ -205,6 +207,11 @@
 	name = "mysterious portal"
 	icon = 'icons/roguetown/misc/structure.dmi'
 	icon_state = "shitportal"
+
+/obj/structure/fluff/traveltile/magicportal/unstable
+	desc = "flickering, warping magick. Where could it possibly lead?"
+	name = "unstable portal"
+	color = "#ff0d00"
 
 /obj/structure/fluff/traveltile/rockhillentrance
 	desc = "Awake from this dream. The road to Rockhill awaits."
