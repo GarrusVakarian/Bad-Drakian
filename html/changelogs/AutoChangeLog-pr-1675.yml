@@ -1,0 +1,4 @@
+author: "2whatever2"
+delete-after: True
+changes:
+  - balance: "Clamps now actually reduce bloodloss on attached limbs."
