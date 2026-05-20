@@ -197,12 +197,23 @@ export const PaperWriterPanel = () => {
                 Draft characters: {draft.length}/{maxlen}
               </Box>
               <Box mb={1}>
-                <Button
-                  icon="sync"
-                  color={previewDirty ? 'average' : undefined}
-                  onClick={updatePreview}>
-                  Update Preview
-                </Button>
+                <Stack wrap>
+                  <Stack.Item>
+                    <Button
+                      icon="sync"
+                      color={previewDirty ? 'average' : undefined}
+                      onClick={updatePreview}>
+                      Update Preview
+                    </Button>
+                  </Stack.Item>
+                  <Stack.Item>
+                    <Button
+                      icon="question-circle"
+                      onClick={() => act('help')}>
+                      Help
+                    </Button>
+                  </Stack.Item>
+                </Stack>
               </Box>
               <textarea
                 ref={draftInputRef}
