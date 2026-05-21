@@ -438,8 +438,8 @@ Traitors and the like can also be revived with the previous role mostly intact.
 		return
 
 	var/list/cake_types = list()
-	for(var/cake_path in typesof(/obj/item/reagent_containers/food/snacks/rogue/cake))
-		var/slice_type = initial(cake_path.slice_path)
+	for(var/obj/item/reagent_containers/food/snacks/rogue/cake/cake_item in typesof(/obj/item/reagent_containers/food/snacks/rogue/cake))
+		var/slice_type = initial(cake_item.slice_path)
 		if(!ispath(slice_type, /obj/item/reagent_containers/food/snacks/rogue))
 			continue
 		if(ispath(slice_type, /obj/item/reagent_containers/food/snacks/rogue/berrycakeslice/poison))
