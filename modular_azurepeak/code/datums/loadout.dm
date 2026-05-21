@@ -488,6 +488,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Sandals"
 	path = /obj/item/clothing/shoes/roguetown/sandals
 
+/datum/loadout_item/toga_sandals
+	name = "Fancy Sandals"
+	path = /obj/item/clothing/shoes/roguetown/sandals/toga_sandals
+
 /datum/loadout_item/shortboots
 	name = "Short Boots"
 	path = /obj/item/clothing/shoes/roguetown/shortboots
