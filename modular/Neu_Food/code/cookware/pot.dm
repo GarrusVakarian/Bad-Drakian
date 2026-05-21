@@ -41,12 +41,6 @@
 			reagents.trans_to(I, reagents.total_volume)
 	return TRUE
 
-/obj/item/reagent_containers/glass/bucket/pot/attack_obj(obj/target, mob/living/user)
-	if(has_lid && (user.used_intent.type == INTENT_POUR || user.used_intent.type == INTENT_SPLASH))
-		to_chat(user, span_warning("I need to remove the lid from [src] first."))
-		return
-	return ..()
-
 /obj/item/reagent_containers/glass/bucket/pot/decrepit
 	name = "decrepit pot"
 	desc = "A kettle of wrought bronze. One could only imagine what the stews of millennia prior must've tasted like; do you suppose they knew of seasonings-and-spices, too?"
