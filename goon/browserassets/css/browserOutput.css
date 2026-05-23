@@ -172,6 +172,11 @@ body {
 }
 
 @font-face {
+	font-family: "Hammerholdian";
+	src: url("hammerholdian.ttf");
+}
+
+@font-face {
 	font-family: "Romeodn";
 	src: url("aavnic.ttf");
 }
@@ -955,7 +960,7 @@ h2.alert {
 	font-size: 100%;
 }
 .hammerholdian {
-	font-family: "Jorvik Informal", "Pterra";
+	font-family: "Hammerholdian", "Pterra";
 	font-size: 100%;
 }
 .aavnic {
@@ -996,7 +1001,7 @@ h2.alert {
 .posh					{font-family: "Parisish", "Pterra"; font-size: 130%;}
 .etruscan				{font-family: "Feronia", "Pterra"; font-size: 100%;}
 .gronnic				{font-family: "Jorvik Informal", "Pterra"; font-size: 100%;}
-.hammerholdian			{font-family: "Jorvik Informal", "Pterra"; font-size: 100%;}
+.hammerholdian			{font-family: "Hammerholdian", "Pterra"; font-size: 100%;}
 .aavnic					{font-family: "Romeodn", "Pterra"; font-size: 100%;}
 .abyssal				{font-family: "Achilles", "Pterra"; font-size: 110%;}
 .felid					{font-family: "Rasyideen", "Pterra"; font-size: 120%;}
