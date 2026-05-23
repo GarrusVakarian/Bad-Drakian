@@ -28,6 +28,11 @@
 	req_bar = /obj/item/ingot/gold
 	craftdiff = SKILL_LEVEL_JOURNEYMAN
 
+/datum/anvil_recipe/tools/silver
+	abstract_type = /datum/anvil_recipe/tools/silver
+	req_bar = /obj/item/ingot/silver
+	craftdiff = SKILL_LEVEL_JOURNEYMAN
+
 /datum/anvil_recipe/tools/tin
 	abstract_type = /datum/anvil_recipe/tools/tin
 	req_bar = /obj/item/ingot/tin
@@ -323,20 +328,16 @@
 
 /datum/anvil_recipe/tools/silver/cups
 	name = "Goblets x2"
-	req_bar = /obj/item/ingot/silver
 	created_item = /obj/item/reagent_containers/glass/cup/silver
 	createditem_num = 2
-	craftdiff = 2
 
 /datum/anvil_recipe/tools/silver/cups/small
 	name = "Cups x3"
-	req_bar = /obj/item/ingot/silver
 	created_item = /obj/item/reagent_containers/glass/cup/silver/small
 	createditem_num = 3
 
 /datum/anvil_recipe/tools/silver/shovel
 	name = "Shovel, Silver (+1 Silver, +1 Small Log)"
-	req_bar = /obj/item/ingot/silver
 	additional_items = list(/obj/item/ingot/silver, /obj/item/grown/log/tree/small)
 	created_item = /obj/item/rogueweapon/shovel/silver
 
@@ -396,7 +397,6 @@
 
 /datum/anvil_recipe/tools/silver/platter
 	name = "Platter, Silver (x2)"
-	req_bar = /obj/item/ingot/silver
 	created_item = /obj/item/cooking/platter/silver
 
 /datum/anvil_recipe/tools/iron/spoon
@@ -418,7 +418,6 @@
 	created_item = /obj/item/kitchen/fork/tin
 
 /datum/anvil_recipe/tools/silver/fork
-	req_bar = /obj/item/ingot/silver
 	created_item = /obj/item/kitchen/fork/silver
 
 /datum/anvil_recipe/tools/gold/fork
