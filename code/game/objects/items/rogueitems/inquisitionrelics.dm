@@ -761,7 +761,7 @@ Inquisitorial armory down here
 		if(loaded_tallow && !loaded_inquisitorial_tallow)
 			to_chat(user, span_warning("I must use Inquisitorial Tallow for official missives."))
 			return
-		if(loaded_tallow && heatedup)
+		if(heatedup)
 			var/obj/item/clothing/ring/signet/ring = I
 			ring.tallowed = TRUE
 			ring.update_icon()
