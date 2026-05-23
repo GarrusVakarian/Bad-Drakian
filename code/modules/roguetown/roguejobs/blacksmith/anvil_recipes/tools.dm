@@ -154,8 +154,10 @@
 	createditem_num = 3
 
 /datum/anvil_recipe/tools/aalloy/bowl
-	name = "Bowl, Decrepit"
+	name = "Bowl, Decrepit (x2)"
 	created_item = /obj/item/reagent_containers/glass/bowl/aalloy
+	createditem_num = 2
+	craftdiff = 1
 
 /datum/anvil_recipe/tools/aalloy/fork
 	name = "Fork, Decrepit (x3)"
@@ -347,13 +349,11 @@
 	name = "Goblets x2"
 	created_item = /obj/item/reagent_containers/glass/cup/golden
 	createditem_num = 2
-	craftdiff = 2
 
 /datum/anvil_recipe/tools/gold/cups/small
 	name = "Cups x3"
 	created_item = /obj/item/reagent_containers/glass/cup/golden/small
 	createditem_num = 3
-	craftdiff = 2
 
 // --------- TIN -----------
 
@@ -361,7 +361,6 @@
 	name = "Goblets x2"
 	created_item = /obj/item/reagent_containers/glass/cup/tin
 	createditem_num = 2
-	craftdiff = 2
 
 /datum/anvil_recipe/tools/tin/cups/small
 	name = "Cups x3"
@@ -390,14 +389,17 @@
 /datum/anvil_recipe/tools/tin/platter
 	name = "Platter, Tin (x2)"
 	created_item = /obj/item/cooking/platter/pewter
+	createditem_num = 2
 
 /datum/anvil_recipe/tools/gold/platter
 	name = "Platter, Gold (x2)"
 	created_item = /obj/item/cooking/platter/gold
+	createditem_num = 2
 
 /datum/anvil_recipe/tools/silver/platter
 	name = "Platter, Silver (x2)"
 	created_item = /obj/item/cooking/platter/silver
+	createditem_num = 2
 
 /datum/anvil_recipe/tools/iron/spoon
 	name = "Spoon, Iron (x3)"
@@ -407,6 +409,7 @@
 /datum/anvil_recipe/tools/tin/spoon
 	name = "Spoon, Tin (x3)"
 	created_item = /obj/item/kitchen/spoon/tin
+	createditem_num = 3
 
 /datum/anvil_recipe/tools/iron/fork
 	name = "Fork, Iron (x3)"
@@ -416,18 +419,27 @@
 /datum/anvil_recipe/tools/tin/fork
 	name = "Fork, Tin (x3)"
 	created_item = /obj/item/kitchen/fork/tin
+	createditem_num = 3
 
 /datum/anvil_recipe/tools/silver/fork
+	name = "Fork, Silver (x3)"
 	created_item = /obj/item/kitchen/fork/silver
+	createditem_num = 3
 
 /datum/anvil_recipe/tools/gold/fork
+	name = "Fork, gold (x3)"
 	created_item = /obj/item/kitchen/fork/gold
+	createditem_num = 3
 
 /datum/anvil_recipe/tools/aalloy/fork
+	name = "Fork, decrepit (x3)"
 	created_item = /obj/item/kitchen/fork/aalloy
+	createditem_num = 3
 
 /datum/anvil_recipe/tools/iron/bowl
+	name = "bowl, iron (x2)"
 	created_item = /obj/item/reagent_containers/glass/bowl/iron
+	createditem_num = 2
 	craftdiff = 1
 
 // --------- CASTING TOOLS -----------
