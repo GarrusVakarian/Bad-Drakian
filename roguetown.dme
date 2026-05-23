@@ -2061,6 +2061,7 @@
 #include "code\modules\language\roguetown\fae.dm"
 #include "code\modules\language\roguetown\grenzelhoftian.dm"
 #include "code\modules\language\roguetown\gronnic.dm"
+#include "code\modules\language\roguetown\hammerholdian.dm"
 #include "code\modules\language\roguetown\hellspeak.dm"
 #include "code\modules\language\roguetown\merar.dm"
 #include "code\modules\language\roguetown\orc.dm"
