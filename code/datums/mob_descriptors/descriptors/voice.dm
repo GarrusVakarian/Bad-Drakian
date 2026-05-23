@@ -7,7 +7,7 @@
 	show_obscured = TRUE
 	var/voice_string
 
-/datum/mob_descriptor/voice/proc/get_speaking_name(var/voice_gender)
+/datum/mob_descriptor/voice/proc/get_speaking_name(voice_gender)
 	return "[voice_string ? voice_string : name] [voice_gender]"
 
 /datum/mob_descriptor/voice/ordinary
