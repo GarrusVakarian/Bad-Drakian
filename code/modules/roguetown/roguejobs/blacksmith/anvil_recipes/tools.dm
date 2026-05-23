@@ -283,7 +283,7 @@
 	created_item = /obj/item/storage/hip/headhook
 	i_type = "Tools"
 
-/datum/anvil_recipe/tools/scissors
+/datum/anvil_recipe/tools/iron/scissors
 	name = "Scissors"
 	created_item = /obj/item/rogueweapon/huntingknife/scissors
 	i_type = "Tools"
@@ -314,7 +314,7 @@
 	name = "Cleaver"
 	created_item = /obj/item/rogueweapon/huntingknife/cleaver
 
-/datum/anvil_recipe/tools/steelscissors
+/datum/anvil_recipe/tools/steel/scissors
 	name = "Scissors"
 	created_item = /obj/item/rogueweapon/huntingknife/scissors/steel
 	i_type = "Tools"
