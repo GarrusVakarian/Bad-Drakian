@@ -1,4 +1,0 @@
-author: "SneakySlinky"
-delete-after: True
-changes:
-  - bugfix: "fixed player-made books being blank"
