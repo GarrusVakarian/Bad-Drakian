@@ -1,3 +1,31 @@
+GLOBAL_VAR_INIT(hostile_ai_listtargets_calls, 0)
+GLOBAL_VAR_INIT(hostile_ai_candidates_scanned, 0)
+GLOBAL_VAR_INIT(hostile_ai_observer_candidates_filtered, 0)
+GLOBAL_VAR_INIT(hostile_ai_newplayer_candidates_filtered, 0)
+GLOBAL_VAR_INIT(hostile_ai_canattack_calls, 0)
+GLOBAL_VAR_INIT(hostile_ai_canattack_observer_rejects, 0)
+GLOBAL_VAR_INIT(hostile_ai_canattack_newplayer_rejects, 0)
+
+/proc/get_hostile_ai_targeting_metrics()
+	return list(
+		"listtargets_calls" = GLOB.hostile_ai_listtargets_calls,
+		"candidates_scanned" = GLOB.hostile_ai_candidates_scanned,
+		"observer_candidates_filtered" = GLOB.hostile_ai_observer_candidates_filtered,
+		"newplayer_candidates_filtered" = GLOB.hostile_ai_newplayer_candidates_filtered,
+		"canattack_calls" = GLOB.hostile_ai_canattack_calls,
+		"canattack_observer_rejects" = GLOB.hostile_ai_canattack_observer_rejects,
+		"canattack_newplayer_rejects" = GLOB.hostile_ai_canattack_newplayer_rejects,
+	)
+
+/proc/reset_hostile_ai_targeting_metrics()
+	GLOB.hostile_ai_listtargets_calls = 0
+	GLOB.hostile_ai_candidates_scanned = 0
+	GLOB.hostile_ai_observer_candidates_filtered = 0
+	GLOB.hostile_ai_newplayer_candidates_filtered = 0
+	GLOB.hostile_ai_canattack_calls = 0
+	GLOB.hostile_ai_canattack_observer_rejects = 0
+	GLOB.hostile_ai_canattack_newplayer_rejects = 0
+
 /mob/living/simple_animal/hostile
 	faction = list("hostile")
 	stop_automated_movement_when_pulled = 0
@@ -169,8 +197,16 @@
 //////////////HOSTILE MOB TARGETTING AND AGGRESSION////////////
 
 /mob/living/simple_animal/hostile/proc/ListTargets() //Step 1, find out what we can see
+	GLOB.hostile_ai_listtargets_calls++
 	if(!search_objects)
 		. = hearers(vision_range, targets_from) - src //Remove self, so we don't suicide
+		GLOB.hostile_ai_candidates_scanned += length(.)
+		for(var/mob/dead/observer/O in .)
+			. -= O
+			GLOB.hostile_ai_observer_candidates_filtered++
+		for(var/mob/dead/new_player/N in .)
+			. -= N
+			GLOB.hostile_ai_newplayer_candidates_filtered++
 
 		var/static/hostile_machines = typecacheof(list())
 
@@ -235,7 +271,14 @@
 
 // Please do not add one-off mob AIs here, but override this function for your mob
 /mob/living/simple_animal/hostile/CanAttack(atom/the_target)//Can we actually attack a possible target?
+	GLOB.hostile_ai_canattack_calls++
 	if(isturf(the_target) || !the_target || the_target.type == /atom/movable/lighting_object) // bail out on invalids
+		return FALSE
+	if(isobserver(the_target))
+		GLOB.hostile_ai_canattack_observer_rejects++
+		return FALSE
+	if(isnewplayer(the_target))
+		GLOB.hostile_ai_canattack_newplayer_rejects++
 		return FALSE
 
 	if(binded)
