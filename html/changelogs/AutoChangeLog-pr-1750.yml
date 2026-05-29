@@ -1,0 +1,5 @@
+author: "coffeecoffeecoffee"
+delete-after: True
+changes:
+  - rscadd: "Added Watchman Blue and Midnight Violet as default colors, added a new Astrata's Yellow, renaming the old."
+  - rscdel: "Removed Xylix Pink as a default selectable color."
