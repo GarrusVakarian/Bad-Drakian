@@ -411,7 +411,8 @@
 		/obj/item/book/granter/spell/blackstone/fetch = 10,
 		/obj/item/reagent_containers/glass/bottle/alchemical/spdpot = 10,
 		/obj/item/book/granter/spell/blackstone/bonechill = 10,
-		/obj/item/book/granter/spell/blackstone/skeleton = 10,
+		/obj/item/book/granter/spell/blackstone/skeleton = 5,
+		/obj/item/book/granter/spell/blackstone/skeleton/lesser = 15,
 		/obj/item/book/granter/spell/blackstone/sicknessray = 15,
 		/obj/item/reagent_containers/glass/bottle/rogue/emberwine = 10,
 		/obj/item/reagent_containers/glass/bottle/alchemical/spidervenom_paralytic = 5,
@@ -440,7 +441,8 @@
 		/obj/effect/spawner/lootdrop/potion_poisons = 10,
 		/obj/item/reagent_containers/glass/bottle/alchemical/intpot = 5,
 		/obj/item/book/granter/spell/blackstone/bonechill = 10,
-		/obj/item/book/granter/spell/blackstone/skeleton = 10,
+		/obj/item/book/granter/spell/blackstone/skeleton = 5,
+		/obj/item/book/granter/spell/blackstone/skeleton/lesser = 15,
 		/obj/item/book/granter/spell/blackstone/sicknessray = 15,
 	)
 /obj/effect/spawner/lootdrop/graggar
