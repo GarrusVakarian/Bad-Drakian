@@ -1308,6 +1308,14 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!istype(M) || !M.mind)
 		return null
 
+	var/special_role = M.mind.special_role
+	var/assigned_role = M.mind.assigned_role || M.job
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		var/list/candidate = get_orbit_antag_candidate(M, A, special_role, assigned_role)
+		if(candidate && candidate["group"])
+			return candidate["group"]
+
 	var/static/list/major_antag_typecache = typecacheof(list(
 		/datum/antagonist/werewolf,
 		/datum/antagonist/vampire,
@@ -1335,79 +1343,105 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!istype(M) || !M.mind)
 		return null
 
-	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/vampire/lord))
-			return list("group" = "major", "label" = "Vampire Lord")
-		if(istype(A, /datum/antagonist/vampire/ancillae))
-			return list("group" = "major", "label" = "Ancillae Vampire")
-		if(istype(A, /datum/antagonist/vampire/licker))
-			return list("group" = "major", "label" = "Lesser Vampire")
-		if(istype(A, /datum/antagonist/vampire/thinblood))
-			return list("group" = "major", "label" = "Thinblood Vampire")
+	var/best_priority = 100000
+	var/best_group = null
+	var/best_label = null
+	var/special_role = M.mind.special_role
+	var/assigned_role = M.mind.assigned_role || M.job
 
 	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/vampire))
-			var/datum/antagonist/vampire/V = A
-			if(V.generation >= GENERATION_METHUSELAH)
-				return list("group" = "major", "label" = "Vampire Lord")
-			if(M.mind.special_role == "Vampire Spawn")
-				return list("group" = "major", "label" = "Vampire Spawn")
-			return list("group" = "major", "label" = "Lesser Vampire")
+		var/list/candidate = get_orbit_antag_candidate(M, A, special_role, assigned_role)
+		if(!candidate)
+			continue
 
-	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/werewolf))
-			var/label = A.name
-			if(label == "Lesser Verevolf")
-				return list("group" = "major", "label" = "Lesser Werewolf")
-			return list("group" = "major", "label" = "Werewolf")
+		var/candidate_priority = candidate["priority"]
+		if(candidate_priority < best_priority)
+			best_priority = candidate_priority
+			best_group = candidate["group"]
+			best_label = candidate["label"]
 
-	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/lich))
-			return list("group" = "major", "label" = "Lich")
+	if(best_group && best_label)
+		return list(
+			"group" = best_group,
+			"label" = best_label,
+		)
 
-	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/skeleton/knight))
-			return list("group" = "minor", "label" = "Death Knight")
-		if(istype(A, /datum/antagonist/skeleton))
-			if(M.mind.special_role == ROLE_LICH_SKELETON)
-				return list("group" = "minor", "label" = "Lich Skeleton")
-			if(M.mind.special_role == ROLE_NECRO_SKELETON)
-				return list("group" = "minor", "label" = "Necromancer Skeleton")
-			var/assigned_role = M.mind.assigned_role || M.job
-			if(HAS_TRAIT(M, TRAIT_LICHLAIR))
-				return list("group" = "minor", "label" = "Lich Skeleton")
-			if(assigned_role == "Fortified Skeleton" || assigned_role == "Greater Skeleton")
-				return list("group" = "minor", "label" = "Necromancer Skeleton")
-			return list("group" = "minor", "label" = "Skeleton")
+	return null
 
-	for(var/datum/antagonist/A in M.mind.antag_datums)
-		if(istype(A, /datum/antagonist/bandit))
-			return list("group" = "minor", "label" = "Bandit")
-		if(istype(A, /datum/antagonist/wretch))
-			return list("group" = "minor", "label" = "Wretch")
-		if(istype(A, /datum/antagonist/gnoll))
-			return list("group" = "minor", "label" = "Gnoll")
+/datum/orbit_menu/proc/get_orbit_antag_candidate(mob/M, datum/antagonist/A, special_role, assigned_role)
+	if(!istype(A))
+		return null
 
+	if(istype(A, /datum/antagonist/vampire/lord))
+		return list("priority" = 10, "group" = "major", "label" = "Vampire Lord")
+	if(istype(A, /datum/antagonist/vampire/ancillae))
+		return list("priority" = 11, "group" = "major", "label" = "Ancillae Vampire")
+	if(istype(A, /datum/antagonist/vampire/licker))
+		return list("priority" = 12, "group" = "major", "label" = "Lesser Vampire")
+	if(istype(A, /datum/antagonist/vampire/thinblood))
+		return list("priority" = 13, "group" = "major", "label" = "Thinblood Vampire")
+	if(istype(A, /datum/antagonist/vampire))
+		var/datum/antagonist/vampire/V = A
+		if(V.generation >= GENERATION_METHUSELAH)
+			return list("priority" = 14, "group" = "major", "label" = "Vampire Lord")
+		if(special_role == "Vampire Spawn")
+			return list("priority" = 15, "group" = "major", "label" = "Vampire Spawn")
+		return list("priority" = 16, "group" = "major", "label" = "Lesser Vampire")
+
+	if(istype(A, /datum/antagonist/werewolf))
+		if(A.name == "Lesser Verevolf")
+			return list("priority" = 20, "group" = "major", "label" = "Lesser Werewolf")
+		return list("priority" = 21, "group" = "major", "label" = "Werewolf")
+
+	if(istype(A, /datum/antagonist/lich))
+		return list("priority" = 30, "group" = "major", "label" = "Lich")
+
+	if(istype(A, /datum/antagonist/skeleton/knight))
+		return list("priority" = 40, "group" = "minor", "label" = "Death Knight")
+	if(istype(A, /datum/antagonist/skeleton))
+		if(special_role == ROLE_LICH_SKELETON)
+			return list("priority" = 41, "group" = "minor", "label" = "Lich Skeleton")
+		if(special_role == ROLE_NECRO_SKELETON)
+			return list("priority" = 42, "group" = "minor", "label" = "Necromancer Skeleton")
+		if(HAS_TRAIT(M, TRAIT_LICHLAIR))
+			return list("priority" = 43, "group" = "minor", "label" = "Lich Skeleton")
+		if(assigned_role == "Fortified Skeleton" || assigned_role == "Greater Skeleton")
+			return list("priority" = 44, "group" = "minor", "label" = "Necromancer Skeleton")
+		return list("priority" = 45, "group" = "minor", "label" = "Skeleton")
+
+	if(istype(A, /datum/antagonist/bandit))
+		return list("priority" = 50, "group" = "minor", "label" = "Bandit")
+	if(istype(A, /datum/antagonist/wretch))
+		return list("priority" = 51, "group" = "minor", "label" = "Wretch")
+	if(istype(A, /datum/antagonist/gnoll))
+		return list("priority" = 52, "group" = "minor", "label" = "Gnoll")
+
+	var/list/extra_candidate = get_orbit_extra_antag_candidate(A, special_role)
+	if(extra_candidate)
+		return extra_candidate
+
+	return null
+
+/datum/orbit_menu/proc/get_orbit_extra_antag_candidate(datum/antagonist/A, special_role)
 	var/static/list/orbit_extra_antag_definitions = list(
-		list("type" = /datum/antagonist/ascendant, "group" = "major"),
-		list("type" = /datum/antagonist/maniac, "group" = "major"),
-		list("type" = /datum/antagonist/dreamwalker, "group" = "major"),
-		list("type" = /datum/antagonist/unbound_death_knight, "group" = "major"),
-		list("type" = /datum/antagonist/zizo_knight, "group" = "major"),
-		list("type" = /datum/antagonist/prebel/head, "group" = "minor"),
-		list("type" = /datum/antagonist/prebel, "group" = "minor"),
-		list("type" = /datum/antagonist/aspirant, "group" = "minor"),
-		list("type" = /datum/antagonist/assassin, "group" = "minor"),
-		list("type" = /datum/antagonist/thievesguild, "group" = "minor"),
+		list("type" = /datum/antagonist/ascendant, "group" = "major", "priority" = 60),
+		list("type" = /datum/antagonist/dreamwalker, "group" = "major", "priority" = 61),
+		list("type" = /datum/antagonist/unbound_death_knight, "group" = "major", "priority" = 62),
+		list("type" = /datum/antagonist/zizo_knight, "group" = "major", "priority" = 63),
+		list("type" = /datum/antagonist/prebel/head, "group" = "minor", "priority" = 70),
+		list("type" = /datum/antagonist/prebel, "group" = "minor", "priority" = 71),
+		list("type" = /datum/antagonist/aspirant, "group" = "minor", "priority" = 72),
+		list("type" = /datum/antagonist/assassin, "group" = "minor", "priority" = 73),
+		list("type" = /datum/antagonist/thievesguild, "group" = "minor", "priority" = 74),
 	)
 
 	for(var/list/def in orbit_extra_antag_definitions)
-		for(var/datum/antagonist/A in M.mind.antag_datums)
-			if(istype(A, def["type"]))
-				return list(
-					"group" = def["group"],
-					"label" = A.name || M.mind.special_role || "Antagonist",
-				)
+		if(istype(A, def["type"]))
+			return list(
+				"priority" = def["priority"],
+				"group" = def["group"],
+				"label" = A.name || special_role || "Antagonist",
+			)
 
 	return null
 

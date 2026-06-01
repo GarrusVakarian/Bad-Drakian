@@ -180,13 +180,24 @@ function getHealthStateColor(healthPercent?: number) {
   return '#c92a2a';
 }
 
-function buildItemTooltip(displayName: string, item: OrbitTarget) {
+function buildItemTooltip(
+  displayName: string,
+  item: OrbitTarget,
+  sectionKey: OrbitSectionKey,
+) {
+  if (sectionKey === 'ghosts') {
+    return displayName;
+  }
+
   const roleText = getRoleLabel(item);
   const healthText = `${item.health_percent ?? '?'}%`;
   return `${displayName} | ${roleText} | ${healthText} health`;
 }
 
-function buildIndexedTarget(item: OrbitTarget): OrbitTargetIndexed {
+function buildIndexedTarget(
+  item: OrbitTarget,
+  sectionKey: OrbitSectionKey,
+): OrbitTargetIndexed {
   const displayName = getDisplayName(item.full_name);
   const roleLabel = getRoleLabel(item);
   const healthStateColor = getHealthStateColor(item.health_percent);
@@ -198,7 +209,7 @@ function buildIndexedTarget(item: OrbitTarget): OrbitTargetIndexed {
     ...item,
     searchKey: buildSearchKey(item),
     displayName,
-    tooltip: buildItemTooltip(displayName, item),
+    tooltip: buildItemTooltip(displayName, item, sectionKey),
     roleLabel,
     healthStateColor,
     healthTextColor: getTextColorForBackground(healthStateColor),
@@ -273,7 +284,9 @@ export const Orbit = () => {
   const indexedData = useMemo(() => {
     return SECTIONS.reduce((indexed, section) => {
       const source = (data[section.key] || []) as OrbitTarget[];
-      indexed[section.key] = source.map(buildIndexedTarget);
+      indexed[section.key] = source.map((item) =>
+        buildIndexedTarget(item, section.key),
+      );
       return indexed;
     }, {} as Record<OrbitSectionKey, OrbitTargetIndexed[]>);
   }, [data]);
