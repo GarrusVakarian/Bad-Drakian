@@ -1,4 +1,0 @@
-author: "kimesik"
-delete-after: True
-changes:
-  - rscadd: "Archivist now knows Canilunzt, Merar and Grimorian Sign Speak. If they are a Zizoist, they also know Zizo Chant."
