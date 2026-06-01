@@ -18,7 +18,7 @@ type OrbitTarget = {
   orbiters?: number;
   job?: string;
   role?: string;
-  antag_group?: 'queueable' | 'supernatural';
+  antag_group?: 'minor' | 'major';
   selection_color?: string;
   health_percent?: number;
 };
@@ -129,27 +129,27 @@ export const Orbit = () => {
       const roleGroups: RoleGroup[] = [];
 
       if (section.key === 'alive') {
-        const queueableAntags: OrbitTarget[] = [];
-        const supernaturalAntags: OrbitTarget[] = [];
+        const minorAntags: OrbitTarget[] = [];
+        const majorAntags: OrbitTarget[] = [];
         const normalAlive: OrbitTarget[] = [];
 
         filtered.forEach((item) => {
-          if (item.antag_group === 'queueable') {
-            queueableAntags.push(item);
+          if (item.antag_group === 'minor') {
+            minorAntags.push(item);
             return;
           }
-          if (item.antag_group === 'supernatural') {
-            supernaturalAntags.push(item);
+          if (item.antag_group === 'major') {
+            majorAntags.push(item);
             return;
           }
           normalAlive.push(item);
         });
 
-        if (queueableAntags.length > 0) {
-          roleGroups.push({ label: 'Minor', items: queueableAntags });
+        if (minorAntags.length > 0) {
+          roleGroups.push({ label: 'Minor', items: minorAntags });
         }
-        if (supernaturalAntags.length > 0) {
-          roleGroups.push({ label: 'Major', items: supernaturalAntags });
+        if (majorAntags.length > 0) {
+          roleGroups.push({ label: 'Major', items: majorAntags });
         }
 
         roleGroups.push(...groupByRoleLabel(normalAlive));

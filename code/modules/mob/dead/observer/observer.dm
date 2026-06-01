@@ -1297,15 +1297,15 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!istype(M) || !M.mind)
 		return null
 
-	var/has_queueable = FALSE
+	var/has_minor = FALSE
 	for(var/datum/antagonist/A in M.mind.antag_datums)
 		if(istype(A, /datum/antagonist/werewolf) || istype(A, /datum/antagonist/vampire) || istype(A, /datum/antagonist/lich))
-			return "supernatural"
+			return "major"
 		if(istype(A, /datum/antagonist/bandit) || istype(A, /datum/antagonist/wretch) || istype(A, /datum/antagonist/gnoll))
-			has_queueable = TRUE
+			has_minor = TRUE
 
-	if(has_queueable)
-		return "queueable"
+	if(has_minor)
+		return "minor"
 
 	return null
 
