@@ -1331,6 +1331,86 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	return null
 
+/datum/orbit_menu/proc/get_orbit_antag_info(mob/M)
+	if(!istype(M) || !M.mind)
+		return null
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/vampire/lord))
+			return list("group" = "major", "label" = "Vampire Lord")
+		if(istype(A, /datum/antagonist/vampire/ancillae))
+			return list("group" = "major", "label" = "Ancillae Vampire")
+		if(istype(A, /datum/antagonist/vampire/licker))
+			return list("group" = "major", "label" = "Lesser Vampire")
+		if(istype(A, /datum/antagonist/vampire/thinblood))
+			return list("group" = "major", "label" = "Thinblood Vampire")
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/vampire))
+			var/datum/antagonist/vampire/V = A
+			if(V.generation >= GENERATION_METHUSELAH)
+				return list("group" = "major", "label" = "Vampire Lord")
+			if(M.mind.special_role == "Vampire Spawn")
+				return list("group" = "major", "label" = "Vampire Spawn")
+			return list("group" = "major", "label" = "Lesser Vampire")
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/werewolf))
+			var/label = A.name
+			if(label == "Lesser Verevolf")
+				return list("group" = "major", "label" = "Lesser Werewolf")
+			return list("group" = "major", "label" = "Werewolf")
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/lich))
+			return list("group" = "major", "label" = "Lich")
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/skeleton/knight))
+			return list("group" = "minor", "label" = "Death Knight")
+		if(istype(A, /datum/antagonist/skeleton))
+			if(M.mind.special_role == ROLE_LICH_SKELETON)
+				return list("group" = "minor", "label" = "Lich Skeleton")
+			if(M.mind.special_role == ROLE_NECRO_SKELETON)
+				return list("group" = "minor", "label" = "Necromancer Skeleton")
+			var/assigned_role = M.mind.assigned_role || M.job
+			if(HAS_TRAIT(M, TRAIT_LICHLAIR))
+				return list("group" = "minor", "label" = "Lich Skeleton")
+			if(assigned_role == "Fortified Skeleton" || assigned_role == "Greater Skeleton")
+				return list("group" = "minor", "label" = "Necromancer Skeleton")
+			return list("group" = "minor", "label" = "Skeleton")
+
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/bandit))
+			return list("group" = "minor", "label" = "Bandit")
+		if(istype(A, /datum/antagonist/wretch))
+			return list("group" = "minor", "label" = "Wretch")
+		if(istype(A, /datum/antagonist/gnoll))
+			return list("group" = "minor", "label" = "Gnoll")
+
+	var/static/list/orbit_extra_antag_definitions = list(
+		list("type" = /datum/antagonist/ascendant, "group" = "major"),
+		list("type" = /datum/antagonist/maniac, "group" = "major"),
+		list("type" = /datum/antagonist/dreamwalker, "group" = "major"),
+		list("type" = /datum/antagonist/unbound_death_knight, "group" = "major"),
+		list("type" = /datum/antagonist/zizo_knight, "group" = "major"),
+		list("type" = /datum/antagonist/prebel/head, "group" = "minor"),
+		list("type" = /datum/antagonist/prebel, "group" = "minor"),
+		list("type" = /datum/antagonist/aspirant, "group" = "minor"),
+		list("type" = /datum/antagonist/assassin, "group" = "minor"),
+		list("type" = /datum/antagonist/thievesguild, "group" = "minor"),
+	)
+
+	for(var/list/def in orbit_extra_antag_definitions)
+		for(var/datum/antagonist/A in M.mind.antag_datums)
+			if(istype(A, def["type"]))
+				return list(
+					"group" = def["group"],
+					"label" = A.name || M.mind.special_role || "Antagonist",
+				)
+
+	return null
+
 /datum/orbit_menu/proc/serialize_atom(atom/movable/target, list/namecounts, list/role_color_cache)
 	if(!istype(target))
 		return null
@@ -1357,9 +1437,14 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(ismob(target))
 		var/mob/M = target
 		if(M.stat != DEAD && !isobserver(M))
-			var/antag_group = get_orbit_antag_group(M)
-			if(antag_group)
-				entry["antag_group"] = antag_group
+			var/list/antag_info = get_orbit_antag_info(M)
+			if(antag_info)
+				entry["antag_group"] = antag_info["group"]
+				entry["antag_role"] = antag_info["label"]
+			else
+				var/antag_group = get_orbit_antag_group(M)
+				if(antag_group)
+					entry["antag_group"] = antag_group
 		if(M.mind?.assigned_role)
 			var/assigned_role = M.mind.assigned_role
 			entry["role"] = assigned_role

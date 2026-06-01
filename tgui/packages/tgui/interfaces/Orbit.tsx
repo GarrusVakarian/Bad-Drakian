@@ -18,6 +18,7 @@ type OrbitTarget = {
   orbiters?: number;
   job?: string;
   role?: string;
+  antag_role?: string;
   antag_group?: 'minor' | 'major';
   selection_color?: string;
   health_percent?: number;
@@ -91,15 +92,25 @@ function buildRoleGroupsForSection(
   const { minor, major, normal } = splitAliveByAntag(filtered);
 
   const roleGroups: RoleGroup[] = [];
-  if (minor.length > 0) {
-    roleGroups.push({ label: 'Minor', items: minor });
-  }
-  if (major.length > 0) {
-    roleGroups.push({ label: 'Major', items: major });
-  }
+  roleGroups.push(...groupAntagsByType(minor, 'Minor'));
+  roleGroups.push(...groupAntagsByType(major, 'Major'));
   roleGroups.push(...groupByRoleLabel(normal));
 
   return roleGroups;
+}
+
+function groupAntagsByType(
+  items: OrbitTargetIndexed[],
+  groupName: 'Minor' | 'Major',
+): RoleGroup[] {
+  if (items.length === 0) {
+    return [];
+  }
+
+  return groupByRoleLabel(items).map((group) => ({
+    label: `${groupName} - ${group.label}`,
+    items: group.items,
+  }));
 }
 
 function groupByRoleLabel(items: OrbitTargetIndexed[]): RoleGroup[] {
@@ -123,11 +134,11 @@ function groupByRoleLabel(items: OrbitTargetIndexed[]): RoleGroup[] {
 }
 
 function buildSearchKey(item: OrbitTarget) {
-  return `${item.full_name} ${item.job || ''} ${item.role || ''}`.toLowerCase();
+  return `${item.full_name} ${item.job || ''} ${item.role || ''} ${item.antag_role || ''}`.toLowerCase();
 }
 
 function getRoleLabel(item: OrbitTarget) {
-  return item.role || item.job || UNASSIGNED_ROLE_LABEL;
+  return item.antag_role || item.role || item.job || UNASSIGNED_ROLE_LABEL;
 }
 
 function getDisplayName(fullName: string) {
