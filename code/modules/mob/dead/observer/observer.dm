@@ -58,6 +58,8 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	// of the mob
 	var/deadchat_name
 	var/datum/spawners_menu/spawners_menu
+	var/datum/orbit_menu/orbit_menu
+	var/orbiting_ref
 	var/ghostize_time = 0
 	move_resist = INFINITY
 
@@ -233,6 +235,7 @@ GLOBAL_VAR_INIT(observer_default_invisibility, INVISIBILITY_OBSERVER)
 	STOP_PROCESSING(SShaunting, src)
 
 	QDEL_NULL(spawners_menu)
+	QDEL_NULL(orbit_menu)
 	return ..()
 
 /mob/dead/CanPass(atom/movable/mover, turf/target)
@@ -658,6 +661,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			rot_seg = 36 //360/10 bby, smooth enough aproximation of a circle
 
 	orbit(target,orbitsize, FALSE, 20, rot_seg)
+	orbiting_ref = REF(target)
 
 /mob/dead/observer/orbit()
 	setDir(2)//reset dir so the right directional sprites show up
@@ -666,6 +670,7 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 /mob/dead/observer/stop_orbit(datum/component/orbiter/orbits)
 	. = ..()
+	orbiting_ref = null
 	//restart our floating animation after orbit is done.
 	pixel_y = 0
 	pixel_x = 0
@@ -1100,6 +1105,18 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	spawners_menu.ui_interact(src)
 
+/mob/dead/observer/proc/open_orbit_menu()
+	set name = "Orbit"
+	set desc = ""
+	set category = "Ghost"
+	set hidden = 1
+	if(!check_rights(R_WATCH))
+		return
+	if(!orbit_menu)
+		orbit_menu = new(src)
+
+	orbit_menu.ui_interact(src)
+
 /mob/dead/observer/proc/tray_view()
 	set category = "Ghost"
 	set name = "T-ray view"
@@ -1129,3 +1146,144 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			client.images += t_ray_images
 		else
 			client.images -= stored_t_ray_images
+
+/datum/orbit_menu
+	var/mob/dead/observer/owner
+
+/datum/orbit_menu/New(mob/dead/observer/new_owner)
+	if(!istype(new_owner))
+		qdel(src)
+		return
+	owner = new_owner
+	..()
+
+/datum/orbit_menu/Destroy()
+	owner = null
+	return ..()
+
+/datum/orbit_menu/ui_interact(mob/user, datum/tgui/ui)
+	ui = SStgui.try_update_ui(user, src, ui)
+	if(!ui)
+		ui = new(user, src, "Orbit", "Orbit", 460, 560)
+		ui.set_state(GLOB.observer_state)
+		ui.set_autoupdate(FALSE)
+		ui.open()
+
+/datum/orbit_menu/ui_static_data(mob/user)
+	return build_orbit_data(user)
+
+/datum/orbit_menu/ui_data(mob/user)
+	var/list/data = list()
+	data["orbiting_ref"] = owner?.orbiting_ref
+	return data
+
+/datum/orbit_menu/ui_act(action, list/params, datum/tgui/ui, datum/ui_state/state)
+	if(..())
+		return TRUE
+
+	if(!istype(owner) || !isobserver(ui?.user))
+		return TRUE
+
+	switch(action)
+		if("orbit")
+			var/ref = params["ref"]
+			if(!ref)
+				return TRUE
+
+			var/atom/movable/target = locate(ref)
+			if(!istype(target))
+				to_chat(ui.user, span_notice("That target is no longer available."))
+				return TRUE
+
+			if(is_hidden_from_ghosts(target, owner))
+				to_chat(ui.user, span_notice("That target is protected from ghost orbit."))
+				return TRUE
+
+			owner.ManualFollow(target)
+			SStgui.update_uis(src)
+			return TRUE
+
+		if("refresh")
+			ui.send_full_update()
+			return TRUE
+
+	return FALSE
+
+/datum/orbit_menu/proc/build_orbit_data(mob/user)
+	var/list/data = list(
+		"alive" = list(),
+		"dead" = list(),
+		"ghosts" = list(),
+		"misc" = list(),
+		"npcs" = list(),
+	)
+
+	var/list/namecounts = list()
+
+	for(var/mob/M in sortmobs())
+		if(M.client?.holder?.fakekey)
+			continue
+		if(is_hidden_from_ghosts(M, user))
+			continue
+
+		var/list/entry = serialize_atom(M, namecounts)
+		if(!entry)
+			continue
+
+		if(isobserver(M))
+			data["ghosts"] += list(entry)
+			continue
+
+		if(M.stat == DEAD)
+			data["dead"] += list(entry)
+			continue
+
+		if(!M.mind && !M.ckey)
+			data["npcs"] += list(entry)
+			continue
+
+		data["alive"] += list(entry)
+
+	for(var/atom/movable/A in GLOB.poi_list)
+		if(!A || !A.loc)
+			continue
+		if(ismob(A))
+			continue
+
+		var/list/entry = serialize_atom(A, namecounts)
+		if(!entry)
+			continue
+
+		data["misc"] += list(entry)
+
+	return data
+
+/datum/orbit_menu/proc/serialize_atom(atom/movable/target, list/namecounts)
+	if(!istype(target))
+		return null
+
+	var/display_name
+	if(ismob(target))
+		var/mob/M = target
+		display_name = avoid_assoc_duplicate_keys(M.real_name || M.name, namecounts)
+		if(M.real_name && M.real_name != M.name)
+			display_name += " \[[M.name]\]"
+	else
+		display_name = avoid_assoc_duplicate_keys(target.name, namecounts)
+
+	var/orbiter_count = 0
+	if(target.orbiters)
+		orbiter_count = length(target.orbiters.orbiters)
+
+	var/list/entry = list(
+		"full_name" = display_name,
+		"ref" = REF(target),
+		"orbiters" = orbiter_count,
+	)
+
+	if(ismob(target))
+		var/mob/M = target
+		if(M.job)
+			entry["job"] = M.job
+
+	return entry
