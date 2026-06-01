@@ -28,7 +28,6 @@ type OrbitData = {
   dead: OrbitTarget[];
   ghosts: OrbitTarget[];
   misc: OrbitTarget[];
-  npcs: OrbitTarget[];
   orbiting_ref?: string;
 };
 
@@ -44,11 +43,25 @@ type RoleGroup = {
   items: OrbitTarget[];
 };
 
+function groupByRoleLabel(items: OrbitTarget[]): RoleGroup[] {
+  const grouped = items.reduce((groups, item) => {
+    const label = getRoleLabel(item);
+    const bucket = groups.get(label) || [];
+    bucket.push(item);
+    groups.set(label, bucket);
+    return groups;
+  }, new Map<string, OrbitTarget[]>());
+
+  return [...grouped.entries()]
+    .sort(([a], [b]) => a.localeCompare(b))
+    .map(([label, groupedItems]) => ({ label, items: groupedItems }));
+}
+
 function itemMatches(item: OrbitTarget, query: string) {
   if (!query) {
     return true;
   }
-  const haystack = `${item.full_name} ${item.job || ''}`.toLowerCase();
+  const haystack = `${item.full_name} ${item.job || ''} ${item.role || ''}`.toLowerCase();
   return haystack.includes(query);
 }
 
@@ -57,7 +70,7 @@ function getRoleLabel(item: OrbitTarget) {
 }
 
 function getDisplayName(fullName: string) {
-  // Because of ghostness
+  // Hide server-side duplicate suffixes like " (2)" in button labels.
   return fullName.replace(/ \(\d+\)$/, '');
 }
 
@@ -95,7 +108,7 @@ function getHealthStateColor(healthPercent?: number) {
   return '#c92a2a';
 }
 
-export const Orbit = (props) => {
+export const Orbit = () => {
   const { act, data } = useBackend<OrbitData>();
   const [query, setQuery] = useState('');
   const [colorMode, setColorMode] = useState<'role' | 'health'>('role');
@@ -109,9 +122,21 @@ export const Orbit = (props) => {
       const roleGroups: RoleGroup[] = [];
 
       if (section.key === 'alive') {
-        const queueableAntags = filtered.filter((item) => item.antag_group === 'queueable');
-        const supernaturalAntags = filtered.filter((item) => item.antag_group === 'supernatural');
-        const normalAlive = filtered.filter((item) => !item.antag_group);
+        const queueableAntags: OrbitTarget[] = [];
+        const supernaturalAntags: OrbitTarget[] = [];
+        const normalAlive: OrbitTarget[] = [];
+
+        filtered.forEach((item) => {
+          if (item.antag_group === 'queueable') {
+            queueableAntags.push(item);
+            return;
+          }
+          if (item.antag_group === 'supernatural') {
+            supernaturalAntags.push(item);
+            return;
+          }
+          normalAlive.push(item);
+        });
 
         if (queueableAntags.length > 0) {
           roleGroups.push({ label: 'Minor', items: queueableAntags });
@@ -120,33 +145,9 @@ export const Orbit = (props) => {
           roleGroups.push({ label: 'Major', items: supernaturalAntags });
         }
 
-        const groupedNormalAlive = normalAlive.reduce((groups, item) => {
-          const label = getRoleLabel(item);
-          const bucket = groups.get(label) || [];
-          bucket.push(item);
-          groups.set(label, bucket);
-          return groups;
-        }, new Map<string, OrbitTarget[]>());
-
-        roleGroups.push(
-          ...[...groupedNormalAlive.entries()]
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([label, items]) => ({ label, items })),
-        );
+        roleGroups.push(...groupByRoleLabel(normalAlive));
       } else {
-        const grouped = filtered.reduce((groups, item) => {
-          const label = getRoleLabel(item);
-          const bucket = groups.get(label) || [];
-          bucket.push(item);
-          groups.set(label, bucket);
-          return groups;
-        }, new Map<string, OrbitTarget[]>());
-
-        roleGroups.push(
-          ...[...grouped.entries()]
-            .sort(([a], [b]) => a.localeCompare(b))
-            .map(([label, items]) => ({ label, items })),
-        );
+        roleGroups.push(...groupByRoleLabel(filtered));
       }
 
       return {

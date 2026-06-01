@@ -1213,13 +1213,11 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		"dead" = list(),
 		"ghosts" = list(),
 		"misc" = list(),
-		"npcs" = list(),
 	)
 
 	var/list/namecounts_alive = list()
 	var/list/namecounts_dead = list()
 	var/list/namecounts_ghosts = list()
-	var/list/namecounts_npcs = list()
 	var/list/namecounts_misc = list()
 
 	for(var/mob/M in sortmobs())
@@ -1243,17 +1241,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 			continue
 
 		if(istype(M, /mob/living/carbon/human/species/npc/deadite))
-			var/list/entry = serialize_atom(M, namecounts_npcs)
-			if(!entry)
-				continue
-			data["npcs"] += list(entry)
 			continue
 
 		if(!M.mind && !M.ckey)
-			var/list/entry = serialize_atom(M, namecounts_npcs)
-			if(!entry)
-				continue
-			data["npcs"] += list(entry)
 			continue
 
 		var/list/entry = serialize_atom(M, namecounts_alive)
@@ -1279,11 +1269,15 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 	if(!istype(M) || !M.mind)
 		return null
 
-	if(M.mind.has_antag_datum(/datum/antagonist/bandit) || M.mind.has_antag_datum(/datum/antagonist/wretch) || M.mind.has_antag_datum(/datum/antagonist/gnoll))
-		return "queueable"
+	var/has_queueable = FALSE
+	for(var/datum/antagonist/A in M.mind.antag_datums)
+		if(istype(A, /datum/antagonist/werewolf) || istype(A, /datum/antagonist/vampire) || istype(A, /datum/antagonist/lich))
+			return "supernatural"
+		if(istype(A, /datum/antagonist/bandit) || istype(A, /datum/antagonist/wretch) || istype(A, /datum/antagonist/gnoll))
+			has_queueable = TRUE
 
-	if(M.mind.has_antag_datum(/datum/antagonist/werewolf) || M.mind.has_antag_datum(/datum/antagonist/vampire) || M.mind.has_antag_datum(/datum/antagonist/lich))
-		return "supernatural"
+	if(has_queueable)
+		return "queueable"
 
 	return null
 
@@ -1312,9 +1306,10 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	if(ismob(target))
 		var/mob/M = target
-		var/antag_group = get_orbit_antag_group(M)
-		if(antag_group)
-			entry["antag_group"] = antag_group
+		if(M.stat != DEAD && !isobserver(M))
+			var/antag_group = get_orbit_antag_group(M)
+			if(antag_group)
+				entry["antag_group"] = antag_group
 		if(M.mind?.assigned_role)
 			entry["role"] = M.mind.assigned_role
 			var/datum/job/J = SSjob.GetJob(M.mind.assigned_role)
