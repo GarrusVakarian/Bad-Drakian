@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { memo, useCallback, useMemo, useState } from 'react';
 import {
   Button,
   Collapsible,
@@ -27,7 +27,6 @@ type OrbitData = {
   alive: OrbitTarget[];
   dead: OrbitTarget[];
   ghosts: OrbitTarget[];
-  misc: OrbitTarget[];
   orbiting_ref?: string;
 };
 
@@ -39,29 +38,39 @@ const SECTIONS = [
 
 type RoleGroup = {
   label: string;
-  items: OrbitTarget[];
+  items: OrbitTargetIndexed[];
 };
 
-function groupByRoleLabel(items: OrbitTarget[]): RoleGroup[] {
+type OrbitTargetIndexed = OrbitTarget & {
+  searchKey: string;
+  displayName: string;
+  tooltip: string;
+  healthStateColor: string;
+  healthTextColor: string;
+  roleTextColor?: string;
+};
+
+type OrbitSection = (typeof SECTIONS)[number] & {
+  items: OrbitTargetIndexed[];
+  roleGroups: RoleGroup[];
+};
+
+function groupByRoleLabel(items: OrbitTargetIndexed[]): RoleGroup[] {
   const grouped = items.reduce((groups, item) => {
     const label = getRoleLabel(item);
     const bucket = groups.get(label) || [];
     bucket.push(item);
-    groups.set(label, bucket);
+    groups.set(label, bucket as OrbitTargetIndexed[]);
     return groups;
-  }, new Map<string, OrbitTarget[]>());
+  }, new Map<string, OrbitTargetIndexed[]>());
 
   return [...grouped.entries()]
     .sort(([a], [b]) => a.localeCompare(b))
     .map(([label, groupedItems]) => ({ label, items: groupedItems }));
 }
 
-function itemMatches(item: OrbitTarget, query: string) {
-  if (!query) {
-    return true;
-  }
-  const haystack = `${item.full_name} ${item.job || ''} ${item.role || ''}`.toLowerCase();
-  return haystack.includes(query);
+function buildSearchKey(item: OrbitTarget) {
+  return `${item.full_name} ${item.job || ''} ${item.role || ''}`.toLowerCase();
 }
 
 function getRoleLabel(item: OrbitTarget) {
@@ -107,30 +116,124 @@ function getHealthStateColor(healthPercent?: number) {
   return '#c92a2a';
 }
 
+function buildItemTooltip(displayName: string, item: OrbitTarget) {
+  const roleText = item.role || item.job || 'Unassigned';
+  const healthText = `${item.health_percent ?? '?'}%`;
+  return `${displayName} | ${roleText} | ${healthText} health`;
+}
+
+function buildIndexedTarget(item: OrbitTarget): OrbitTargetIndexed {
+  const displayName = getDisplayName(item.full_name);
+  const healthStateColor = getHealthStateColor(item.health_percent);
+  const roleTextColor = item.selection_color
+    ? getTextColorForBackground(item.selection_color)
+    : undefined;
+
+  return {
+    ...item,
+    searchKey: buildSearchKey(item),
+    displayName,
+    tooltip: buildItemTooltip(displayName, item),
+    healthStateColor,
+    healthTextColor: getTextColorForBackground(healthStateColor),
+    roleTextColor,
+  };
+}
+
+type OrbitTargetButtonProps = {
+  item: OrbitTargetIndexed;
+  selected: boolean;
+  sectionColor: string;
+  colorMode: 'role' | 'health';
+  showRole: boolean;
+  onOrbit: (ref: string) => void;
+};
+
+const OrbitTargetButton = memo((props: OrbitTargetButtonProps) => {
+  const { item, selected, sectionColor, colorMode, showRole, onOrbit } = props;
+  const appliedColor = colorMode === 'health' ? item.healthStateColor : item.selection_color;
+  const hasSelectionColor = !!appliedColor;
+  const textColor = colorMode === 'health' ? item.healthTextColor : item.roleTextColor;
+  const buttonStyle = hasSelectionColor
+    ? {
+        backgroundColor: appliedColor,
+        color: textColor,
+        border: `1px solid ${appliedColor}`,
+      }
+    : undefined;
+
+  return (
+    <Stack.Item>
+      <Button
+        color={hasSelectionColor ? 'transparent' : sectionColor}
+        onClick={() => onOrbit(item.ref)}
+        selected={selected}
+        style={buttonStyle}
+        tooltip={item.tooltip}
+        tooltipPosition="bottom-start"
+      >
+        <Stack>
+          <Stack.Item>
+            {item.displayName}
+            {showRole && !!item.role && ` [${item.role}]`}
+          </Stack.Item>
+          {!!item.orbiters && (
+            <Stack.Item>
+              <Icon name="ghost" /> {item.orbiters}
+            </Stack.Item>
+          )}
+        </Stack>
+      </Button>
+    </Stack.Item>
+  );
+});
+
+OrbitTargetButton.displayName = 'OrbitTargetButton';
+
 export const Orbit = () => {
   const { act, data } = useBackend<OrbitData>();
   const [query, setQuery] = useState('');
   const [colorMode, setColorMode] = useState<'role' | 'health'>('role');
+  const orbitRef = data.orbiting_ref;
 
   const normalizedQuery = query.trim().toLowerCase();
+  const handleOrbit = useCallback((ref: string) => act('orbit', { ref }), [act]);
+
+  const indexedData = useMemo(() => {
+    return SECTIONS.reduce((indexed, section) => {
+      const source = (data[section.key] || []) as OrbitTarget[];
+      indexed[section.key] = source.map(buildIndexedTarget);
+      return indexed;
+    }, {} as Record<(typeof SECTIONS)[number]['key'], OrbitTargetIndexed[]>);
+  }, [data]);
 
   const sections = useMemo(() => {
     return SECTIONS.reduce((builtSections, section) => {
-      const source = (data[section.key] || []) as OrbitTarget[];
+      const source = indexedData[section.key] || [];
       const filtered = normalizedQuery
-        ? source.filter((item) => itemMatches(item, normalizedQuery))
+        ? source.filter((item) => item.searchKey.includes(normalizedQuery))
         : source;
 
       if (filtered.length === 0) {
         return builtSections;
       }
 
+      if (section.key === 'ghosts') {
+        builtSections.push({
+          ...section,
+          items: filtered,
+          roleGroups: [],
+        });
+
+        return builtSections;
+      }
+
       const roleGroups: RoleGroup[] = [];
 
       if (section.key === 'alive') {
-        const minorAntags: OrbitTarget[] = [];
-        const majorAntags: OrbitTarget[] = [];
-        const normalAlive: OrbitTarget[] = [];
+        const minorAntags: OrbitTargetIndexed[] = [];
+        const majorAntags: OrbitTargetIndexed[] = [];
+        const normalAlive: OrbitTargetIndexed[] = [];
 
         filtered.forEach((item) => {
           if (item.antag_group === 'minor') {
@@ -152,8 +255,6 @@ export const Orbit = () => {
         }
 
         roleGroups.push(...groupByRoleLabel(normalAlive));
-      } else if (section.key === 'ghosts') {
-        roleGroups.push({ label: 'Ghosts', items: filtered });
       } else {
         roleGroups.push(...groupByRoleLabel(filtered));
       }
@@ -165,8 +266,8 @@ export const Orbit = () => {
       });
 
       return builtSections;
-    }, [] as Array<(typeof SECTIONS)[number] & { items: OrbitTarget[]; roleGroups: RoleGroup[] }>);
-  }, [data, normalizedQuery]);
+    }, [] as OrbitSection[]);
+  }, [indexedData, normalizedQuery]);
 
   return (
     <Window title="Orbit" width={460} height={560}>
@@ -218,26 +319,16 @@ export const Orbit = () => {
                   {section.key === 'ghosts' ? (
                     <Stack wrap>
                       {section.items.map((item) => {
-                        const selected = data.orbiting_ref === item.ref;
                         return (
-                          <Stack.Item key={item.ref}>
-                            <Button
-                              color={section.color}
-                              onClick={() => act('orbit', { ref: item.ref })}
-                              selected={selected}
-                              tooltip={item.full_name}
-                              tooltipPosition="bottom-start"
-                            >
-                              <Stack>
-                                <Stack.Item>{getDisplayName(item.full_name)}</Stack.Item>
-                                {!!item.orbiters && (
-                                  <Stack.Item>
-                                    <Icon name="ghost" /> {item.orbiters}
-                                  </Stack.Item>
-                                )}
-                              </Stack>
-                            </Button>
-                          </Stack.Item>
+                          <OrbitTargetButton
+                            key={item.ref}
+                            item={item}
+                            selected={orbitRef === item.ref}
+                            sectionColor={section.color}
+                            colorMode="role"
+                            showRole={false}
+                            onOrbit={handleOrbit}
+                          />
                         );
                       })}
                     </Stack>
@@ -250,46 +341,16 @@ export const Orbit = () => {
                           >
                             <Stack wrap>
                               {group.items.map((item) => {
-                                const selected = data.orbiting_ref === item.ref;
-                                const appliedColor =
-                                  colorMode === 'health'
-                                    ? getHealthStateColor(item.health_percent)
-                                    : item.selection_color;
-                                const hasSelectionColor = !!appliedColor;
-                                const buttonStyle = hasSelectionColor
-                                  ? {
-                                      backgroundColor: appliedColor,
-                                      color: getTextColorForBackground(appliedColor as string),
-                                      border: `1px solid ${appliedColor}`,
-                                    }
-                                  : undefined;
                                 return (
-                                  <Stack.Item key={item.ref}>
-                                    <Button
-                                      color={hasSelectionColor ? 'transparent' : section.color}
-                                      onClick={() => act('orbit', { ref: item.ref })}
-                                      selected={selected}
-                                      style={buttonStyle}
-                                      tooltip={
-                                        colorMode === 'health'
-                                          ? `${item.job || item.role || item.full_name} (${item.health_percent ?? '?'}% health)`
-                                          : item.job || item.role || item.full_name
-                                      }
-                                      tooltipPosition="bottom-start"
-                                    >
-                                      <Stack>
-                                        <Stack.Item>
-                                          {getDisplayName(item.full_name)}
-                                          {!!item.role && ` [${item.role}]`}
-                                        </Stack.Item>
-                                        {!!item.orbiters && (
-                                          <Stack.Item>
-                                            <Icon name="ghost" /> {item.orbiters}
-                                          </Stack.Item>
-                                        )}
-                                      </Stack>
-                                    </Button>
-                                  </Stack.Item>
+                                  <OrbitTargetButton
+                                    key={item.ref}
+                                    item={item}
+                                    selected={orbitRef === item.ref}
+                                    sectionColor={section.color}
+                                    colorMode={colorMode}
+                                    showRole
+                                    onOrbit={handleOrbit}
+                                  />
                                 );
                               })}
                             </Stack>

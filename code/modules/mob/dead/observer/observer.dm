@@ -1239,13 +1239,11 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		"alive" = list(),
 		"dead" = list(),
 		"ghosts" = list(),
-		"misc" = list(),
 	)
 
 	var/list/namecounts_alive = list()
 	var/list/namecounts_dead = list()
 	var/list/namecounts_ghosts = list()
-	var/list/namecounts_misc = list()
 	var/list/role_color_cache = list()
 
 	for(var/mob/M in sortmobs())
@@ -1278,18 +1276,6 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 		if(!entry)
 			continue
 		data["alive"] += list(entry)
-
-	for(var/atom/movable/A in GLOB.poi_list)
-		if(!A || !A.loc)
-			continue
-		if(ismob(A))
-			continue
-
-		var/list/entry = serialize_atom(A, namecounts_misc, role_color_cache)
-		if(!entry)
-			continue
-
-		data["misc"] += list(entry)
 
 	return data
 
