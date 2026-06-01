@@ -18,6 +18,7 @@ type OrbitTarget = {
   orbiters?: number;
   job?: string;
   role?: string;
+  antag_group?: 'queueable' | 'supernatural';
   selection_color?: string;
   health_percent?: number;
 };
@@ -36,7 +37,6 @@ const SECTIONS = [
   { key: 'dead', title: 'Dead', color: 'average' },
   { key: 'ghosts', title: 'Ghosts', color: 'label' },
   { key: 'misc', title: 'Misc', color: 'average' },
-  { key: 'npcs', title: 'NPCs', color: 'average' },
 ] as const;
 
 type RoleGroup = {
@@ -57,7 +57,7 @@ function getRoleLabel(item: OrbitTarget) {
 }
 
 function getDisplayName(fullName: string) {
-  // Names are uniquified server-side with " (2)" suffixes; hide this visual noise.
+  // Because of ghostness
   return fullName.replace(/ \(\d+\)$/, '');
 }
 
@@ -106,17 +106,48 @@ export const Orbit = (props) => {
     return SECTIONS.map((section) => {
       const source = (data[section.key] || []) as OrbitTarget[];
       const filtered = source.filter((item) => itemMatches(item, normalizedQuery));
-      const grouped = filtered.reduce((groups, item) => {
-        const label = getRoleLabel(item);
-        const bucket = groups.get(label) || [];
-        bucket.push(item);
-        groups.set(label, bucket);
-        return groups;
-      }, new Map<string, OrbitTarget[]>());
+      const roleGroups: RoleGroup[] = [];
 
-      const roleGroups: RoleGroup[] = [...grouped.entries()]
-        .sort(([a], [b]) => a.localeCompare(b))
-        .map(([label, items]) => ({ label, items }));
+      if (section.key === 'alive') {
+        const queueableAntags = filtered.filter((item) => item.antag_group === 'queueable');
+        const supernaturalAntags = filtered.filter((item) => item.antag_group === 'supernatural');
+        const normalAlive = filtered.filter((item) => !item.antag_group);
+
+        if (queueableAntags.length > 0) {
+          roleGroups.push({ label: 'Minor', items: queueableAntags });
+        }
+        if (supernaturalAntags.length > 0) {
+          roleGroups.push({ label: 'Major', items: supernaturalAntags });
+        }
+
+        const groupedNormalAlive = normalAlive.reduce((groups, item) => {
+          const label = getRoleLabel(item);
+          const bucket = groups.get(label) || [];
+          bucket.push(item);
+          groups.set(label, bucket);
+          return groups;
+        }, new Map<string, OrbitTarget[]>());
+
+        roleGroups.push(
+          ...[...groupedNormalAlive.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([label, items]) => ({ label, items })),
+        );
+      } else {
+        const grouped = filtered.reduce((groups, item) => {
+          const label = getRoleLabel(item);
+          const bucket = groups.get(label) || [];
+          bucket.push(item);
+          groups.set(label, bucket);
+          return groups;
+        }, new Map<string, OrbitTarget[]>());
+
+        roleGroups.push(
+          ...[...grouped.entries()]
+            .sort(([a], [b]) => a.localeCompare(b))
+            .map(([label, items]) => ({ label, items })),
+        );
+      }
 
       return {
         ...section,

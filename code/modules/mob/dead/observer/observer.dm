@@ -1275,6 +1275,18 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	return data
 
+/datum/orbit_menu/proc/get_orbit_antag_group(mob/M)
+	if(!istype(M) || !M.mind)
+		return null
+
+	if(M.mind.has_antag_datum(/datum/antagonist/bandit) || M.mind.has_antag_datum(/datum/antagonist/wretch) || M.mind.has_antag_datum(/datum/antagonist/gnoll))
+		return "queueable"
+
+	if(M.mind.has_antag_datum(/datum/antagonist/werewolf) || M.mind.has_antag_datum(/datum/antagonist/vampire) || M.mind.has_antag_datum(/datum/antagonist/lich))
+		return "supernatural"
+
+	return null
+
 /datum/orbit_menu/proc/serialize_atom(atom/movable/target, list/namecounts)
 	if(!istype(target))
 		return null
@@ -1300,6 +1312,9 @@ This is the proc mobs get to turn into a ghost. Forked from ghostize due to comp
 
 	if(ismob(target))
 		var/mob/M = target
+		var/antag_group = get_orbit_antag_group(M)
+		if(antag_group)
+			entry["antag_group"] = antag_group
 		if(M.mind?.assigned_role)
 			entry["role"] = M.mind.assigned_role
 			var/datum/job/J = SSjob.GetJob(M.mind.assigned_role)
