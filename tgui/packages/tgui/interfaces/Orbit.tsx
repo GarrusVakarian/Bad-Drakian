@@ -18,6 +18,7 @@ type OrbitTarget = {
   orbiters?: number;
   job?: string;
   role?: string;
+  department?: string;
   antag_role?: string;
   antag_group?: 'minor' | 'major';
   selection_color?: string;
@@ -50,6 +51,7 @@ type OrbitTargetIndexed = OrbitTarget & {
   tooltip: string;
   roleLabel: string;
   roleLabelLower: string;
+  groupKey: string;
   healthStateColor: string;
   healthTextColor: string;
   roleTextColor?: string;
@@ -183,7 +185,7 @@ function buildRoleGroupsForSection(
       return;
     }
 
-    pushGroupedItem(groupedNormal, item.roleLabel, item);
+    pushGroupedItem(groupedNormal, item.groupKey, item);
   });
 
   const roleGroups: RoleGroup[] = [];
@@ -302,6 +304,8 @@ function buildIndexedTarget(
     ? getTextColorForBackground(item.selection_color)
     : undefined;
 
+  const groupKey = item.department || roleLabel;
+
   return {
     ...item,
     searchKey: buildSearchKey(item),
@@ -309,6 +313,7 @@ function buildIndexedTarget(
     tooltip: buildItemTooltip(item.full_name, item, sectionKey),
     roleLabel,
     roleLabelLower: roleLabel.toLowerCase(),
+    groupKey,
     healthStateColor,
     healthTextColor: getTextColorForBackground(healthStateColor),
     roleTextColor,
