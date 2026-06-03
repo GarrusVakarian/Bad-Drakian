@@ -32,7 +32,7 @@
 							/obj/effect/decal/remains/human = 0.3,)
 	// spawnableTurfs = list(/turf/open/floor/rogue/dirt/road=2,
 	// 					/turf/open/water/swamp=2,)
-	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep)
+	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep, /area/rogue/outdoors/town/grove)
 
 
 /datum/mapGeneratorModule/desertgrass
@@ -63,18 +63,18 @@
 							/obj/structure/zizo_bane = 0.5,)
 	// spawnableTurfs = list(/turf/open/floor/rogue/dirt/road=2,
 	// 					/turf/open/water/swamp=2,)
-	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep)
+	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep, /area/rogue/outdoors/town/grove)
 
 /datum/mapGeneratorModule/desertroad
 	clusterCheckFlags = CLUSTER_CHECK_DIFFERENT_ATOMS
 	allowed_turfs = list(/turf/open/floor/rogue/dirt/road)
 	spawnableAtoms = list(/obj/item/natural/stone = 2,/obj/item/grown/log/tree/stick = 1)
-	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep)
+	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep, /area/rogue/outdoors/town/grove)
 
 /datum/mapGeneratorModule/desertwater
 	clusterCheckFlags = CLUSTER_CHECK_ALL
 	allowed_turfs = list(/turf/open/water/cleanshallow)
-	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep)
+	allowed_areas = list(/area/rogue/outdoors/desert, /area/rogue/outdoors/desertdeep, /area/rogue/outdoors/town/grove)
 	spawnableAtoms = list(	/obj/structure/flora/roguetree/stump/log = 1,
 							/obj/structure/flora/roguegrass/reedbush = 1,
 							/obj/structure/flora/roguegrass/water/reeds = 1,)
