@@ -216,8 +216,8 @@
 /datum/status_effect/debuff/devitalised/lux_ripped
 	id = "lux_ripped"
 	alert_type = /atom/movable/screen/alert/status_effect/debuff/devitalised/lux_ripped
-	effectedstats = list(STATKEY_STR = -4, STATKEY_WIL = -4, STATKEY_CON = -4, STATKEY_SPD = -4, STATKEY_LCK = -4)	//apparently zizite miraclists killing people is BAD so we have to make the debuff so much worse than death to encourage people to just lacrima rather than remove gorget neck chop. this also prevents necromancers from doing a lacrima circle-jerk to farm lux. have fun.
-	duration = 15 MINUTES
+	effectedstats = list(STATKEY_STR = -5, STATKEY_WIL = -5, STATKEY_CON = -5, STATKEY_SPD = -5, STATKEY_LCK = -5)	//apparently zizite miraclists killing people is BAD so we have to make the debuff so much worse than death to encourage people to just lacrima rather than remove gorget neck chop. this also prevents necromancers from doing a lacrima circle-jerk to farm lux. have fun.
+	duration = 30 MINUTES
 
 /atom/movable/screen/alert/status_effect/debuff/devitalised
 	name = "Devitalised"

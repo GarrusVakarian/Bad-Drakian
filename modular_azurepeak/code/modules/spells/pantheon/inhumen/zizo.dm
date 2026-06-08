@@ -294,7 +294,7 @@
 	if((target.mobility_flags & MOBILITY_STAND))
 		to_chat(user, span_info("My target must be lying down to have their lux torn."))
 		return
-	if(target.has_status_effect(/datum/status_effect/debuff/devitalised) || target.mob_biotypes & MOB_UNDEAD) //can't farm your skeletons
+	if(target.has_status_effect(/datum/status_effect/debuff/devitalised) || (target.has_status_effect(/datum/status_effect/debuff/devitalised/lux_ripped) || target.mob_biotypes & MOB_UNDEAD)) //can't farm your skeletons
 		to_chat(user, span_notice("This one's lux is already disturbed!"))
 		return
 	else
@@ -320,14 +320,13 @@
 	SEND_SIGNAL(user, COMSIG_LUX_EXTRACTED, target)
 	record_featured_stat(FEATURED_STATS_CRIMINALS, user)
 	record_round_statistic(STATS_LUX_HARVESTED)
-	target.apply_status_effect(/datum/status_effect/debuff/devitalised)
-	target.apply_status_effect(/datum/status_effect/debuff/devitalised/lux_ripped) // applied alongside devitalised for a total of -5 omnistat while preventing lux harvesting surgically
+	target.apply_status_effect(/datum/status_effect/debuff/devitalised/lux_ripped) // -5 omnistat. prevents harvesting lux again for much longer than regular devitalised
 	qdel(src)
 
 /datum/stressevent/myfuckingluxman
 	desc = span_boldred("THE ESSENCE OF MY LYFE HAS BEEN DEFILED!!")
 	stressadd = 30
-	timer = 10 MINUTES
+	timer = 15 MINUTES
 
 /obj/item/melee/touch_attack/lacrima/proc/perverse_lux(atom/target, mob/living/carbon/human/user)
 	var/perverse_time = 20
