@@ -357,7 +357,7 @@
 		list(/datum/skill/misc/tracking, 1, 2),
 		list(/datum/skill/labor/butchering, 1, 2),
 		list(/datum/skill/craft/tanning, 1, 2),
-		list(/datum/skill/combat/staves, 1, 2),
+		list(/datum/skill/combat/polearms, 1, 2),
 		list(/datum/skill/combat/slings, 1, 2),
 		list(/datum/skill/craft/crafting, 1, 2),
 		list(/datum/skill/craft/cooking, 1, 2),

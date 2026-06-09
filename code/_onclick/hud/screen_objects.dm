@@ -24,6 +24,36 @@
 	hud = null
 	return ..()
 
+/atom/movable/screen/proc/get_roguehud_icon(datum/preferences/prefs)
+	if(!prefs)
+		prefs = hud?.mymob?.client?.prefs
+	if(prefs)
+		return prefs.get_roguehud_icon()
+	return 'icons/mob/roguehud.dmi'
+
+/atom/movable/screen/proc/get_rogueheat_icon(datum/preferences/prefs)
+	if(!prefs)
+		prefs = hud?.mymob?.client?.prefs
+	if(prefs)
+		return prefs.get_rogueheat_icon()
+	return 'icons/mob/rogueheat.dmi'
+
+/atom/movable/screen/proc/apply_colorblind_hud_palette(datum/preferences/prefs)
+	if(!prefs)
+		prefs = hud?.mymob?.client?.prefs
+	if(!prefs)
+		return
+	if(is_roguehud_palette_icon(icon))
+		icon = prefs.get_roguehud_icon()
+	else if(is_rogueheat_palette_icon(icon))
+		icon = prefs.get_rogueheat_icon()
+	// Preallocated vis_contents layers carry their own palette icon, so refresh them alongside our own.
+	for(var/atom/movable/screen/hud_component/layer/component in vis_contents)
+		if(is_roguehud_palette_icon(component.icon))
+			component.icon = prefs.get_roguehud_icon()
+		else if(is_rogueheat_palette_icon(component.icon))
+			component.icon = prefs.get_rogueheat_icon()
+
 /atom/movable/screen/Click(location, control, params)
 	if(!usr || !usr.client)
 		return FALSE
@@ -520,11 +550,11 @@
 		for(var/atom/movable/screen/hud_component/layer/slot as anything in border_slots)
 			reset_hud_component_layer(slot)
 
-/atom/movable/screen/act_intent/rogintent/proc/set_rogintent_slot(atom/movable/screen/hud_component/layer/slot, new_state, slot_index, layer_offset)
+/atom/movable/screen/act_intent/rogintent/proc/set_rogintent_slot(atom/movable/screen/hud_component/layer/slot, new_state, slot_index, layer_offset, icon_file = 'icons/mob/roguehud.dmi')
 	if(!slot || !new_state || slot_index < 1 || slot_index > 4)
 		return
-	if(slot.icon != 'icons/mob/roguehud.dmi')
-		slot.icon = 'icons/mob/roguehud.dmi'
+	if(slot.icon != icon_file)
+		slot.icon = icon_file
 	if(slot.icon_state != new_state)
 		slot.icon_state = new_state
 	slot.alpha = 255
@@ -551,13 +581,14 @@
 	else
 		var/lol = 0
 		var/list/used = intentsr
+		var/roguehud_icon = get_roguehud_icon()
 		if(hud.mymob.active_hand_index == 1)
 			used = intentsl
 		for(var/datum/intent/intenty in used)
 			lol++
 			if(lol > length(intent_slots))
 				break
-			set_rogintent_slot(intent_slots[lol], intenty.icon_state, lol, 0.02)
+			set_rogintent_slot(intent_slots[lol], intenty.icon_state, lol, 0.02, roguehud_icon)
 		var/mob/living/owner = hud?.mymob
 		if(owner)
 			switch_intent(owner.r_index, owner.l_index, oactive)
@@ -572,14 +603,15 @@
 	if(!r_index || !l_index)
 		return
 	else
+		var/roguehud_icon = get_roguehud_icon()
 		var/used_index = r_index
 		var/other = l_index
 		if(hud.mymob.active_hand_index == 1)
 			used_index = l_index
 			other = r_index
 		if(length(border_slots) >= 2)
-			set_rogintent_slot(border_slots[1], "intentselected", used_index, 0.01)
-			set_rogintent_slot(border_slots[2], used, other, 0.01)
+			set_rogintent_slot(border_slots[1], "intentselected", used_index, 0.01, roguehud_icon)
+			set_rogintent_slot(border_slots[2], used, other, 0.01, roguehud_icon)
 
 /atom/movable/screen/act_intent/rogintent/Click(location, control, params)
 
@@ -2031,6 +2063,8 @@
 	if(C)
 		holder = C
 	. = ..()
+	if(holder?.prefs)
+		icon = holder.prefs.get_roguehud_icon()
 	holder.screen += src
 
 /atom/movable/screen/rintent_selection/Destroy()
@@ -2312,6 +2346,18 @@
 	QDEL_NULL(fill)
 	QDEL_NULL(mask)
 	return ..()
+
+/atom/movable/screen/bloodpool/apply_colorblind_hud_palette(datum/preferences/prefs)
+	..()
+	var/rogueheat_icon = get_rogueheat_icon(prefs)
+	if(background)
+		background.icon = rogueheat_icon
+	if(foreground)
+		foreground.icon = rogueheat_icon
+	if(fill)
+		fill.icon = rogueheat_icon
+	if(mask)
+		mask.icon = rogueheat_icon
 
 /atom/movable/screen/bloodpool/proc/set_fill_color(new_color = "#ffffff")
 	fill.color = new_color

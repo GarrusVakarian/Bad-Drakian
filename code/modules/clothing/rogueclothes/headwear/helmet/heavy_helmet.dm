@@ -166,6 +166,20 @@
 		if(get_detail_color())
 			pic.color = get_detail_color()
 		add_overlay(pic)
+	
+/obj/item/clothing/head/roguetown/helmet/heavy/knight/ancient
+	name = "ancient bascinet"
+	desc = "An ancient greathelm of polished gilbranze. There is no sight more haunting than that of a noble knight, long-succumbed to the undying forces of evil. Add a feather to show the colors of your family or allegiance."
+	icon_state = "ancientknight"
+	item_state = "ancientknight"
+	smeltresult = /obj/item/ingot/aaslag
+
+/obj/item/clothing/head/roguetown/helmet/heavy/knight/ancient/decrepit
+	name = "decrepit bascinet"
+	desc = "A chipped greathelm of frayed bronze. The fittings squeal irritatingly whenever you move to lift its half-rusted visor up and down. Add a feather to show the colors of your family or allegiance."
+	max_integrity = ARMOR_INT_HELMET_HEAVY_DECREPIT
+	color = "#bb9696"
+	anvilrepair = null
 
 /obj/item/clothing/head/roguetown/helmet/heavy/knight/fluted
 	name = "fluted armet"

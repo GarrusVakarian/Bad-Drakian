@@ -92,6 +92,19 @@
 	smeltresult = /obj/item/ingot/iron
 	max_integrity = ARMOR_INT_HELMET_IRON
 
+/obj/item/clothing/head/roguetown/helmet/kettle/ancient
+	name = "ancient kettle helmet"
+	desc = "A polished gilbranze helmet which protects the top and sides of the head. ZIZO's glare musn't be interceded when matters of unholy war are at hand. Undead ballistaemen practice a curious method of tying dyed cloth around its rim; can they, too, think and associate?"
+	icon_state = "ancientkettle"
+	smeltresult = /obj/item/ingot/aaslag
+
+/obj/item/clothing/head/roguetown/helmet/kettle/ancient/decrepit
+	name = "decrepit kettle helmet"
+	desc = "A frayed, bronze helmet which protects the top and sides of the head. Atop a resurrected levyman's scalp, it's a sign that forces-most-foul are soon to besiege; and atop a fleshless ballistaeman's skull, it's a sign that you should probably duck."
+	max_integrity = ARMOR_INT_HELMET_DECREPIT
+	color = "#bb9696"
+	anvilrepair = null
+
 /obj/item/clothing/head/roguetown/helmet/kettle/wide
 	name = "wide kettle helmet"
 	desc = "A steel helmet which protects the top and sides of the head. This one looks wider than others."

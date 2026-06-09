@@ -27,6 +27,7 @@
 #define TRAIT_DECEIVING_MEEKNESS "Deceiving Meekness"
 #define TRAIT_CRITICAL_RESISTANCE "Critical Resistance"
 #define TRAIT_CRITICAL_WEAKNESS "Critical Weakness"
+#define TRAIT_SHATTER_WEAKNESS "Brittle Form"
 #define TRAIT_DNR "Bane of Existence"
 #define TRAIT_MANIAC_AWOKEN "Awoken"
 #define TRAIT_INFINITE_STAMINA "Indefatigable" //for ai
@@ -357,6 +358,7 @@ GLOBAL_LIST_INIT(roguetraits, list(
 	TRAIT_DECEIVING_MEEKNESS = span_info("People look at me and think I am a weakling. They are mistaken. I've learned how to hide my vices and true beliefs from others."),
 	TRAIT_CRITICAL_RESISTANCE = span_info("My constitution is iron-clad. My lifeblood flows slowly, I can resist the first few criitical wounds that would fell others, but repeated punishment will overwhelm my defenses."),
 	TRAIT_CRITICAL_WEAKNESS = span_danger("I am weak to wounds that others could survive."),
+	TRAIT_SHATTER_WEAKNESS = span_danger("My form is especially brittle and frail. A critical, shattering blow to my chest or spine will kill me instantly."),
 	TRAIT_DNR = span_danger("My lux' vigor is weak. There is no hope for me. This lyfe is all I have."),
 	TRAIT_MANIAC_AWOKEN = span_danger("I am <b>WAKING UP</b> and the sheeple know this. They will resist."),
 	TRAIT_INFINITE_STAMINA = "I have boundless energy, I will never tire.",
