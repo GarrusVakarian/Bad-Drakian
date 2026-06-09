@@ -1125,6 +1125,7 @@
 
 /atom/movable/screen/zone_sel
 	name = "damage zone"
+	icon = 'icons/mob/roguehud64.dmi' // The m-/f-zone_sel base doll states only exist here, not in the regular HUD style.
 	icon_state = "m-zone_sel"
 	screen_loc = rogueui_targetdoll
 	appearance_flags = APPEARANCE_UI | KEEP_TOGETHER

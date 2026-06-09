@@ -406,7 +406,6 @@
 	infodisplay += healthdoll
 */
 	zone_select =  new /atom/movable/screen/zone_sel()
-	zone_select.icon = 'icons/mob/roguehud64.dmi'
 	zone_select.screen_loc = rogueui_targetdoll
 	claim_screen(zone_select)
 	zone_select.update_zone_layers()
@@ -637,12 +636,6 @@
 
 	devilsouldisplay = new /atom/movable/screen/devil/soul_counter
 	infodisplay += devilsouldisplay
-
-	zone_select =  new /atom/movable/screen/zone_sel()
-	zone_select.icon = ui_style
-	zone_select.hud = src
-	zone_select.update_icon()
-	static_inventory += zone_select
 
 	for(var/atom/movable/screen/inventory/inv in (static_inventory + toggleable_inventory))
 		if(inv.slot_id)
