@@ -412,7 +412,7 @@
 	created_item = /obj/item/rogueweapon/flail/peasantwarflail
 
 /datum/anvil_recipe/weapons/iron/maciejowski
-	name = "Maciejowski, Iron (+1 Iron)
+	name = "Maciejowski, Iron (+1 Iron)"
 	additional_items = list(/obj/item/ingot/iron)
 	created_item = /obj/item/rogueweapon/sword/falchion/militia
 
