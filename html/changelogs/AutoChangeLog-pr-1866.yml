@@ -1,0 +1,5 @@
+author: "ophaq"
+delete-after: True
+changes:
+  - bugfix: "Fixes eora trees not producing golden fruits at max happiness."
+  - qol: "Allows the bauernwehr on snip intent to prune the trees too!"
