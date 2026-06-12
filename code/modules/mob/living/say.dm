@@ -539,16 +539,15 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 					if(!listener_ceiling || listener_has_ceiling || z != listener_ceiling.z || !(src in hearers(world.view, listener_ceiling)))
 						continue
 		var/highlighted_message
-		if(ishuman(AM))
-			var/mob/living/carbon/human/H = AM
-			var/name_to_highlight = H.nickname
-			if(name_to_highlight && name_to_highlight != "" && name_to_highlight != "Please Change Me")	//We don't need to highlight an unset or blank one.
-				highlighted_message = replacetext_char(message, name_to_highlight, "<b><font color = #[H.highlight_color]>[name_to_highlight]</font></b>")
 		var/atom/movable/tocheck = AM
-		if(isdullahan(AM))
+		if(ishuman(AM))
 			var/mob/living/carbon/human/target = AM
-			var/datum/species/dullahan/target_species = target.dna.species
-			tocheck = target_species.headless ? target_species.my_head : AM
+			var/name_to_highlight = target.nickname
+			if(name_to_highlight && name_to_highlight != "" && name_to_highlight != "Please Change Me")	//We don't need to highlight an unset or blank one.
+				highlighted_message = replacetext_char(message, name_to_highlight, "<b><font color = #[target.highlight_color]>[name_to_highlight]</font></b>")
+			var/datum/species/dullahan/target_species = target.dna?.species
+			if(istype(target_species) && target_species.headless)
+				tocheck = target_species.my_head
 		if(eavesdrop_range && get_dist(source, tocheck) > message_range+keenears && !(admin_listeners[AM]))
 			AM.Hear(eavesrendered, src, message_language, eavesdropping, null, spans, message_mode, original_message)
 			heard_message += AM
