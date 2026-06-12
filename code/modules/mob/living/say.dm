@@ -468,12 +468,6 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 			var/mob/living/carbon/human/target = M
 			var/datum/species/dullahan/target_species = target.dna.species
 			tocheck = target_species.headless ? target_species.my_head : M
-//		if(M.stat != DEAD) //not dead, not important
-//			if(yellareas)	//CIT CHANGE - see above. makes yelling penetrate walls
-//				var/area/A = get_area(M)	//CIT CHANGE - ditto
-//				if(istype(A) && A.ambientsounds != SPACE && (A in yellareas))	//CIT CHANGE - ditto
-//					listening |= M	//CIT CHANGE - ditto
-//			continue
 		if(!client) //client is so that ghosts don't have to listen to mice
 			continue
 		if(!M)
@@ -505,6 +499,10 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 		eavesrendered = compose_message(src, message_language, eavesdropping, , spans, message_mode)
 
 	var/rendered = compose_message(src, message_language, message, , spans, message_mode)
+
+	// List of mobs that actually heard the message fully
+	var/list/heard_message = list()
+
 	for(var/_AM in listening)
 		var/hearall = FALSE
 		var/atom/movable/AM = _AM
@@ -564,9 +562,17 @@ GLOBAL_LIST_INIT(department_radio_keys, list(
 			AM.Hear(eavesrendered, src, message_language, eavesdropping, , spans, message_mode, original_message)
 		else if(highlighted_message)
 			AM.Hear(rendered, src, message_language, highlighted_message, , spans, message_mode, original_message)
+			heard_message += AM
 		else
 			AM.Hear(rendered, src, message_language, message, , spans, message_mode, original_message)
+			heard_message += AM
 	SEND_GLOBAL_SIGNAL(COMSIG_GLOB_LIVING_SAY_SPECIAL, src, message)
+
+	// Checks for vocal commands
+	if(findtext(message, regex("yield|give\\s*up|surrender|stop\\s*resisting","i")))
+		play_overhead_private_rclickemote(heard_message, "yield")
+		for(var/mob/living/carbon/human in heard_message)
+			human.apply_status_effect(/datum/status_effect/debuff/yield_prompt)
 
 	//speech bubble
 	var/list/speech_bubble_recipients = list()
