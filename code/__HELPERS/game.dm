@@ -617,11 +617,11 @@
 	addtimer(CALLBACK(GLOBAL_PROC, GLOBAL_PROC_REF(display_sensory_effect), source, T, duration, icon_state, dir, ignore_self), 0.5 SECONDS)
 
 /proc/display_sensory_effect(atom/source, turf/T, duration, icon_state, dir, ignore_self)
-	for(var/mob/M in range(7, T))
+	for(var/mob/living/M in hearers(7, T))
 		if(!M || (ignore_self && (M == source)))
 			continue
 
-		if(!M.stat && !is_blind(M)) // If the mob is not unconscious and not blind, we don't show the effect.
+		if(M.stat != UNCONSCIOUS && !is_blind(M)) // If the mob is not unconscious and not blind, we don't show the effect.
 			continue
 
 		var/image/I = image('icons/effects/fov/fov_effects.dmi', T, icon_state, SENSORY_LAYER)
