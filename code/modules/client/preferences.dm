@@ -642,7 +642,9 @@ GLOBAL_LIST_EMPTY(chosen_names)
 
 			dat += "<b>Unrevivable:</b> <a href='?_src_=prefs;preference=dnr;task=input'>[dnr_pref ? "Yes" : "No"]</a><BR>"
 
-			dat += "<b>Be a Familiar:</b><a href='?_src_=prefs;preference=familiar_prefs;task=input'>Familiar Preferences</a>"
+			dat += "<b>Be a Familiar:</b><a href='?_src_=prefs;preference=familiar_prefs;task=input'>Familiar Preferences</a><br>"
+
+			dat += "<b>Preferred Map:</b> <a href='?_src_=prefs;preference=preferred_map;task=input'>[preferred_map || "No Preference"]</a><br>"
 
 			dat += "<br><b>Gnoll Customization:</b><a href='?_src_=prefs;preference=gnoll_prefs;task=input'>Gnoll Preferences</a>"
 
@@ -2655,18 +2657,18 @@ Slots: [job.spawn_positions] [job.round_contrib_points ? "RCP: +[job.round_contr
 
 				if ("preferred_map")
 					var/maplist = list()
-					var/default = "Default"
-					if (config.defaultmap)
-						default += " ([config.defaultmap.map_name])"
-					for (var/M in config.maplist)
+					var/no_preference = "No Preference"
+					for(var/M in config.maplist)
 						var/datum/map_config/VM = config.maplist[M]
+
 						if(!VM.votable)
 							continue
+
 						var/friendlyname = "[VM.map_name] "
 						if (VM.voteweight <= 0)
 							friendlyname += " (disabled)"
 						maplist[friendlyname] = VM.map_name
-					maplist[default] = null
+					maplist[no_preference] = null
 					var/pickedmap = input(user, "Choose your preferred map. This will be used to help weight random map selection.", "Character Preference")  as null|anything in sortList(maplist)
 					if (pickedmap)
 						preferred_map = maplist[pickedmap]

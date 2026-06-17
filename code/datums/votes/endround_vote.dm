@@ -1,6 +1,7 @@
 /datum/vote/endround
 	name = "endround"
 	default_message = "Vote to end the current round."
+	winner_method = VOTE_WINNER_METHOD_SIMPLE
 
 /datum/vote/endround/New()
 	. = ..()

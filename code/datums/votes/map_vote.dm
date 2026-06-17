@@ -60,18 +60,20 @@
 /datum/vote/map_vote/get_vote_result(list/non_voters)
 	// Even if we have default no vote off,
 	// if our default map is null for some reason, we shouldn't continue
-	if(CONFIG_GET(flag/default_no_vote) || isnull(global.config.defaultmap))
+	if(CONFIG_GET(flag/default_no_vote))
 		return ..()
 
 	for(var/non_voter_ckey in non_voters)
 		var/client/non_voter_client = non_voters[non_voter_ckey]
-		// Non-voters will have their preferred map voted for automatically.
-		var/their_preferred_map = non_voter_client?.prefs?.preferred_map
-		// If the non-voter's preferred map is null for some reason, we just use the default map.
-		var/voting_for = their_preferred_map || global.config.defaultmap.map_name
 
-		if(voting_for in choices)
-			choices[voting_for] += 1
+		var/their_preferred_map = non_voter_client?.prefs?.preferred_map
+
+		// No preferred map = abstain
+		if(isnull(their_preferred_map))
+			continue
+
+		if(their_preferred_map in choices)
+			choices[their_preferred_map] += 1
 
 	return ..()
 
