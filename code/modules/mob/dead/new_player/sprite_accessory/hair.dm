@@ -1718,6 +1718,27 @@
 	name = "Sodden"
 	icon_state = "sodden"
 
+/datum/sprite_accessory/hair/head/indigozap
+	name = "Goggles"
+	icon_state = "indigo_zap"
+
+/datum/sprite_accessoary/hair/head/rainbowdash
+	name = "Loyalty"
+	icon_state = "rainbow_dash"
+
+/datum/sprite_accessory/hair/head/applejack
+	name = "Honesty"
+	icon_state = "applejack"
+
+/datum/sprite_accessory/hair/head/rarity
+	name = "Generosity"
+	icon_state = "rarity"
+
+/datum/sprite_accessory/hair/head/sunsetshimmer
+	name = "She-Demon"
+	icon_state = "sunsetshimmer"
+
+
 /datum/sprite_accessory/hair/head/vulpkian
 	abstract_type = /datum/sprite_accessory/hair/head/vulpkian
 	icon = 'icons/mob/sprite_accessory/hair/vulpkian_hair.dmi'
