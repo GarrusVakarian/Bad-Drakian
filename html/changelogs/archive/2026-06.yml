@@ -210,3 +210,7 @@
 2026-06-13:
   Xander3359:
   - rscadd: Calling out for yielding will now put up a prompt to nearby people.
+2026-06-17:
+  SneakySlinky:
+  - code_imp: adds one line to jobs.dm that makes assassin able to be picked in latejoin
+      (provided there is slots)

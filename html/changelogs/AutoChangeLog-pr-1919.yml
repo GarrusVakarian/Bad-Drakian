@@ -1,4 +1,0 @@
-author: "SneakySlinky"
-delete-after: True
-changes:
-  - code_imp: "adds one line to jobs.dm that makes assassin able to be picked in latejoin (provided there is slots)"
