@@ -67,7 +67,7 @@
 		to_chat(potential_hider, span_warning("This hiding spot is blocked!"))
 		return
 
-	if(hider.resolve())
+	if(hider?.resolve())
 		to_chat(potential_hider, span_warning(occupied_message))
 		return
 
