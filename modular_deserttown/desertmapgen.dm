@@ -105,7 +105,7 @@
 /datum/mapGeneratorModule/underdarkdesertmud
 	clusterCheckFlags = CLUSTER_CHECK_SAME_ATOMS
 	allowed_areas = list(/area/rogue/under/underdesert)
-	allowed_turfs = list(/turf/open/floor/rogue/dirt, /turf/open/floor/rogue/grasscold, /turf/open/floor/rogue/grasspurple)
+	allowed_turfs = list(/turf/open/floor/rogue/dirt, /turf/open/floor/rogue/grasscold, /turf/open/floor/rogue/grasspurple, /turf/open/floor/rogue/desert_grass)
 	excluded_turfs = list(/turf/open/floor/rogue/dirt/road)
 	spawnableAtoms = list(/obj/structure/flora/mushroomcluster = 20,
 							/obj/structure/flora/roguegrass/thorn_bush = 10,
@@ -151,16 +151,16 @@
 /datum/mapGeneratorModule/underdarkdesertscarymud
 	clusterCheckFlags = CLUSTER_CHECK_SAME_ATOMS
 	allowed_areas = list(/area/rogue/under/underdesert)
-	allowed_turfs = list(/turf/open/floor/rogue/dirt, /turf/open/floor/rogue/grasscold, /turf/open/floor/rogue/grasspurple)
+	allowed_turfs = list(/turf/open/floor/rogue/dirt, /turf/open/floor/rogue/grasscold, /turf/open/floor/rogue/grasspurple, /turf/open/floor/rogue/desert_grass)
 	excluded_turfs = list(/turf/open/floor/rogue/dirt/road)
-	spawnableAtoms = list(/obj/structure/flora/mushroomcluster = 20,
-							/obj/structure/flora/roguegrass/thorn_bush = 10,
-							/obj/structure/flora/rogueshroom/unhappy/random = 30,
+	spawnableAtoms = list(/obj/structure/flora/mushroomcluster = 10,
+							/obj/structure/flora/roguegrass/thorn_bush = 5,
+							/obj/structure/flora/rogueshroom/unhappy/random = 20,
 							/obj/structure/flora/rogueshroom/happy/random = 1,
-							/obj/structure/flora/mushroomcluster/unhappy = 20,
-							/obj/structure/flora/tinymushrooms/unhappy = 20,
+							/obj/structure/flora/mushroomcluster/unhappy = 15,
+							/obj/structure/flora/tinymushrooms/unhappy = 15,
 							/obj/structure/glowshroom = 2,
 							/obj/structure/zizo_bane = 2,
-							/obj/structure/flora/roguegrass = 30,
-							/obj/structure/flora/roguegrass/herb/random = 5)
+							/obj/structure/flora/roguegrass/verdant = 5,
+							/obj/structure/flora/roguegrass/herb/random = 2)
 	spawnableTurfs = list(/turf/open/floor/rogue/grasspurple = 2)
