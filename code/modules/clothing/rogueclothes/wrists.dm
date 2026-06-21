@@ -223,7 +223,7 @@
 	body_parts_covered = ARMS
 	icon_state = "splintarms"
 	item_state = "splintarms"
-	armor = ARMOR_PLATE
+	armor = ARMOR_LEATHER_STUDDED
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT)
 	blocksound = SOFTHIT
 	max_integrity = ARMOR_INT_SIDE_IRON
