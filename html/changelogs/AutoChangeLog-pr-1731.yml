@@ -1,0 +1,5 @@
+author: "ophaq"
+delete-after: True
+changes:
+  - bugfix: "Fixes Xylix slip miracles not actually slipping properly."
+  - balance: "Shortens slip time on Xylix miracles so it does not stun you for a long time on the floor like soap did."
