@@ -25,8 +25,8 @@
 	icon_state = "sparks"
 	anchored = TRUE
 	light_system = MOVABLE_LIGHT
-	light_power = 1.3
-	light_outer_range =  MINIMUM_USEFUL_LIGHT_RANGE
+	light_power = 0.25
+	light_outer_range = 1
 	light_color = LIGHT_COLOR_FIRE
 	pixel_x = -16
 	pixel_y = -16
