@@ -76,7 +76,7 @@
 	prevent_crits = list(BCLASS_CUT, BCLASS_STAB, BCLASS_CHOP, BCLASS_BLUNT, BCLASS_TWIST)
 	allowed_sex = list(MALE, FEMALE)
 	nodismemsleeves = TRUE
-	max_integrity = ARMOR_INT_CHEST_PLATE_BRIGANDINE
+	max_integrity = ARMOR_INT_CHEST_PLATE_BRIGANDINE + 50
 	anvilrepair = /datum/skill/craft/armorsmithing
 	smeltresult = /obj/item/ingot/steel
 	equip_delay_self = 4 SECONDS
@@ -124,6 +124,7 @@
 	desc = "A thick boiled leather surcoat with enough plates concealed within the folds to offer superior protection. It weighs a ton and takes a great man to wear."
 	icon_state = "leathercoat"
 	item_state = "leathercoat"
+	max_integrity = ARMOR_INT_CHEST_PLATE_BRIGANDINE + 50
 	var/picked = FALSE
 	sleeved_detail = TRUE
 	boobed_detail = TRUE
