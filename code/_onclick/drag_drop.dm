@@ -240,7 +240,7 @@
 
 	if(tcompare)
 		var/atom/target_atom = object
-		if(istype(target_atom) && tcompare != mob && (mob.atkswinging == "middle" || (mob.atkswinging && object != tcompare)))
+		if(istype(target_atom) && tcompare != mob)
 			target_atom.Click(location, control, params)
 		tcompare = null
 
