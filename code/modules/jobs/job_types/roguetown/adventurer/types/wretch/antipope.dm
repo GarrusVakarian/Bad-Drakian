@@ -155,7 +155,6 @@
 
 	if(H.mind?.has_spell(/obj/effect/proc_holder/spell/invoked/raise_undead_formation/miracle))
 		H.mind?.current.faction += "[H.name]_faction"
-		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/bonechill)
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/command_undead)
 		H.mind.AddSpell(new /obj/effect/proc_holder/spell/invoked/gravemark)
 
