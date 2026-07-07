@@ -773,7 +773,7 @@ GLOBAL_LIST_EMPTY(string_lists)
 	else
 		return i
 
-<<<<<<< HEAD
+
 /**
  * Picks a random element from a list based on a weighting system.
  * For example, given the following list:
@@ -835,7 +835,7 @@ GLOBAL_LIST_EMPTY(string_lists)
 /proc/pick_weight_take(list/list_to_pick)
 	. = pick_weight(list_to_pick)
 	list_to_pick[.]--
-=======
+
 ///Returns a list with all weakrefs resolved
 /proc/recursive_list_resolve(list/list_to_resolve)
 	. = list()
@@ -1184,4 +1184,4 @@ GLOBAL_LIST_EMPTY(string_lists)
 				&& deep_compare_list(log_1["stack"], log_2["stack"])
 		else
 			return TRUE
->>>>>>> upstream/main
+
