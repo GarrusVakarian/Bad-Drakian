@@ -742,7 +742,6 @@
 #include "code\datums\gods\patrons\divine\noc.dm"
 #include "code\datums\gods\patrons\divine\pestra.dm"
 #include "code\datums\gods\patrons\divine\ravox.dm"
-#include "code\datums\gods\patrons\divine\undivided.dm"
 #include "code\datums\gods\patrons\divine\xylix.dm"
 #include "code\datums\gods\patrons\inhumen\_inhumen.dm"
 #include "code\datums\gods\patrons\inhumen\baotha.dm"
