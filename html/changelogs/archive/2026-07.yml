@@ -65,3 +65,9 @@
   - rscadd: Adds craftable ritechalk.
   zeroisthebiggay:
   - image: updated god miracle icons
+2026-07-07:
+  Teragenic:
+  - qol: Adds Dominant Hand Indicator
+  Xander3359:
+  - code_imp: Nukes unused undivided code
+  - admin: adds lua scripting
