@@ -1,9 +1,0 @@
-author: "SneakySlinky"
-delete-after: True
-changes:
-  - bugfix: "Properly implemented a way to restrict advclasses based on virtue selection"
-  - code_imp: "Adjusted the layout of existing virtue_restrictions on advclasses that had it"
-  - code_imp: "Implemented some context descriptions for existing class previews that have virtue restrictions on subclasses"
-  - balance: "Removed access to Natural Armor virtue on Lunacy Embracers"
-  - balance: "Removed +2 FOR from Lunacy Embracers stat block"
-  - balance: "Added TRAIT_RITUALIST to Dendor, Abyssor, Xylix Lunacy Embracers"

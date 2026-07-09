@@ -1,7 +1,0 @@
-author: "zoktiik"
-delete-after: True
-changes:
-  - rscadd: "At water fountains, you can now fill any liquid container (mugs, bottles, etc.), not just buckets."
-  - sound: "You will no longer repeatedly hear the washing sound when someone is drinking from bodies of water, or from fountains."
-  - bugfix: "You can now autodrink from mana fountains, just like regular fountains."
-  - qol: "Removed the click cooldown for filling liquid containers from a body of water. This cuts down on unnecessary delay, & brings the filling speed on par with wells."
