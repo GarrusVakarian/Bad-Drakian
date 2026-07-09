@@ -419,7 +419,7 @@
 			var/can_see_stink = !isliving(user) // adminghost always sees it
 			if(isliving(user))
 				var/mob/living/living_user = user
-				can_see_stink = living_user.can_smell()
+				can_see_stink = living_user.can_smell() && !HAS_TRAIT(living_user, TRAIT_NOSTINK)
 			if(can_see_stink)
 				. += span_greentext("They reek.")
 

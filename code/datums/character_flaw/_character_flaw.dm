@@ -245,6 +245,8 @@ GLOBAL_LIST_INIT(character_flaws, list(
 			continue
 		if(!nearby.can_smell())
 			continue
+		if(!HAS_TRAIT(nearby, TRAIT_NOSTINK))
+			continue
 		if(!nearby.has_stress_event(/datum/stressevent/stinky_aura))
 			to_chat(nearby, span_warning("Something nearby reeks."))
 		nearby.add_stress(/datum/stressevent/stinky_aura)
