@@ -1,4 +1,0 @@
-author: "Arturlang"
-delete-after: True
-changes:
-  - rscadd: "MC now can account for maptick lag"
