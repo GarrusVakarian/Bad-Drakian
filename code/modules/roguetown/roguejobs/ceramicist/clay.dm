@@ -20,7 +20,7 @@
 	var/burning = 0				// This variable measures the progress of the burning act
 	var/burntime = 5 MINUTES	// How long must it be left unattended to burn and be ruined?
 	var/burned_color = "#302d2d"
-	var/shatter_chance = 20
+	var/shatter_chance = 0
 	var/ash_kneads = 0
 	var/sand_added = FALSE
 	var/is_wet = FALSE
