@@ -1,0 +1,4 @@
+author: "PPooch"
+delete-after: True
+changes:
+  - bugfix: "Prevented buckling oneself to an object, and throwing the object and self around or up to a different Z level."
