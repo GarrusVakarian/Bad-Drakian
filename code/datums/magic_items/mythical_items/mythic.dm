@@ -121,10 +121,10 @@
 	if(!active_item)
 		var/turf/target_turf = get_turf(owner)
 		active_item = TRUE
+		src.last_used = world.time
 		sleep(5 SECONDS)
 		to_chat(owner, span_notice("[I] rewinds you back in time!"))
 		do_teleport(owner, target_turf, channel = TELEPORT_CHANNEL_QUANTUM)
-		src.last_used = world.time
 		active_item = FALSE
 
 
