@@ -626,56 +626,10 @@
 			else
 				hud_used.healthdoll.icon_state = "healthdoll_DEAD"*/
 
-		if(hud_used.stamina)
-			if(stat != DEAD)
-				. = 1
-				if(stamina >= max_stamina)
-					hud_used.stamina.icon_state = "stam0"
-				else if(stamina > max_stamina*0.90)
-					hud_used.stamina.icon_state = "stam10"
-				else if(stamina > max_stamina*0.80)
-					hud_used.stamina.icon_state = "stam20"
-				else if(stamina > max_stamina*0.70)
-					hud_used.stamina.icon_state = "stam30"
-				else if(stamina > max_stamina*0.60)
-					hud_used.stamina.icon_state = "stam40"
-				else if(stamina > max_stamina*0.50)
-					hud_used.stamina.icon_state = "stam50"
-				else if(stamina > max_stamina*0.40)
-					hud_used.stamina.icon_state = "stam60"
-				else if(stamina > max_stamina*0.30)
-					hud_used.stamina.icon_state = "stam70"
-				else if(stamina > max_stamina*0.20)
-					hud_used.stamina.icon_state = "stam80"
-				else if(stamina > max_stamina*0.10)
-					hud_used.stamina.icon_state = "stam90"
-				else if(stamina >= 0)
-					hud_used.stamina.icon_state = "stam100"
-		if(hud_used.energy)
-			if(stat != DEAD)
-				. = 1
-				if(energy <= 0)
-					hud_used.energy.icon_state = "energy0"
-				else if(energy > max_energy*0.90)
-					hud_used.energy.icon_state = "energy100"
-				else if(energy > max_energy*0.80)
-					hud_used.energy.icon_state = "energy90"
-				else if(energy > max_energy*0.70)
-					hud_used.energy.icon_state = "energy80"
-				else if(energy > max_energy*0.60)
-					hud_used.energy.icon_state = "energy70"
-				else if(energy > max_energy*0.50)
-					hud_used.energy.icon_state = "energy60"
-				else if(energy > max_energy*0.40)
-					hud_used.energy.icon_state = "energy50"
-				else if(energy > max_energy*0.30)
-					hud_used.energy.icon_state = "energy40"
-				else if(energy > max_energy*0.20)
-					hud_used.energy.icon_state = "energy30"
-				else if(energy > max_energy*0.10)
-					hud_used.energy.icon_state = "energy20"
-				else if(energy > 0)
-					hud_used.energy.icon_state = "energy10"
+		if(update_stamina_hud())
+			. = 1
+		if(update_energy_hud())
+			. = 1
 		if(hud_used.temperature)
 			if(stat != DEAD)
 				. = 1
@@ -689,6 +643,20 @@
 					hud_used.temperature.icon_state = "temphot"
 				else if(bodytemperature > BODYTEMP_HEAT_LEVEL_ONE_MAX)
 					hud_used.temperature.icon_state = "tempveryhot"
+
+/mob/living/carbon/human/update_stamina_hud()
+	if(!hud_used || stat == DEAD || !hud_used.stamina)
+		return FALSE
+	var/ratio = max_stamina ? (1 - (stamina / max_stamina)) : 0
+	hud_used.stamina.set_meter_fill(ratio, "stam100", "stam10")
+	return TRUE
+
+/mob/living/carbon/human/update_energy_hud()
+	if(!hud_used || stat == DEAD || !hud_used.energy)
+		return FALSE
+	var/ratio = max_energy ? (energy / max_energy) : 0
+	hud_used.energy.set_meter_fill(ratio, "energy100", "energy10")
+	return TRUE
 
 /mob/living/carbon/human/fully_heal(admin_revive = FALSE, break_restraints = FALSE)
 	dna?.species.spec_fully_heal(src)

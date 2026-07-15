@@ -12,6 +12,7 @@
 	layer = HUD_LAYER
 	plane = HUD_PLANE
 	appearance_flags = APPEARANCE_UI
+	blockscharging = TRUE
 	var/obj/master = null	//A reference to the object in the slot. Grabs or items, generally.
 	var/datum/hud/hud = null // A reference to the owner HUD, if any.
 	var/lastclick
@@ -2167,6 +2168,33 @@
 		if(rain_layer.icon_state != "rainlay")
 			rain_layer.icon_state = "rainlay"
 		rain_layer.alpha = show_rain ? 255 : 0
+
+/**
+ * Renders a vertical bar filled to `ratio` (0-1) by masking a sprite
+ * args:
+ * 	meter_bar_fill_height: the height of the fill sprite in pixels (default 47)
+ * 	meter_bar_low_fraction: the fraction of the bar at which we swap to a low-warning graphic (default 0.1)
+ * 	meter_bar_fill_anim_time: the base time in deciseconds for the masked fill to slide to a new level (default 2)
+ * 	meter_bar_fill_anim_scale: extra time in deciseconds added at a full-range change, scaled by how far the fill moves (default 0.4)
+ */
+/atom/movable/screen/proc/set_meter_fill(
+	ratio,
+	full_state,
+	low_state,
+	meter_bar_fill_height = 47,
+	meter_bar_low_fraction = 0.1,
+	meter_bar_fill_anim_time = 2,
+	meter_bar_fill_anim_scale = 0.4 SECONDS,
+)
+	ratio = clamp(ratio, 0, 1)
+	icon_state = ratio <= meter_bar_low_fraction ? low_state : full_state
+	var/offset = -round((1 - ratio) * meter_bar_fill_height)
+	var/list/existing = filter_data?["meter_fill"]
+	if(existing)
+		var/time = meter_bar_fill_anim_time + round(abs(offset - existing["y"]) / meter_bar_fill_height * meter_bar_fill_anim_scale)
+		transition_filter("meter_fill", list("y" = offset), time, SINE_EASING)
+	else
+		add_filter("meter_fill", 1, alpha_mask_filter(y = offset, icon = icon(icon, full_state)))
 
 /atom/movable/screen/stamina
 	name = "stamina"
