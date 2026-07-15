@@ -23,7 +23,7 @@
 	gender = PLURAL
 	icon_state = "blackboots"
 	item_state = "blackboots"
-	max_integrity = 80
+	max_integrity = ARMOR_INT_SIDE_LEATHER
 	salvage_amount = 1
 	armor = ARMOR_CLOTHING
 	cold_protection = FOOT_LEFT | FOOT_RIGHT
