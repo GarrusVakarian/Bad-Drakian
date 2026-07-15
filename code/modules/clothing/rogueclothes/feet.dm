@@ -456,7 +456,7 @@
 	gender = PLURAL
 	icon_state = "furlinedboots"
 	item_state = "furlinedboots"
-	max_integrity = 160
+	max_integrity = ARMOR_INT_SIDE_HARDLEATHER
 	armor = ARMOR_CLOTHING
 	salvage_amount = 1
 	salvage_result = /obj/item/natural/fur
