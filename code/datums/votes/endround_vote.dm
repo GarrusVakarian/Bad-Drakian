@@ -24,3 +24,14 @@
 	SSgamemode.round_ends_at = world.time + ROUND_END_TIME
 
 	world.TgsAnnounceVoteEndRound()
+
+/datum/vote/endround/can_be_initiated(forced)
+	. = ..()
+	if(. != VOTE_AVAILABLE)
+		return .
+	if(forced)
+		return .
+
+	// endround votes can only be created if they're forced to be made.
+	// (Either an admin makes it, or otherwise.)
+	return "Only admins can create custom votes."

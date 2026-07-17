@@ -13,3 +13,14 @@
 
 /datum/vote/storyteller/finalize_vote(winning_option)
 	SSgamemode.storyteller_vote_result(winning_option)
+
+/datum/vote/storyteller/can_be_initiated(forced)
+	. = ..()
+	if(. != VOTE_AVAILABLE)
+		return .
+	if(forced)
+		return .
+
+	// Storyteller votes can only be created if they're forced to be made.
+	// (Either an admin makes it, or otherwise.)
+	return "Only admins can create custom votes."
