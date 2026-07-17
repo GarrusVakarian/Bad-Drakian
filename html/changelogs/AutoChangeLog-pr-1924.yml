@@ -1,6 +1,0 @@
-author: "EvenInDeathIStillServe"
-delete-after: True
-changes:
-  - balance: "Pickpocketing storaget items will now pick a random item from within it to steal."
-  - balance: "Belts are now pickpocketing targets, by targeting groin. Hip slots are leg targets."
-  - balance: "Pickpocketing delay increased from 0.5 seconds to 1 second."
