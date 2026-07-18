@@ -117,6 +117,7 @@
 	body_parts_covered = NECK|HAIR|EARS|HEAD|MOUTH
 	armor = ARMOR_PADDED_GOOD //full padded gambeson basically
 	max_integrity = ARMOR_INT_CHEST_LIGHT_MASTER
+	prevent_crits = list(BCLASS_CUT, BCLASS_BLUNT, BCLASS_CHOP)
 
 /obj/item/clothing/neck/roguetown/coif/heavypadding/ComponentInitialize()
 	return
