@@ -605,7 +605,7 @@ SUBSYSTEM_DEF(gamemode)
 				return TRUE
 		else
 			if(!SSvote.current_vote)
-				SSvote.initiate_vote("endround", pick("Zlod", "Sun King", "Gaia", "Moon Queen", "Aeon", "Gemini", "Aries"))
+				SSvote.initiate_vote("endround", pick("Zlod", "Sun King", "Gaia", "Moon Queen", "Aeon", "Gemini", "Aries"), null, forced = TRUE)
 
 	if(SSmapping.retainer.head_rebel_decree)
 		if(reb_end_time == 0)
