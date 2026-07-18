@@ -625,24 +625,22 @@
 					hud_used.healthdoll.add_overlay(mutable_appearance('icons/mob/screen_gen.dmi', "[t]7"))
 			else
 				hud_used.healthdoll.icon_state = "healthdoll_DEAD"*/
+		. = update_stamina_hud() || update_energy_hud() || update_temperature_hud()
 
-		if(update_stamina_hud())
-			. = 1
-		if(update_energy_hud())
-			. = 1
-		if(hud_used.temperature)
-			if(stat != DEAD)
-				. = 1
-				if(bodytemperature >= BODYTEMP_NORMAL_MIN && bodytemperature <= BODYTEMP_NORMAL_MAX)
-					hud_used.temperature.icon_state = "tempnormal"
-				else if(bodytemperature < BODYTEMP_NORMAL_MIN && bodytemperature >= BODYTEMP_COLD_LEVEL_ONE_MAX)
-					hud_used.temperature.icon_state = "tempcold"
-				else if(bodytemperature < BODYTEMP_COLD_LEVEL_ONE_MAX)
-					hud_used.temperature.icon_state = "tempverycold"
-				else if(bodytemperature >= BODYTEMP_NORMAL_MAX && bodytemperature <= BODYTEMP_HEAT_LEVEL_ONE_MAX)
-					hud_used.temperature.icon_state = "temphot"
-				else if(bodytemperature > BODYTEMP_HEAT_LEVEL_ONE_MAX)
-					hud_used.temperature.icon_state = "tempveryhot"
+
+/mob/living/carbon/human/proc/update_temperature_hud()
+	if(isnull(hud_used.temperature) || stat == DEAD)
+		return FALSE
+	if(bodytemperature >= BODYTEMP_NORMAL_MIN && bodytemperature <= BODYTEMP_NORMAL_MAX)
+		hud_used.temperature.icon_state = "tempnormal"
+	else if(bodytemperature < BODYTEMP_NORMAL_MIN && bodytemperature >= BODYTEMP_COLD_LEVEL_ONE_MAX)
+		hud_used.temperature.icon_state = "tempcold"
+	else if(bodytemperature < BODYTEMP_COLD_LEVEL_ONE_MAX)
+		hud_used.temperature.icon_state = "tempverycold"
+	else if(bodytemperature >= BODYTEMP_NORMAL_MAX && bodytemperature <= BODYTEMP_HEAT_LEVEL_ONE_MAX)
+		hud_used.temperature.icon_state = "temphot"
+	else if(bodytemperature > BODYTEMP_HEAT_LEVEL_ONE_MAX)
+		hud_used.temperature.icon_state = "tempveryhot"
 
 /mob/living/carbon/human/update_stamina_hud()
 	if(!hud_used || stat == DEAD || !hud_used.stamina)
@@ -1209,6 +1207,10 @@
 	adjust_bodytemperature(final_delta)
 
 	return final_delta
+
+/mob/living/carbon/human/adjust_bodytemperature(amount, min_temp = 0, max_temp = 600)
+	. = ..()
+	update_temperature_hud()
 
 /*/mob/living/carbon/human/proc/update_heretic_commune()
 	if(HAS_TRAIT(src, TRAIT_COMMIE) || HAS_TRAIT(src, TRAIT_CABAL) || HAS_TRAIT(src, TRAIT_HORDE) || HAS_TRAIT(src, TRAIT_DEPRAVED))

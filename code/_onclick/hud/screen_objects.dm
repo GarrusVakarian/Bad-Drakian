@@ -2171,14 +2171,13 @@
 
 /**
  * Renders a vertical bar filled to `ratio` (0-1) by masking a sprite. The `mid_state` and `low_state`
- * are bespoke (animated) graphics shown in place of `full_state` at low fills; they share the full
- * bar's columns and bottom edge, so the same mask still clips them all the way to empty at 0.
+ * are a separate animated icon state in place of `full_state` at low levels.
  * args:
- * 	meter_bar_fill_height: the height of the fill sprite in pixels (default 47)
- * 	meter_bar_mid_fraction: the fraction of the bar at which we swap to a mid-warning graphic (default 0.2)
- * 	meter_bar_low_fraction: the fraction of the bar at which we swap to a low-warning graphic (default 0.1)
- * 	meter_bar_fill_anim_time: the base time in deciseconds for the masked fill to slide to a new level (default 2)
- * 	meter_bar_fill_anim_scale: extra time in deciseconds added at a full-range change, scaled by how far the fill moves (default 0.4)
+ * 	meter_bar_fill_height: the height of the fill sprite in pixels
+ * 	meter_bar_mid_fraction: the fraction of the bar at which we swap to a mid-warning icon state
+ * 	meter_bar_low_fraction: the fraction of the bar at which we swap to a low-warning icon state
+ * 	meter_bar_fill_anim_time: the base time in deciseconds for the masked fill to slide to a new level
+ * 	meter_bar_fill_anim_scale: extra time in deciseconds added at a full-range change, scaled by how far the fill moves
  */
 /atom/movable/screen/proc/set_meter_fill(
 	ratio,
