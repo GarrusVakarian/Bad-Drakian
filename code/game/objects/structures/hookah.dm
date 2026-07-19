@@ -160,14 +160,23 @@
 			return
 
 		if(!(shisha.reagents?.total_volume))
-			return
+			return	
 
 		var/smoke_amount = shisha.reagents.maximum_volume / shisha.reagents.total_volume
-		shisha.reagents.reaction(user, INGEST, min(REAGENTS_METABOLISM / smoke_amount, 1))
-		if(!shisha.reagents.trans_to(user, smoke_amount))
+
+		var/mob/living/carbon/human/smoker = M
+
+		if(smoker != user)
+			user.visible_message(span_danger("[user] attempts to force [smoker] to take a puff from \the [src]."), \
+								span_danger("I attempt to force [smoker] to puff \the [src]."))
+		else
+			to_chat(smoker, span_notice("You take a pleasant puff from \the [src]."))	
+
+		shisha.reagents.reaction(smoker, INGEST, min(REAGENTS_METABOLISM / smoke_amount, 1))
+		if(!shisha.reagents.trans_to(smoker, smoke_amount))
 			shisha.reagents.remove_any(smoke_amount)
 
-		var/turf/my_turf = get_turf(user)
+		var/turf/my_turf = get_turf(smoker)
 		my_turf.pollute_turf(/datum/pollutant/smoke, 5)
 		return FALSE
 
@@ -273,7 +282,7 @@
 		var/smoke_amount = reagents.maximum_volume / reagents.total_volume
 
 		if(smoker != user)
-			user.visible_message(span_danger("[user] attempt to force [smoker] to take a puff from \the [src]."), \
+			user.visible_message(span_danger("[user] attempts to force [smoker] to take a puff from \the [src]."), \
 								span_danger("I attempt to force [smoker] to puff \the [src]."))
 		else
 			to_chat(smoker, span_notice("You take a pleasant puff from \the [src]."))		
