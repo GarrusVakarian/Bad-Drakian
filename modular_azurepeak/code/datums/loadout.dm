@@ -557,6 +557,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Striped Shirt"
 	path = /obj/item/clothing/suit/roguetown/shirt/undershirt/sailor
 
+/datum/loadout_item/sailorshirt_colorable
+	name = "Striped Shirt (Colorable)"
+	path = /obj/item/clothing/suit/roguetown/shirt/undershirt/sailor/colored
+
 /datum/loadout_item/sailorjacket
 	name = "Leather Jacket"
 	path = /obj/item/clothing/suit/roguetown/armor/leather/vest/sailor
@@ -757,6 +761,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 /datum/loadout_item/butlersuspenders
 	name = "Suspenders"
 	path = /obj/item/storage/belt/rogue/leather/suspenders/butler
+
+/datum/loadout_item/butlersuspenders_colorable
+	name = "Suspenders (Colorable)"
+	path = /obj/item/storage/belt/rogue/leather/suspenders/butler/colored
 
 /datum/loadout_item/ragmask
 	name = "Rag Mask"
