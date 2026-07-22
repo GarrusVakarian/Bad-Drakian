@@ -36,10 +36,6 @@
 
 
 	// Werewolf reverts to human form during the day
-	else if(transformed)
-		H.real_name = wolfname
-		H.name = wolfname
-
 		if(GLOB.tod != "night")
 			if(!untransforming)
 				untransforming = world.time // Start untransformation phase
@@ -82,6 +78,12 @@
 		ww_path = /mob/living/carbon/human/species/werewolf/female
 
 	var/mob/living/carbon/human/species/werewolf/W = new ww_path(loc)
+
+	//Set the werewolf's name from the antagonist datum
+	var/datum/antagonist/werewolf/Were = mind.has_antag_datum(/datum/antagonist/werewolf/)
+	if(Were)
+		W.real_name = Were.wolfname
+		W.name = Were.wolfname
 
 	W.set_patron(src.patron)
 	W.gender = gender
