@@ -79,16 +79,17 @@
 
 	var/mob/living/carbon/human/species/werewolf/W = new ww_path(loc)
 
-	//Set the werewolf's name from the antagonist datum
-	var/datum/antagonist/werewolf/Were = mind.has_antag_datum(/datum/antagonist/werewolf/)
-	if(Were)
-		W.real_name = Were.wolfname
-		W.name = Were.wolfname
 
 	W.set_patron(src.patron)
 	W.gender = gender
 	W.regenerate_icons()
 	W.stored_mob = src
+
+	//Set the werewolf's name from the antagonist datum
+	var/datum/antagonist/werewolf/Were = mind.has_antag_datum(/datum/antagonist/werewolf/)
+	if(Were)
+		W.real_name = Were.wolfname
+		W.name = Were.wolfname
 	W.limb_destroyer = TRUE
 	W.ambushable = FALSE
 	W.cmode_music = 'sound/music/cmode/antag/combat_darkstar.ogg'
