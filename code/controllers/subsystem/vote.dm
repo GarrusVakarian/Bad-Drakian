@@ -248,7 +248,8 @@ SUBSYSTEM_DEF(vote)
 			SEND_SOUND(new_voter, sound(current_vote.vote_sound))
 
 		if(SSvote.initialized)
-			SSvote.ui_interact(new_voter.mob)
+			if(new_voter.prefs.voting_popup)
+				SSvote.ui_interact(new_voter.mob)
 			
 	return TRUE
 
