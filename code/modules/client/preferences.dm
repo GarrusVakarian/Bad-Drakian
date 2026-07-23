@@ -120,6 +120,7 @@ GLOBAL_LIST_EMPTY(chosen_names)
 	var/edging = FALSE
 	/// If a cursed collar can be equipped to them at all
 	var/cursed_collarable = FALSE
+	var/voting_popup = TRUE
 	var/compliance_notifs = TRUE
 	var/skillcap_notifs = TRUE
 	var/restricted_species_pref = null
