@@ -1,0 +1,4 @@
+author: "ophaq"
+delete-after: True
+changes:
+  - bugfix: "Fixed the poleaxe standard flag sprite not adjusting itself visually in a proper way."
