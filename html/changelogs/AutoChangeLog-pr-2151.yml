@@ -1,0 +1,4 @@
+author: "SneakySlinky"
+delete-after: True
+changes:
+  - balance: "Gnolls and WWs now take 30% reduced damage from hits, rather than +30 damage from all hits."
