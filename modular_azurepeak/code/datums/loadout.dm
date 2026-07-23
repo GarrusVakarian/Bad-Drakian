@@ -342,7 +342,7 @@ GLOBAL_LIST_EMPTY(loadout_items)
 /datum/loadout_item/tri_grenzelhoft_hat_capless
 	name = "Capless Grenzelhoft Hat"
 	path = /obj/item/clothing/head/roguetown/caplessgrenzelhofthat
-	
+
 //CLOAKS
 /datum/loadout_item/tabard
 	name = "Tabard"
@@ -1710,27 +1710,27 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_byrine_chausses
-	name = "Gronn Byrine Chausses"
+	name = "Byrine Chausses"
 	path = /obj/item/clothing/under/roguetown/splintlegs/iron/gronn
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_byrine_gloves
-	name = "Gronn Byrine Gloves"
+	name = "Byrine Gloves"
 	path = /obj/item/clothing/gloves/roguetown/chain/gronn
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_byrine_hauberk
-	name = "Gronn Byrine"
+	name = "Byrine"
 	path = /obj/item/clothing/suit/roguetown/armor/brigandine/gronn
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_fur_pants
-	name = "Gronn Fur Pants"
+	name = "Fur Pants"
 	path = /obj/item/clothing/under/roguetown/trou/leather/gronn
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_bone_gloves
-	name = "Gronn Bone Gloves"
+	name = "Bone Gloves"
 	path = /obj/item/clothing/gloves/roguetown/angle/gronnfur
 	triumph_cost = 3
 
@@ -1740,7 +1740,7 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	triumph_cost = 3
 
 /datum/loadout_item/tri_gronn_ravager_mantle
-	name = "Gronn Ravager Mantle"
+	name = "Ravager Mantle"
 	path = /obj/item/clothing/suit/roguetown/armor/leather/heavy/gronn
 	triumph_cost = 3
 
