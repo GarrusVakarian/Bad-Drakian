@@ -311,6 +311,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 	name = "Hood"
 	path = /obj/item/clothing/head/roguetown/roguehood
 
+/datum/loadout_item/necromhood
+    name = "Necromancer Hood"
+    path = /obj/item/clothing/head/roguetown/necromhood
+
 /datum/loadout_item/hijab
 	name = "Hijab"
 	path = /obj/item/clothing/head/roguetown/roguehood/shalal/hijab
@@ -532,6 +536,10 @@ GLOBAL_LIST_EMPTY(loadout_items)
 /datum/loadout_item/robe
 	name = "Robe"
 	path = /obj/item/clothing/suit/roguetown/shirt/robe
+
+/datum/loadout_item/Necromrobe
+    name = "Necromancer Robes"
+    path = /obj/item/clothing/suit/roguetown/shirt/robe/necromancer
 
 /datum/loadout_item/phys_robe
 	name = "Physicker's Robe"
