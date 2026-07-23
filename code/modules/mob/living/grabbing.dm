@@ -1,11 +1,10 @@
 /// Applies a pin's hold, returning how far it actually pushed the stun and immobilise timers out.
 /mob/living/proc/apply_pin_hold(stun_amount, immobilize_amount)
-	var/stun_list = list(AmountStun(), AmountImmobilized())
+	var/stun_before = AmountStun()
+	var/immobilize_before = AmountImmobilized()
 	Stun(stun_amount)
 	Immobilize(immobilize_amount)
-	stun_list[1] = AmountStun() - stun_list[1]
-	stun_list[2] = AmountImmobilized() - stun_list[2]
-	return stun_list
+	return list(AmountStun() - stun_before, AmountImmobilized() - immobilize_before)
 
 /mob/living/proc/release_pin_hold(list/held)
 	if(!held)
